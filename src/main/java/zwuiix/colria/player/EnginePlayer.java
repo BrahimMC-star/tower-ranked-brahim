@@ -270,9 +270,11 @@ public class EnginePlayer extends Player {
                         }
                     }
 
+                    if(!logged) {
+                        long elapsed = System.currentTimeMillis() - start;
+                        sendGuiDataText(TranslationKeys.PLAYER_RESYNC, elapsed);
+                    }
                     this.logged = true;
-                    long elapsed = System.currentTimeMillis() - start;
-                    sendGuiDataText(TranslationKeys.PLAYER_RESYNC, elapsed);
                 })
                 .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }

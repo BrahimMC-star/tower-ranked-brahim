@@ -3,20 +3,18 @@ package zwuiix.colria.cmd;
 import cn.nukkit.Player;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandData;
-import cn.nukkit.command.data.CommandDataVersions;
-import cn.nukkit.command.data.CommandOverload;
-import cn.nukkit.command.data.CommandParameter;
+import cn.nukkit.command.PluginCommand;
+import cn.nukkit.command.data.*;
+import cn.nukkit.lang.PluginI18nManager;
+import cn.nukkit.plugin.InternalPlugin;
+import cn.nukkit.plugin.PluginBase;
 import zwuiix.colria.cmd.arguments.CommandArgument;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.translator.Translator;
 import zwuiix.colria.util.Random;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 abstract public class ColriaCommand extends Command {
     private final HashMap<String, ColriaSubCommand> subCommands = new HashMap<>();
@@ -37,6 +35,17 @@ abstract public class ColriaCommand extends Command {
         }
 
         CommandData customData = new CommandData();
+        customData.description = player.getServer().getLanguage().translateString(this.getDescription());
+
+        if (getAliases().length > 0) {
+            List<String> aliases = new ArrayList<>(Arrays.asList(getAliases()));
+            if (!aliases.contains(this.getName())) {
+                aliases.add(this.getName());
+            }
+
+            customData.aliases = new CommandEnum(this.getName() + "Aliases", aliases);
+        }
+
         if(!subCommands.isEmpty()) {
             for (ColriaSubCommand entry : subCommands.values()) {
                 if(!entry.hasPermission(player) && !entry.hasConditions(player)) continue;
