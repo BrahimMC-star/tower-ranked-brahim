@@ -93,10 +93,6 @@ public class Loader extends PluginBase {
         languageRegistry.invoke(this);
         getLogger().info(TextFormat.colorize("&bLoaded " + languageRegistry.getLanguages().size() + " languages."));
 
-        CommandRegistry commandRegistry =  CommandRegistry.getInstance();
-        commandRegistry.injects();
-        getLogger().info(TextFormat.colorize("&bLoaded " + commandRegistry.getCommands().size() + " commands."));
-
         ParticleRegistry particleRegistry = ParticleRegistry.getInstance();
         particleRegistry.invoke(this);
         getLogger().info(TextFormat.colorize("&bLoaded " + particleRegistry.getParticles().size() + " particles."));
@@ -107,6 +103,10 @@ public class Loader extends PluginBase {
 
         BoosterManager boosterManager = new BoosterManager(this);
         getLogger().info(TextFormat.colorize("&bBooster Manager initialized."));
+
+        CommandRegistry commandRegistry =  CommandRegistry.getInstance();
+        commandRegistry.injects();
+        getLogger().info(TextFormat.colorize("&bLoaded " + commandRegistry.getCommands().size() + " commands."));
 
         getServer().getPluginManager().registerEvents(new EventListener(), this);
         getServer().getPluginManager().registerEvents(new WorldListener(), this);
