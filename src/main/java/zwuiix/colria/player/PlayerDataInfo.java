@@ -1,0 +1,214 @@
+package zwuiix.colria.player;
+
+import cn.nukkit.Server;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import zwuiix.colria.database.DataBase;
+import zwuiix.colria.database.dao.PlayerDataDao;
+import zwuiix.colria.player.stats.StatsInfo;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.function.Function;
+
+public class PlayerDataInfo {
+    private static Gson gson = new Gson();
+
+    private final String xuid;
+    private final String name;
+    private String discordId;
+    private long shards;
+    private long booster;
+    private long lastLogin;
+    private long playtime;
+    private String jsonData;
+    private String particle;
+
+    public PlayerDataInfo(String xuid, String name, String discordId,long shards, long booster,
+                          long lastLogin, long playtime, String jsonData, String particle) {
+        this.xuid = xuid;
+        this.name = name;
+        this.discordId = discordId;
+        this.shards = shards;
+        this.booster = booster;
+        this.lastLogin = lastLogin;
+        this.playtime = playtime;
+        this.jsonData = jsonData;
+        this.particle = particle;
+    }
+
+    public String getXuid() {
+        return xuid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDiscordId() {
+        return discordId;
+    }
+
+    public void setDiscordId(String discordId) {
+        this.discordId = discordId;
+        this.update();
+    }
+
+    public long getShards() {
+        return shards;
+    }
+
+    public long getBooster() {
+        return booster;
+    }
+
+    public long getLastLogin() {
+        return lastLogin;
+    }
+
+    public long getPlaytime() {
+        return playtime;
+    }
+
+    public String getJsonData() {
+        return jsonData;
+    }
+
+    public String getParticle() {
+        return particle;
+    }
+
+    public void setShards(long shards) {
+        this.shards = shards;
+        this.update();
+    }
+    
+    public void increaseShards(long amount) {
+        this.shards += amount;
+        this.update();
+    }
+    
+    public void decreaseShards(long amount) {
+        this.shards -= amount;
+        if(this.shards < 0) {
+            this.shards = 0;
+        }
+        this.update();
+    }
+
+    public void setBooster(long booster) {
+        this.booster = booster;
+        this.update();
+    }
+    
+    public void increaseBooster(long amount) {
+        this.booster += amount;
+        this.update();
+    }
+    
+    public void decreaseBooster(long amount) {
+        this.booster -= amount;
+        if(this.booster < 0) {
+            this.booster = 0;
+        }
+        this.update();
+    }
+
+    public void setLastLogin(long lastLogin) {
+        this.lastLogin = lastLogin;
+        this.update();
+    }
+
+    public void setPlaytime(long playtime) {
+        this.playtime = playtime;
+        this.update();
+    }
+
+    public void setJsonData(String jsonData) {
+        this.jsonData = jsonData;
+        this.update();
+    }
+
+    public void setParticle(String particle) {
+        this.particle = particle;
+        this.update();
+    }
+
+    public JsonObject getJson() {
+        return jsonData == null ? new JsonObject() : gson.fromJson(jsonData, JsonObject.class);
+    }
+
+    public void setJson(JsonObject json) {
+        this.jsonData = gson.toJson(json);
+        this.update();
+    }
+
+    public String getCape() {
+        JsonObject json = this.getJson();
+        if(json.has("cape")) {
+            return json.get("cape").getAsString();
+        }
+        return "none";
+    }
+
+    public void setCape(String cape) {
+        JsonObject json = this.getJson();
+        json.addProperty("cape", cape);
+        this.setJson(json);
+    }
+
+    public ArrayList<String> getCosmetics() {
+        JsonObject json = this.getJson();
+        ArrayList<String> cosmetics = new ArrayList<>();
+        if(json.has("cosmetics")) {
+            for(var el : json.getAsJsonArray("cosmetics")) {
+                cosmetics.add(el.getAsString());
+            }
+        }
+        return cosmetics;
+    }
+
+    public void setCosmetics(ArrayList<String> cosmetics) {
+        JsonObject json = this.getJson();
+        json.remove("cosmetics");
+        json.add("cosmetics", gson.toJsonTree(cosmetics));
+        this.setJson(json);
+    }
+
+    public void addCosmetic(String cosmetic) {
+        ArrayList<String> cosmetics = this.getCosmetics();
+        if(!cosmetics.contains(cosmetic)) {
+            cosmetics.add(cosmetic);
+            this.setCosmetics(cosmetics);
+        }
+    }
+
+    public void removeCosmetic(String cosmetic) {
+        ArrayList<String> cosmetics = this.getCosmetics();
+        if(cosmetics.contains(cosmetic)) {
+            cosmetics.remove(cosmetic);
+            this.setCosmetics(cosmetics);
+        }
+    }
+
+    public StatsInfo getStats() {
+        JsonObject json = this.getJson();
+        if(json.has("stats")) {
+            return gson.fromJson(json.getAsJsonObject("stats"), StatsInfo.class);
+        }
+        return new StatsInfo(new LinkedHashMap<>());
+    }
+
+    public void setStats(StatsInfo stats) {
+        JsonObject json = this.getJson();
+        json.add("stats", gson.toJsonTree(stats));
+        this.setJson(json);
+    }
+    
+    public void update() {
+        DataBase.getInstance().write(PlayerDataDao.class, (Function<PlayerDataDao, Integer>) dao -> dao.setAll(this));
+
+        EnginePlayer p = (EnginePlayer) Server.getInstance().getPlayerExact(this.getName());
+        if(p != null) p.setPlayerDataInfo(this);
+    }
+}

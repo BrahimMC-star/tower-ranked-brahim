@@ -1,0 +1,140 @@
+package zwuiix.colria.util;
+
+import cn.nukkit.bossbar.BossBarColor;
+import cn.nukkit.entity.Attribute;
+import cn.nukkit.network.protocol.BossEventPacket;
+import zwuiix.colria.player.EnginePlayer;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+public class BossBar {
+    private String text;
+    private HashMap<UUID, EnginePlayer> viewers = new HashMap<>();
+    private BossBarColor color;
+    private Attribute attribute = Attribute.getAttribute(Attribute.MAX_HEALTH);
+
+    public BossBar() {
+        this.text = "";
+        this.color = BossBarColor.PURPLE;
+        this.attribute.setMaxValue(100.0f);
+        this.attribute.setValue(100.0f);
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public BossBarColor getColor() {
+        return color;
+    }
+
+    public void updateColor(BossBarColor color) {
+        this.color = color;
+        syncColor();
+    }
+
+    public void setPercentage(float percentage) {
+        if (percentage < 0.0f) percentage = 0.0f;
+        if (percentage > 1.0f) percentage = 1.0f;
+
+        this.attribute.setValue(this.attribute.getMaxValue() * percentage);
+        syncPercentage();
+    }
+
+    public float getPercentage() {
+        return attribute.getValue() / attribute.getMaxValue();
+    }
+
+    public Map<UUID, EnginePlayer> getViewers() {
+        return viewers;
+    }
+
+    public void addViewer(EnginePlayer player) {
+        if(viewers.containsKey(player.getUniqueId()))
+            return;
+
+        viewers.put(player.getUniqueId(), player);
+        show(player);
+        syncColor(player, this.color);
+        syncPercentage(player, getPercentage());
+        syncText(player, this.text);
+    }
+
+    public void removeViewer(EnginePlayer player) {
+        if(!viewers.containsKey(player.getUniqueId()))
+            return;
+
+        viewers.remove(player.getUniqueId());
+        hide(player);
+    }
+
+    public void syncPercentage() {
+        for (EnginePlayer player : viewers.values()) {
+            syncPercentage(player, getPercentage());
+        }
+    }
+
+    public void syncPercentage(EnginePlayer player, float perc) {
+        BossEventPacket pk = new BossEventPacket();
+        pk.bossEid = player.getId();
+        pk.type = BossEventPacket.TYPE_HEALTH_PERCENT;
+        pk.healthPercent = perc;
+        player.dataPacket(pk);
+    }
+
+    public void syncText(EnginePlayer player, String text) {
+        BossEventPacket pk = new BossEventPacket();
+        pk.bossEid = player.getId();
+        pk.type = BossEventPacket.TYPE_TITLE;
+        pk.title = text;
+        pk.filteredTitle = text;
+        player.dataPacket(pk);
+    }
+
+    public void syncColor() {
+        for (EnginePlayer player : viewers.values()) {
+            syncColor(player, this.color);
+        }
+    }
+
+    public void syncColor(EnginePlayer player, BossBarColor color) {
+        BossEventPacket pk = new BossEventPacket();
+        pk.bossEid = player.getId();
+        pk.type = BossEventPacket.TYPE_TEXTURE;
+        pk.color = color.ordinal();
+        player.dataPacket(pk);
+    }
+
+    public void show() {
+        for (EnginePlayer player : viewers.values()) {
+            show(player);
+        }
+    }
+
+    public void show(EnginePlayer player) {
+        BossEventPacket pk = new BossEventPacket();
+        pk.bossEid = player.getId();
+        pk.type = BossEventPacket.TYPE_SHOW;
+        pk.title = this.text;
+        pk.healthPercent = this.getPercentage();
+        pk.filteredTitle = this.text;
+        pk.color = color.ordinal();
+        player.dataPacket(pk);
+    }
+
+    public void hide() {
+        for (EnginePlayer player : viewers.values()) {
+            hide(player);
+        }
+        viewers.clear();
+    }
+
+    public void hide(EnginePlayer player) {
+        BossEventPacket pk = new BossEventPacket();
+        pk.bossEid = player.getId();
+        pk.type = BossEventPacket.TYPE_HIDE;
+        player.dataPacket(pk);
+    }
+}

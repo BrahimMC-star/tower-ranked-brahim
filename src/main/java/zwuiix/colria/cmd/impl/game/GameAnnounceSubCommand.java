@@ -1,0 +1,78 @@
+package zwuiix.colria.cmd.impl.game;
+
+import zwuiix.colria.cmd.ColriaPlayerSubCommand;
+import zwuiix.colria.game.Game;
+import zwuiix.colria.game.GameRegistry;
+import zwuiix.colria.game.impl.lobby.Lobby;
+import zwuiix.colria.permission.Permission;
+import zwuiix.colria.player.EnginePlayer;
+import zwuiix.colria.translator.TranslationKeys;
+
+import java.util.Map;
+
+public class GameAnnounceSubCommand extends ColriaPlayerSubCommand {
+    public GameAnnounceSubCommand() {
+        super("announce");
+    }
+
+    @Override
+    public void prepare() {
+        setPermission(Permission.GAME_HOSTER.toString());
+    }
+
+    @Override
+    public void execute(EnginePlayer player, Map<String, Object> args) {
+        Game game = player.getGame();
+        if(game == null || game instanceof Lobby) {
+            player.sendMessage(TranslationKeys.PLAYER_GAME_NOT);
+            return;
+        }
+
+        if(!game.getHoster().equalsIgnoreCase(player.getName()) && !player.inAdminMode()) {
+            player.sendMessage(TranslationKeys.PLAYER_GAME_NOT_OWNER);
+            return;
+        }
+
+        if(!game.getState().equals(Game.State.LOBBY)) {
+            player.sendMessage(TranslationKeys.PLAYER_GAME_START_ALREADY);
+            return;
+        }
+
+        if(game.isPrivate() && game.getWhitelist().isEmpty()) {
+            player.sendMessage(TranslationKeys.PLAYER_GAME_ANNOUNCE_PRIVATE_EMPTY);
+            return;
+        }
+
+        var cd = player.getCooldown("game_announce");
+        if(!cd.isExpired() && !player.inAdminMode()) {
+            var secs = cd.getRemainingTime() / 1000;
+            long minutes = secs / 60;
+            long seconds = secs % 60;
+
+            String format = String.format("%d:%02dm", minutes, seconds);
+            if(minutes == 0) {
+                format = String.format("%02ds", seconds);
+            }
+
+            player.sendMessage(TranslationKeys.PLAYER_GAME_ANNOUNCE_COOLDOWN, format);
+            return;
+        }
+
+        if(game.isAnnounced() && !player.inAdminMode()) {
+            player.sendMessage(TranslationKeys.PLAYER_GAME_ANNOUNCE_ALREADY);
+            return;
+        }
+
+        game.setAnnounced(true);
+        cd.refresh(300); // 5 minutes cooldown
+        player.sendMessage(TranslationKeys.PLAYER_GAME_ANNOUNCE_SUCCESS);
+        for (Lobby lobby : GameRegistry.getInstance().getLobbies().values()) {
+            lobby.global(p -> {
+                if(!p.isInLobby()) return;
+                if(game.getBlacklist().contains(player.getName().toLowerCase())) return;
+                if(game.isPrivate() && !game.getWhitelist().contains(player.getName().toLowerCase()) && !player.inAdminMode()) return;
+                p.sendMessage(TranslationKeys.PLAYER_GAME_ANNOUNCE_BROADCAST, game.getName(), game.getHoster(), game.getIdentifier());
+            });
+        }
+    }
+}
