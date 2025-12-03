@@ -24,7 +24,9 @@ public final class GameEvent {
         var perGame = EVENTS.computeIfAbsent(game, g -> new ConcurrentHashMap<>());
         var rawList = perGame.computeIfAbsent(eventClass, k -> new CopyOnWriteArrayList<>());
 
-        CopyOnWriteArrayList<Consumer<? super T>> list = (CopyOnWriteArrayList<Consumer<? super T>>) rawList;
+        @SuppressWarnings("unchecked")
+        CopyOnWriteArrayList<Consumer<? super T>> list =
+                (CopyOnWriteArrayList<Consumer<? super T>>) (CopyOnWriteArrayList<?>) rawList;
 
         if (!list.contains(consumer)) {
             list.add(consumer);
@@ -60,8 +62,9 @@ public final class GameEvent {
         var rawList = perGame.get(eventClass);
         if (rawList == null) return;
 
+        @SuppressWarnings("unchecked")
         CopyOnWriteArrayList<Consumer<? super T>> list =
-                (CopyOnWriteArrayList<Consumer<? super T>>) rawList;
+                (CopyOnWriteArrayList<Consumer<? super T>>) (CopyOnWriteArrayList<?>) rawList;
 
         list.remove(consumer);
         if (list.isEmpty()) {
@@ -95,8 +98,9 @@ public final class GameEvent {
         var rawList = perGame.get(event.getClass());
         if (rawList == null || rawList.isEmpty()) return;
 
+        @SuppressWarnings("unchecked")
         CopyOnWriteArrayList<Consumer<? super T>> list =
-                (CopyOnWriteArrayList<Consumer<? super T>>) rawList;
+                (CopyOnWriteArrayList<Consumer<? super T>>) (CopyOnWriteArrayList<?>) rawList;
 
         for (Consumer<? super T> c : list) {
             c.accept(event);
@@ -120,6 +124,7 @@ public final class GameEvent {
             Class<?> eventClass,
             Consumer<?> consumer
     ) {
+        @SuppressWarnings("unchecked")
         public <T extends Event> void unsubscribe() {
             GameEvent.unsubscribe(game, (Class<T>) eventClass, (Consumer<? super T>) consumer);
         }
