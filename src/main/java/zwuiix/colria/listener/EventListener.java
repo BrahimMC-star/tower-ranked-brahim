@@ -20,8 +20,6 @@ import zwuiix.colria.game.GameRegistry;
 import zwuiix.colria.game.impl.lobby.Lobby;
 import zwuiix.colria.permission.Permission;
 import zwuiix.colria.player.EnginePlayer;
-import zwuiix.colria.player.particle.ParticleRegistry;
-import zwuiix.colria.player.particle.WindDashParticle;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.Glyph;
 import zwuiix.colria.util.KeyInput;

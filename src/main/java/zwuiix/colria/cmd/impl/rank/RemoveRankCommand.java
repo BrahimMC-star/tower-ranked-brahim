@@ -1,7 +1,6 @@
 package zwuiix.colria.cmd.impl.rank;
 
 import cn.nukkit.Server;
-import zwuiix.colria.cmd.ColriaPlayerCommand;
 import zwuiix.colria.cmd.ColriaPlayerSubCommand;
 import zwuiix.colria.cmd.arguments.StringEnumArgument;
 import zwuiix.colria.cmd.arguments.TargetArgument;

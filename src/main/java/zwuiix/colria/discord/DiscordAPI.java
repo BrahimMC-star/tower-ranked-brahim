@@ -11,7 +11,6 @@ import zwuiix.colria.discord.task.ActivityTask;
 import zwuiix.colria.discord.task.PlayerChannelTask;
 
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class DiscordAPI {
     private static DiscordAPI INSTANCE;

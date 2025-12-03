@@ -1,6 +1,5 @@
 package zwuiix.colria.cmd.impl.particle;
 
-import zwuiix.colria.cmd.ColriaPlayerCommand;
 import zwuiix.colria.cmd.ColriaPlayerSubCommand;
 import zwuiix.colria.cmd.arguments.TargetArgument;
 import zwuiix.colria.database.DataBase;

@@ -9,7 +9,6 @@ import zwuiix.colria.database.dao.PlayerCosmeticDao;
 import zwuiix.colria.permission.Permission;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.player.cosmetic.CapeCosmetic;
-import zwuiix.colria.player.cosmetic.Cosmetic;
 import zwuiix.colria.player.cosmetic.CosmeticRegistry;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.DB;

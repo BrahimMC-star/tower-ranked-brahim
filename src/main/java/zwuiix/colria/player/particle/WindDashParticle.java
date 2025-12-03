@@ -1,6 +1,5 @@
 package zwuiix.colria.player.particle;
 
-import cn.nukkit.entity.Entity;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.particle.GenericParticle;
 import cn.nukkit.math.Vector3;
