@@ -22,6 +22,7 @@ import lombok.Setter;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.player.cosmetic.Pet;
 import zwuiix.colria.translator.TranslationKeys;
+import zwuiix.colria.util.Rotation;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -150,7 +151,7 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     public void onPlayerInput(Player player, double strafe, double forward) {
         this.stayTime = 0;
         this.moveTime = 10;
-        this.setBothYaw(player.yaw);
+        this.setPitch(player.pitch);
 
         strafe *= 0.4;
 
@@ -176,7 +177,12 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
             this.motionZ = 0;
         }
 
+        var nX = this.getPosition().x + this.motionX;
+        var nZ = this.getPosition().z + this.motionZ;
+        this.yaw = Rotation.faceYawTowards(this.getPosition(), new Vector3(nX, this.getPosition().y, nZ));
+
         this.updateMovement();
+        this.broadcastMovement();
     }
 
     @Override
