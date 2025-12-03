@@ -1,6 +1,7 @@
 package zwuiix.colria.player.cooldown;
 
 import cn.nukkit.Server;
+import lombok.Getter;
 import zwuiix.colria.database.DataBase;
 import zwuiix.colria.database.dao.PlayerCooldownDao;
 import zwuiix.colria.player.EnginePlayer;
@@ -9,22 +10,16 @@ import zwuiix.colria.util.DB;
 import java.util.function.Function;
 
 public class Cooldown{
+    @Getter
     private String xuid;
-    private String action;
+    @Getter
+    private final String action;
     private long expiresAt;
 
     public Cooldown(String xuid, String key, long durationMillis) {
         this.xuid = xuid;
         this.action = key;
         this.expiresAt = System.currentTimeMillis() + durationMillis;
-    }
-
-    public String getXuid() {
-        return xuid;
-    }
-
-    public String getAction() {
-        return action;
     }
 
     public long getRemainingTime() {

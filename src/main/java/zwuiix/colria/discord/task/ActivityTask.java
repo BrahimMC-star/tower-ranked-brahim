@@ -41,7 +41,7 @@ public class ActivityTask extends Task {
                 GameRegistry.getInstance().getGames().size() + " parties en cours.",
                 BoosterManager.getInstance().getCurrent() == null ?
                         "Aucun booster actif." :
-                        "Booster de " + BoosterManager.getInstance().getCurrent().booster().getOwner() + " actif.",
+                        "Booster de " + BoosterManager.getInstance().getCurrent().booster().owner() + " actif.",
                 "Versions supportées " + protocolsRange,
                 "Colria " + EngineInfo.VERSION,
                 "Nukkit " + Server.getInstance().getApiVersion(),

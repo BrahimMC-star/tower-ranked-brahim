@@ -9,6 +9,7 @@ import cn.nukkit.network.protocol.InventorySlotPacket;
 import cn.nukkit.network.protocol.types.inventory.ContainerSlotType;
 import cn.nukkit.network.protocol.types.inventory.ContainerType;
 import cn.nukkit.network.protocol.types.inventory.FullContainerName;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,11 +17,14 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 abstract public class VirtualInventory {
+    @Getter
     protected String name;
     protected String prefix;
+    @Getter
     protected int size;
 
     protected final ArrayList<Player> viewers = new ArrayList<>();
+    @Getter
     protected Item[] contents;
 
     protected Consumer<InventoryClick> onClick = null;
@@ -40,18 +44,6 @@ abstract public class VirtualInventory {
         this.prefix = "§" + length + "§" + scroll + "§r§r§r§r§r§r§r§r§r§r";
 
         contents = new Item[size];
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public Item[] getContents() {
-        return contents;
     }
 
     public Item getItem(int slot) {

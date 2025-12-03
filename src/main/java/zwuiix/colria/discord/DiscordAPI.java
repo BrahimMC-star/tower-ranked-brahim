@@ -13,17 +13,14 @@ import zwuiix.colria.discord.task.PlayerChannelTask;
 import java.util.Arrays;
 
 public class DiscordAPI {
-    private static DiscordAPI INSTANCE;
-
-    public static DiscordAPI getInstance() {
-        return INSTANCE;
-    }
+    @Getter
+    private static DiscordAPI instance;
 
     @Getter
     private final JDA jda;
 
     public DiscordAPI(String token) {
-        INSTANCE = this;
+        instance = this;
         this.jda = JDABuilder.createDefault(token)
                 .setEnableShutdownHook(false)
                 .enableIntents(Arrays.stream(GatewayIntent.values()).toList())

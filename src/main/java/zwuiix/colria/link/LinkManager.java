@@ -5,17 +5,14 @@ import net.dv8tion.jda.api.interactions.InteractionHook;
 
 import java.util.LinkedHashMap;
 
+@Getter
 public class LinkManager {
     @Getter
     private static final LinkManager instance = new LinkManager();
 
-    private LinkedHashMap<String, LinkInfo> waitingLinks = new LinkedHashMap<>();
+    private final LinkedHashMap<String, LinkInfo> waitingLinks = new LinkedHashMap<>();
 
     public LinkManager() {}
-
-    public LinkedHashMap<String, LinkInfo> getWaitingLinks() {
-        return waitingLinks;
-    }
 
     public boolean exists(String code) {
         return waitingLinks.containsKey(code);

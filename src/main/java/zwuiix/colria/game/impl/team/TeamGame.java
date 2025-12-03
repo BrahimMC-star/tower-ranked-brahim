@@ -2,6 +2,7 @@ package zwuiix.colria.game.impl.team;
 
 import cn.nukkit.Server;
 import cn.nukkit.utils.TextFormat;
+import lombok.Setter;
 import zwuiix.colria.game.*;
 import zwuiix.colria.game.impl.team.gui.TeamSelectorGUI;
 import zwuiix.colria.game.impl.team.kit.TeamLobbyKit;
@@ -12,9 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 abstract public class TeamGame extends Game {
+    @Setter
     private Team teamA;
+    @Setter
     private Team teamB;
 
+    @Setter
     private TeamSpawnPoint spawnPoint;
     private final TeamSelectorGUI teamSelector;
 
@@ -33,24 +37,12 @@ abstract public class TeamGame extends Game {
         return teamA;
     }
 
-    public void setTeamA(Team teamA) {
-        this.teamA = teamA;
-    }
-
     public Team getTeamB() {
         return teamB;
     }
 
-    public void setTeamB(Team teamB) {
-        this.teamB = teamB;
-    }
-
     public TeamSpawnPoint getSpawnPoint() {
         return spawnPoint;
-    }
-
-    public void setSpawnPoint(TeamSpawnPoint spawnPoint) {
-        this.spawnPoint = spawnPoint;
     }
 
     public HashMap<EnginePlayer, Team> getTeams() {

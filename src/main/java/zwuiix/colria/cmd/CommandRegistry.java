@@ -3,6 +3,7 @@ package zwuiix.colria.cmd;
 import cn.nukkit.Server;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.SimpleCommandMap;
+import lombok.Getter;
 import zwuiix.colria.cmd.impl.LatencyCommand;
 import zwuiix.colria.cmd.impl.ReplyCommand;
 import zwuiix.colria.cmd.impl.StatusCommand;
@@ -25,18 +26,12 @@ import zwuiix.colria.cmd.impl.world.WorldCommand;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 public class CommandRegistry {
-    private static CommandRegistry instance = new CommandRegistry();
+    @Getter
+    private static final CommandRegistry instance = new CommandRegistry();
 
-    public static CommandRegistry getInstance() {
-        return instance;
-    }
-
-    private HashMap<String, ColriaCommand> commands = new HashMap<>();
-
-    public HashMap<String, ColriaCommand> getCommands() {
-        return commands;
-    }
+    private final HashMap<String, ColriaCommand> commands = new HashMap<>();
 
     public CommandRegistry() {
         register(new ServerCommand());

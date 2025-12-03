@@ -11,7 +11,7 @@ import zwuiix.colria.database.dao.PlayerParticleDao;
 import zwuiix.colria.game.gui.sub.SubMenu;
 import zwuiix.colria.game.impl.lobby.gui.GameShopGUI;
 import zwuiix.colria.game.item.enchant.DummyEnchantment;
-import zwuiix.colria.gui.server.PurchaseGUI;
+import zwuiix.colria.gui.shop.PurchaseGUI;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.player.particle.Particle;
 import zwuiix.colria.player.particle.ParticleRegistry;

@@ -3,6 +3,7 @@ package zwuiix.colria.util;
 import cn.nukkit.bossbar.BossBarColor;
 import cn.nukkit.entity.Attribute;
 import cn.nukkit.network.protocol.BossEventPacket;
+import lombok.Getter;
 import zwuiix.colria.player.EnginePlayer;
 
 import java.util.HashMap;
@@ -10,24 +11,18 @@ import java.util.Map;
 import java.util.UUID;
 
 public class BossBar {
-    private String text;
-    private HashMap<UUID, EnginePlayer> viewers = new HashMap<>();
+    @Getter
+    private final String text;
+    private final HashMap<UUID, EnginePlayer> viewers = new HashMap<>();
+    @Getter
     private BossBarColor color;
-    private Attribute attribute = Attribute.getAttribute(Attribute.MAX_HEALTH);
+    private final Attribute attribute = Attribute.getAttribute(Attribute.MAX_HEALTH);
 
     public BossBar() {
         this.text = "";
         this.color = BossBarColor.PURPLE;
         this.attribute.setMaxValue(100.0f);
         this.attribute.setValue(100.0f);
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public BossBarColor getColor() {
-        return color;
     }
 
     public void updateColor(BossBarColor color) {

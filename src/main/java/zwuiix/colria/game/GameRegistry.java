@@ -4,6 +4,7 @@ import cn.nukkit.Server;
 import cn.nukkit.block.*;
 import cn.nukkit.item.Item;
 import cn.nukkit.math.Vector3;
+import lombok.Getter;
 import zwuiix.colria.Loader;
 import zwuiix.colria.game.impl.lobby.Lobby;
 import zwuiix.colria.game.impl.team.TeamGameLevel;
@@ -13,21 +14,15 @@ import zwuiix.colria.game.impl.tower.TowerGame;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Getter
 public class GameRegistry {
-    private static GameRegistry instance  = new GameRegistry();
-
-    public static GameRegistry getInstance() {
-        return instance;
-    }
+    @Getter
+    private static final GameRegistry instance  = new GameRegistry();
 
     public GameRegistry() {}
 
     private final LinkedHashMap<String, Game> games = new LinkedHashMap<>();
     private final LinkedHashMap<String, Lobby> lobbies = new LinkedHashMap<>();
-
-    public LinkedHashMap<String, Lobby> getLobbies() {
-        return lobbies;
-    }
 
     public Lobby randomLobby() {
         int size = lobbies.size();
@@ -53,10 +48,6 @@ public class GameRegistry {
     public void removeLobby(Lobby lobby) {
         if(!lobbies.containsKey(lobby.getGameId())) return;
         lobbies.remove(lobby.getGameId());
-    }
-
-    public LinkedHashMap<String, Game> getGames() {
-        return games;
     }
 
     public LinkedList<Game> getGames(GameMode gameMode) {
@@ -89,9 +80,6 @@ public class GameRegistry {
     }
 
     private final ArrayList<GameMode> gameModes = new ArrayList<>();
-    public ArrayList<GameMode> getGameModes() {
-        return gameModes;
-    }
 
     public GameMode getGameMode(String name) {
         for (GameMode mode : gameModes) {

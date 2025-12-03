@@ -6,48 +6,8 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
-public class Booster {
-    private static Gson gson = new GsonBuilder().create();
-
-    private String type;
-    private String owner;
-    private float multiplier;
-    private long duration;
-    private ArrayList<String> claims;
-
-    public Booster(
-            String type,
-            String owner,
-            float multiplier,
-            long duration,
-            ArrayList<String> claims
-    ) {
-        this.type = type;
-        this.owner = owner;
-        this.multiplier = multiplier;
-        this.duration = duration;
-        this.claims = claims;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getOwner() {
-        return owner;
-    }
-
-    public float getMultiplier() {
-        return multiplier;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public ArrayList<String> getClaims() {
-        return claims;
-    }
+public record Booster(String type, String owner, float multiplier, long duration, ArrayList<String> claims) {
+    private static final Gson gson = new GsonBuilder().create();
 
     public JsonObject toJson() {
         JsonObject json = new JsonObject();

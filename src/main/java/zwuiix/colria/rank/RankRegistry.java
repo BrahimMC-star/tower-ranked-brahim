@@ -1,31 +1,22 @@
 package zwuiix.colria.rank;
 
+import lombok.Getter;
 import zwuiix.colria.Loader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
+@Getter
 public class RankRegistry {
-    private static RankRegistry INSTANCE = new RankRegistry();
+    @Getter
+    private static RankRegistry instance = new RankRegistry();
 
-    public static RankRegistry getInstance() {
-        return INSTANCE;
-    }
-
-    private HashMap<Integer, Rank> ranks = new HashMap<>();
+    private final HashMap<Integer, Rank> ranks = new HashMap<>();
     private Rank defaultRank = null;
 
     RankRegistry() {
-        INSTANCE = this;
-    }
-
-    public HashMap<Integer, Rank> getRanks() {
-        return ranks;
-    }
-
-    public Rank getDefaultRank() {
-        return defaultRank;
+        instance = this;
     }
 
     public Optional<Rank> getRank(int id) {

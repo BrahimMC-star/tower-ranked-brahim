@@ -1,15 +1,19 @@
 package zwuiix.colria.rank;
 
 import cn.nukkit.utils.TextFormat;
+import lombok.Getter;
 
 import java.util.ArrayList;
 
 public class Rank {
     private static final char COLOR = '§';
 
+    @Getter
     protected int id;
     protected String name;
+    @Getter
     protected ArrayList<String> permissions;
+    @Getter
     protected boolean visual;
     protected boolean _default;
 
@@ -24,10 +28,6 @@ public class Rank {
 
     Rank(int id, String name, ArrayList<String> permissions, boolean visual) {
         this(id, name, permissions, visual, false);
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getName() {
@@ -59,14 +59,6 @@ public class Rank {
             }
         }
         return sb.toString();
-    }
-
-    public ArrayList<String> getPermissions() {
-        return permissions;
-    }
-
-    public boolean isVisual() {
-        return visual;
     }
 
     public boolean isDefault() {

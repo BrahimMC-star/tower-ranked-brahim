@@ -15,7 +15,6 @@ import cn.nukkit.network.protocol.PlayerListPacket;
 import java.util.ArrayList;
 
 public final class WorldListener implements Listener {
-
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onSend(DataPacketSendEvent ev) {
         Player p = ev.getPlayer();

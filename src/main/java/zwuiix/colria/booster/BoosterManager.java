@@ -117,7 +117,7 @@ public class BoosterManager {
         if (this.bossBar != null) {
             if (this.current != null) {
                 long remaining = this.current.end() - now;
-                long duration  = this.current.booster().getDuration();
+                long duration  = this.current.booster().duration();
 
                 double percent = duration > 0
                         ? Math.max(0.0, Math.min(1.0, (double) remaining / (double) duration))
@@ -129,8 +129,8 @@ public class BoosterManager {
                 String timeStr = String.format("%02d:%02d", minutes, seconds);
 
                 Booster booster = this.current.booster();
-                String owner = booster.getOwner();
-                float multiplier = booster.getMultiplier();
+                String owner = booster.owner();
+                float multiplier = booster.multiplier();
 
                 for (EnginePlayer viewer : this.bossBar.getViewers().values()) {
                     this.bossBar.show(viewer);
@@ -147,14 +147,14 @@ public class BoosterManager {
         }
 
         if (this.current != null) {
-            long duration = this.current.booster().getDuration();
+            long duration = this.current.booster().duration();
             long interval = Math.max(1L, duration / 12L);
 
             if (now - this.lastReminder >= interval) {
                 Booster booster = this.current.booster();
                 for (Player p : Server.getInstance().getOnlinePlayers().values()) {
                     EnginePlayer player = (EnginePlayer) p;
-                    player.sendMessage(TranslationKeys.BOOSTER_BROADCAST, booster.getType(), booster.getOwner());
+                    player.sendMessage(TranslationKeys.BOOSTER_BROADCAST, booster.type(), booster.owner());
                 }
                 this.lastReminder = now;
             }
@@ -170,7 +170,7 @@ public class BoosterManager {
 
             for (Player p : Server.getInstance().getOnlinePlayers().values()) {
                 EnginePlayer player = (EnginePlayer) p;
-                player.sendMessage(TranslationKeys.BOOSTER_FINISH, finished.getType(), finished.getOwner());
+                player.sendMessage(TranslationKeys.BOOSTER_FINISH, finished.type(), finished.owner());
             }
 
             this.current = null;
@@ -183,7 +183,7 @@ public class BoosterManager {
 
         if (this.current == null && !this.queue.isEmpty()) {
             Booster next = this.queue.removeFirst();
-            long end = now + next.getDuration();
+            long end = now + next.duration();
 
             this.current = new Booster.Current(next, now, end);
 
@@ -191,7 +191,7 @@ public class BoosterManager {
             this.bossBar.updateColor(BossBarColor.BLUE);
             for (Player p : Server.getInstance().getOnlinePlayers().values()) {
                 EnginePlayer player = (EnginePlayer) p;
-                player.sendMessage(TranslationKeys.BOOSTER_START, next.getOwner(), next.getType());
+                player.sendMessage(TranslationKeys.BOOSTER_START, next.owner(), next.type());
 
                 player.addSound(Sound.MOB_ENDERDRAGON_DEATH, 0.5f, 1.0f);
                 this.bossBar.addViewer(player);
@@ -223,7 +223,7 @@ public class BoosterManager {
     }
 
     public float getMultiplier() {
-        return this.current != null ? this.current.booster().getMultiplier() : 1.0f;
+        return this.current != null ? this.current.booster().multiplier() : 1.0f;
     }
 
     public BossBar getBossBar() {

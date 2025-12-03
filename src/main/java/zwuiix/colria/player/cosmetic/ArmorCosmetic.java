@@ -1,24 +1,22 @@
 package zwuiix.colria.player.cosmetic;
 
 import cn.nukkit.item.Item;
+import lombok.Getter;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
 
+@Getter
 public class ArmorCosmetic extends Cosmetic {
     public static final int SLOT_HELMET = 0;
     public static final int SLOT_CHESTPLATE = 1;
     public static final int SLOT_LEGGINGS = 2;
     public static final int SLOT_BOOTS = 3;
 
-    private int slot;
+    private final int slot;
 
     ArmorCosmetic(String identifier, TranslationKeys name, TranslationKeys description, Item reference, long cost, int slot) {
         super(identifier, name, description, reference, cost);
         this.slot = slot;
-    }
-
-    public int getSlot() {
-        return slot;
     }
 
     @Override

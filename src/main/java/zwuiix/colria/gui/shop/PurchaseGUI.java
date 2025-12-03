@@ -1,4 +1,4 @@
-package zwuiix.colria.gui.server;
+package zwuiix.colria.gui.shop;
 
 import cn.nukkit.block.BlockCopperBars;
 import cn.nukkit.item.Item;
@@ -11,13 +11,13 @@ import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.Window;
 
 public class PurchaseGUI {
-    private EnginePlayer player;
+    private final EnginePlayer player;
     public VirtualInventory inventory;
 
-    private Item reference;
-    private long cost;
-    private Runnable onPurchase;
-    private Runnable onClose;
+    private final Item reference;
+    private final long cost;
+    private final Runnable onPurchase;
+    private final Runnable onClose;
 
     public PurchaseGUI(String title, EnginePlayer player, Item reference, long cost, Runnable onPurchase, Runnable onClose) {
         this.player = player;

@@ -10,7 +10,7 @@ import zwuiix.colria.database.DataBase;
 import zwuiix.colria.database.dao.PlayerRankDao;
 import zwuiix.colria.game.gui.sub.SubMenu;
 import zwuiix.colria.game.impl.lobby.gui.GameShopGUI;
-import zwuiix.colria.gui.server.PurchaseGUI;
+import zwuiix.colria.gui.shop.PurchaseGUI;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.rank.Rank;
 import zwuiix.colria.rank.RankRegistry;

@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.Locale;
 
 public class LanguageFile {
-    private Config config;
+    private final Config config;
     private final Locale locale;
 
     public LanguageFile(InputStream stream) {

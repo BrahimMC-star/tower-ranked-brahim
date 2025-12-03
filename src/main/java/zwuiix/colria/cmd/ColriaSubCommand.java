@@ -1,6 +1,8 @@
 package zwuiix.colria.cmd;
 
 import cn.nukkit.command.CommandSender;
+import lombok.Getter;
+import lombok.Setter;
 import zwuiix.colria.cmd.arguments.CommandArgument;
 
 import java.security.InvalidParameterException;
@@ -9,8 +11,10 @@ import java.util.Map;
 
 import static zwuiix.colria.cmd.ColriaCommand.buildUsageFor;
 
+@Getter
 abstract public class ColriaSubCommand {
-    private String name;
+    private final String name;
+    @Setter
     private String permission = null;
 
     private final HashMap<Integer, CommandArgument> arguments = new HashMap<>();
@@ -27,18 +31,6 @@ abstract public class ColriaSubCommand {
         prepare();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getPermission() {
-        return permission;
-    }
-
-    public void setPermission(String permission) {
-        this.permission = permission;
-    }
-
     public boolean hasPermission(CommandSender sender) {
         if(permission == null) return true;
         return sender.hasPermission(permission);
@@ -46,10 +38,6 @@ abstract public class ColriaSubCommand {
 
     public boolean hasConditions(CommandSender sender) {
         return false;
-    }
-
-    public HashMap<Integer, CommandArgument> getArguments() {
-        return arguments;
     }
 
     public void registerArgument(Integer position, CommandArgument arg) {

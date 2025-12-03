@@ -24,8 +24,8 @@ public class BoosterShowSubCommand extends ColriaPlayerSubCommand {
     public void execute(EnginePlayer player, Map<String, Object> args) {
         var target = args.get("target").toString();
 
-        DB.getPlayerDataInfo(target).then(info -> {
-            player.sendMessage(TranslationKeys.PLAYER_COMMAND_BOOSTER_SHOW, target, info.getBooster());
-        }).onCatch(err -> player.sendMessage(TranslationKeys.PLAYER_CANTFIND, target));
+        DB.getPlayerDataInfo(target)
+                .then(info -> player.sendMessage(TranslationKeys.PLAYER_COMMAND_BOOSTER_SHOW, target, info.getBooster()))
+                .onCatch(err -> player.sendMessage(TranslationKeys.PLAYER_CANTFIND, target));
     }
 }

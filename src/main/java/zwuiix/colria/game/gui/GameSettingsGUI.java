@@ -25,7 +25,7 @@ public class GameSettingsGUI {
     public VirtualInventory inventory;
 
     private int state = 0;
-    private ArrayList<SubMenu> subMenus = new ArrayList<>();
+    private final ArrayList<SubMenu> subMenus = new ArrayList<>();
 
     public GameSettingsGUI(Game game, EnginePlayer player) {
         this.game = game;

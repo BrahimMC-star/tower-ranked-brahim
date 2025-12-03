@@ -3,6 +3,8 @@ package zwuiix.colria.player;
 import cn.nukkit.network.protocol.types.SortOrder;
 import cn.nukkit.scoreboard.scoreboard.Scoreboard;
 import cn.nukkit.utils.TextFormat;
+import lombok.Getter;
+import lombok.Setter;
 import zwuiix.colria.EngineInfo;
 import zwuiix.colria.util.Glyph;
 
@@ -12,19 +14,17 @@ import java.util.List;
 
 public class PlayerScoreboard extends Scoreboard {
     private final EnginePlayer player;
+    @Setter
+    @Getter
     private ArrayList<String> texts = new ArrayList<>();
 
     public PlayerScoreboard(EnginePlayer player) {
-        super(player.getName(), Glyph.translate("colria ranked", EngineInfo.COLOR), "dummy", SortOrder.ASCENDING);
+        super(player.getName(), Glyph.translate("colria", EngineInfo.COLOR), "dummy", SortOrder.ASCENDING);
         this.player = player;
     }
 
-    public ArrayList<String> getTexts() {
-        return texts;
-    }
-
-    public void setTexts(ArrayList<String> texts) {
-        this.texts = texts;
+    public void title(String title) {
+        this.displayName = Glyph.translate(title, EngineInfo.COLOR);
     }
 
     public void update(int index, String line) {

@@ -196,21 +196,21 @@ public final class Glyph {
         if (length <= 0) return "";
         String g = emoji(e, color);
         StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < length; i++) sb.append(g);
+        sb.append(g.repeat(length));
         return sb.toString();
     }
 
     public static String vbar(char color, int height) {
-        return vbarFor(Emoji.VBAR, color, height);
+        return vbarFor(color, height);
     }
 
     public static String vbar(TextFormat color, int height) {
-        return vbarFor(Emoji.VBAR, colorCodeOf(color), height);
+        return vbarFor(colorCodeOf(color), height);
     }
 
-    private static String vbarFor(Emoji e, char color, int height) {
+    private static String vbarFor(char color, int height) {
         if (height <= 0) return "";
-        String g = emoji(e, color);
+        String g = emoji(Emoji.VBAR, color);
         StringBuilder sb = new StringBuilder(height * 2);
         for (int i = 0; i < height; i++) {
             if (i > 0) sb.append('\n');

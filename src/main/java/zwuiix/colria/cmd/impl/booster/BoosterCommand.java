@@ -32,7 +32,7 @@ public class BoosterCommand extends ColriaPlayerCommand {
 
         if(current == null && !queues.isEmpty()) {
             var next = queues.getFirst();
-            player.sendMessage(TranslationKeys.BOOSTER_QUEUE_STARTING, next.getType(), next.getOwner(), queues.size());
+            player.sendMessage(TranslationKeys.BOOSTER_QUEUE_STARTING, next.type(), next.owner(), queues.size());
             return;
         }
 
@@ -42,13 +42,13 @@ public class BoosterCommand extends ColriaPlayerCommand {
         }
 
         if(queues.isEmpty()) {
-            player.sendMessage(TranslationKeys.BOOSTER_QUEUE_EMPTY, current.booster().getType(), current.booster().getOwner());
+            player.sendMessage(TranslationKeys.BOOSTER_QUEUE_EMPTY, current.booster().type(), current.booster().owner());
             return;
         }
 
         var owners = new HashMap<String, Integer>();
         for(var booster : queues) {
-            owners.put(booster.getOwner(), owners.getOrDefault(booster.getOwner(), 0) + 1);
+            owners.put(booster.owner(), owners.getOrDefault(booster.owner(), 0) + 1);
         }
 
         var ownerList = new ArrayList<String>();
@@ -60,8 +60,8 @@ public class BoosterCommand extends ColriaPlayerCommand {
         }
 
         player.sendMessage(TranslationKeys.BOOSTER_QUEUE,
-                current.booster().getType(),
-                current.booster().getOwner(),
+                current.booster().type(),
+                current.booster().owner(),
                 manager.getQueue().size(),
                 String.join("&r&7, ", ownerList)
         );

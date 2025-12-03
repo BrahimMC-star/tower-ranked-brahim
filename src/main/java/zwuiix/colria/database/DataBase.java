@@ -2,6 +2,7 @@ package zwuiix.colria.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.Getter;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
@@ -14,11 +15,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class DataBase {
+    @Getter
     private static DataBase instance;
-
-    public static DataBase getInstance() {
-        return instance;
-    }
 
     public final Jdbi jdbi;
     private final ExecutorService readers = Executors.newVirtualThreadPerTaskExecutor();

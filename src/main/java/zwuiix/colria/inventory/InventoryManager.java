@@ -1,17 +1,16 @@
 package zwuiix.colria.inventory;
 
 import cn.nukkit.Player;
+import lombok.Getter;
 
 import java.util.HashMap;
 
 public class InventoryManager {
-    private static InventoryManager instance = new InventoryManager();
-    public static InventoryManager getInstance() {
-        return instance;
-    }
+    @Getter
+    private static final InventoryManager instance = new InventoryManager();
 
-    private HashMap<Player, VirtualInventory> inventories = new HashMap<>();
-    private HashMap<Player, InventoryDispatcher> dispatchers = new HashMap<>();
+    private final HashMap<Player, VirtualInventory> inventories = new HashMap<>();
+    private final HashMap<Player, InventoryDispatcher> dispatchers = new HashMap<>();
 
     public VirtualInventory getInventory(Player player) {
         return inventories.get(player);

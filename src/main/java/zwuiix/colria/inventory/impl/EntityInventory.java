@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class EntityInventory extends VirtualInventory {
-    public long eId = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE - 1000L, Long.MAX_VALUE);;
+    public long eId = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE - 1000L, Long.MAX_VALUE);
     public EntityInventory(int size, String name) {
         super(size, name);
     }

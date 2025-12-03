@@ -37,7 +37,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GameListener implements Listener {
-
     @EventHandler
     public void onDataPacketReceive(DataPacketReceiveEvent ev) {
         EnginePlayer player = (EnginePlayer) ev.getPlayer();

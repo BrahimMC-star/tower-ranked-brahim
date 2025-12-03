@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ServerManageGUI {
-    private EnginePlayer player;
+    private final EnginePlayer player;
     public VirtualInventory inventory;
 
     public ServerManageGUI(EnginePlayer player) {

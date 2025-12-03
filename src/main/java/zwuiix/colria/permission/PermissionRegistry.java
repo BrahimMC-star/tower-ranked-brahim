@@ -2,26 +2,19 @@ package zwuiix.colria.permission;
 
 import cn.nukkit.Server;
 import cn.nukkit.permission.Permission;
+import lombok.Getter;
+import lombok.Setter;
 import zwuiix.colria.Loader;
 
 import java.util.HashMap;
 
+@Setter
+@Getter
 public class PermissionRegistry {
-    private static PermissionRegistry instance = new PermissionRegistry();
-
-    public static PermissionRegistry getInstance() {
-        return instance;
-    }
+    @Getter
+    private static final PermissionRegistry instance = new PermissionRegistry();
 
     private HashMap<String, Permission> permissions = new HashMap<>();
-
-    public HashMap<String, Permission> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(HashMap<String, Permission> permissions) {
-        this.permissions = permissions;
-    }
 
     public Permission getPermission(String permission) {
         return permissions.get(permission);

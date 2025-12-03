@@ -14,13 +14,11 @@ import cn.nukkit.network.protocol.InventoryTransactionPacket;
 import cn.nukkit.network.protocol.PacketViolationWarningPacket;
 import cn.nukkit.network.protocol.types.NetworkInventoryAction;
 import cn.nukkit.plugin.Plugin;
+import lombok.Getter;
 
 public class InventoryHooker implements Listener {
-    private static InventoryHooker instance = new InventoryHooker();
-
-    public static InventoryHooker getInstance() {
-        return instance;
-    }
+    @Getter
+    private static final InventoryHooker instance = new InventoryHooker();
 
     public static void register(Plugin p) {
         if(instance.plugin != null) {

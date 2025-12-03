@@ -3,6 +3,7 @@ package zwuiix.colria.player.cosmetic;
 import cn.nukkit.block.BlockHeadPlayer;
 import cn.nukkit.entity.data.property.EntityProperty;
 import cn.nukkit.entity.data.property.EnumEntityProperty;
+import lombok.Getter;
 import zwuiix.colria.Loader;
 import zwuiix.colria.item.*;
 import zwuiix.colria.translator.TranslationKeys;
@@ -11,19 +12,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Getter
 public class CosmeticRegistry {
-    private static CosmeticRegistry INSTANCE = new CosmeticRegistry();
+    @Getter
+    private static final CosmeticRegistry instance = new CosmeticRegistry();
 
-    public static CosmeticRegistry getInstance() {
-        return INSTANCE;
-    }
-
-    private HashMap<String, Cosmetic> cosmetics = new HashMap<>();
-    private HashMap<String, CapeCosmetic> capes = new HashMap<>();
-
-    public HashMap<String, Cosmetic> getCosmetics() {
-        return cosmetics;
-    }
+    private final HashMap<String, Cosmetic> cosmetics = new HashMap<>();
+    private final HashMap<String, CapeCosmetic> capes = new HashMap<>();
 
     public Cosmetic getCosmetic(String identifier) {
         return cosmetics.get(identifier);
@@ -31,10 +26,6 @@ public class CosmeticRegistry {
 
     public void register(Cosmetic cosmetic) {
         cosmetics.put(cosmetic.getIdentifier(), cosmetic);
-    }
-
-    public HashMap<String, CapeCosmetic> getCapes() {
-        return capes;
     }
 
     public CapeCosmetic getCape(String identifier) {

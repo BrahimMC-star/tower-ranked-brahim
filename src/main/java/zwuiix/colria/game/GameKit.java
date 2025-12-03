@@ -7,8 +7,8 @@ import zwuiix.colria.player.EnginePlayer;
 import java.util.HashMap;
 
 abstract public class GameKit {
-    private HashMap<Integer, Item> armors = new HashMap<>();
-    private HashMap<Integer, Item> inventory = new HashMap<>();
+    private final HashMap<Integer, Item> armors;
+    private final HashMap<Integer, Item> inventory;
 
     public GameKit(HashMap<Integer, Item>  armors, HashMap<Integer, Item> inventory) {
         this.armors = armors;

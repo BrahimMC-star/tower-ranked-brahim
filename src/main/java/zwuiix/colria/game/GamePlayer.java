@@ -1,10 +1,13 @@
 package zwuiix.colria.game;
 
 import cn.nukkit.Server;
+import lombok.Getter;
 import zwuiix.colria.player.EnginePlayer;
 
 public class GamePlayer {
+    @Getter
     private final String username;
+    @Getter
     private final Game game;
 
     public Long respawnTicks = 0L;
@@ -12,14 +15,6 @@ public class GamePlayer {
     public GamePlayer(String username, Game game) {
         this.username = username;
         this.game = game;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public Game getGame() {
-        return game;
     }
 
     public EnginePlayer getNukkitPlayer() {

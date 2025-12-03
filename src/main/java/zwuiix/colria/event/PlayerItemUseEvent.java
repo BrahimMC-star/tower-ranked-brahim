@@ -5,21 +5,18 @@ import cn.nukkit.event.Cancellable;
 import cn.nukkit.event.HandlerList;
 import cn.nukkit.event.player.PlayerEvent;
 import cn.nukkit.item.Item;
+import lombok.Getter;
 
+@Getter
 public class PlayerItemUseEvent extends PlayerEvent implements Cancellable {
+    @Getter
     private static final HandlerList handlers = new HandlerList();
-    public static HandlerList getHandlers() {
-        return handlers;
-    }
 
-    private Item item;
+    private final Item item;
 
     public  PlayerItemUseEvent(Player who, Item item) {
         this.player = who;
         this.item = item;
     }
 
-    public Item getItem() {
-        return item;
-    }
 }

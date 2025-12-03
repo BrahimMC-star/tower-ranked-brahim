@@ -8,6 +8,8 @@ import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.network.protocol.DataPacket;
+import lombok.Getter;
+import lombok.Setter;
 import zwuiix.colria.game.gui.GameSettingsGUI;
 import zwuiix.colria.game.impl.lobby.Lobby;
 import zwuiix.colria.game.kit.WaitingKit;
@@ -27,30 +29,56 @@ import java.util.function.Consumer;
 import static zwuiix.colria.util.Rotation.facePitchTowards;
 
 abstract public class Game {
-    private String name;
+    @Getter
+    private final String name;
+    @Getter
     protected String identifier;
+    @Getter
+    @Setter
     private String hoster;
-    private GameKit kit;
-    private GameParameters parameters;
+    @Getter
+    private final GameKit kit;
+    @Getter
+    private final GameParameters parameters;
+    @Getter
     private State state = State.LOBBY;
+    @Getter
+    @Setter
     private GameInventory gameInventoryType = GameInventory.VANILLA;
 
     private boolean private_ = true;
-    private ArrayList<String> whitelist = new ArrayList<>();
-    private ArrayList<String> blacklist = new ArrayList<>();
-    private ArrayList<String> hosts = new ArrayList<>();
+    @Getter
+    private final ArrayList<String> whitelist = new ArrayList<>();
+    @Getter
+    private final ArrayList<String> blacklist = new ArrayList<>();
+    @Getter
+    private final ArrayList<String> hosts = new ArrayList<>();
 
+    @Getter
+    @Setter
     private long startTick = 0;
+    @Getter
     private GameTask task;
 
+    @Getter
+    @Setter
     private Level waitingLevel;
+    @Getter
+    @Setter
     private Level gameLevel;
 
+    @Getter
+    @Setter
     private boolean ranked = false;
+    @Getter
+    @Setter
     private boolean announced = false;
 
+    @Getter
     private final HashMap<String, GamePlayer> startedPlayers = new HashMap<>();
+    @Getter
     private final HashMap<String, GamePlayer> players = new HashMap<>();
+    @Getter
     private final HashMap<String, EnginePlayer> spectators = new HashMap<>();
 
     public Game(String name, GameKit kit) {
@@ -83,52 +111,12 @@ abstract public class Game {
         Server.getInstance().getScheduler().scheduleRepeatingTask(task = new GameTask(this), 1);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
     public String getGameId() {
         return name + "#" + identifier;
     }
 
-    public String getHoster() {
-        return hoster;
-    }
-
-    public void setHoster(String hoster) {
-        this.hoster = hoster;
-    }
-
     public boolean isAutomatedHost() {
         return hoster.equalsIgnoreCase("CONSOLE");
-    }
-
-    public GameKit getKit() {
-        return kit;
-    }
-
-    public GameParameters getParameters() {
-        return parameters;
-    }
-
-    public Level getWaitingLevel() {
-        return waitingLevel;
-    }
-
-    public void setWaitingLevel(Level waitingLevel) {
-        this.waitingLevel = waitingLevel;
-    }
-
-    public Level getGameLevel() {
-        return gameLevel;
-    }
-
-    public void setGameLevel(Level gameLevel) {
-        this.gameLevel = gameLevel;
     }
 
     public Level getCurrentLevel() {
@@ -140,45 +128,9 @@ abstract public class Game {
         return waitingLevel;
     }
 
-    public boolean isAnnounced() {
-        return announced;
-    }
-
-    public void setAnnounced(boolean announced) {
-        this.announced = announced;
-    }
-
-    public boolean isRanked() {
-        return ranked;
-    }
-
-    public void setRanked(boolean ranked) {
-        this.ranked = ranked;
-    }
-
-    public State getState() {
-        return state;
-    }
-
     public void setState(State state) {
         this.state = state;
         applyRules(getCurrentLevel());
-    }
-
-    public GameInventory getGameInventoryType() {
-        return gameInventoryType;
-    }
-
-    public void setGameInventoryType(GameInventory gameInventoryType) {
-        this.gameInventoryType = gameInventoryType;
-    }
-
-    public long getStartTick() {
-        return startTick;
-    }
-    
-    public void setStartTick(long startTick) {
-        this.startTick = startTick;
     }
 
     public void incrementTick() {
@@ -191,30 +143,6 @@ abstract public class Game {
 
     public void setPrivate(boolean private_) {
         this.private_ = private_;
-    }
-
-    public ArrayList<String> getWhitelist() {
-        return whitelist;
-    }
-
-    public ArrayList<String> getBlacklist() {
-        return blacklist;
-    }
-
-    public ArrayList<String> getHosts() {
-        return hosts;
-    }
-
-    public GameTask getTask() {
-        return task;
-    }
-
-    public HashMap<String, GamePlayer> getStartedPlayers() {
-        return startedPlayers;
-    }
-
-    public HashMap<String, GamePlayer> getPlayers() {
-        return players;
     }
 
     public GamePlayer getPlayer(String name) {
@@ -242,10 +170,6 @@ abstract public class Game {
         if(state.equals(State.RUNNING) || state.equals(State.PAUSE)) {
             broadcast(TranslationKeys.PLAYER_GAME_RUNNING_LEAVE, player.getName());
         }
-    }
-
-    public HashMap<String, EnginePlayer> getSpectators() {
-        return spectators;
     }
 
     public EnginePlayer getSpectator(String name) {
@@ -296,7 +220,7 @@ abstract public class Game {
     }
 
     public void disband(boolean force) {
-        if (force) {
+        if (!force) {
             broadcast(TranslationKeys.PLAYER_GAME_DISBAND_BROADCAST);
 
             EnginePlayer hoster = (EnginePlayer) Server.getInstance().getPlayerExact(getHoster());

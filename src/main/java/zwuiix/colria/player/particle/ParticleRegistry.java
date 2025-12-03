@@ -2,19 +2,18 @@ package zwuiix.colria.player.particle;
 
 import cn.nukkit.block.*;
 import cn.nukkit.item.*;
+import lombok.Getter;
 import zwuiix.colria.Loader;
 import zwuiix.colria.translator.TranslationKeys;
 
 import java.util.HashMap;
 
+@Getter
 public class ParticleRegistry {
-    private static ParticleRegistry instance = new ParticleRegistry();
+    @Getter
+    private static final ParticleRegistry instance = new ParticleRegistry();
 
-    public static ParticleRegistry getInstance() {
-        return instance;
-    }
-
-    private HashMap<String, Particle> particles = new HashMap<>();
+    private final HashMap<String, Particle> particles = new HashMap<>();
 
     public void register(Particle particle) {
         this.particles.put(particle.getIdentifier(), particle);
@@ -22,10 +21,6 @@ public class ParticleRegistry {
 
     public Particle getParticle(String identifier) {
         return this.particles.getOrDefault(identifier, null);
-    }
-
-    public HashMap<String, Particle> getParticles() {
-        return this.particles;
     }
 
     public void invoke(Loader loader) {

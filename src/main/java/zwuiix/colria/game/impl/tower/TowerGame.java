@@ -8,6 +8,7 @@ import cn.nukkit.level.Sound;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.network.protocol.ProtocolInfo;
 import cn.nukkit.utils.TextFormat;
+import lombok.Getter;
 import zwuiix.colria.EngineInfo;
 import zwuiix.colria.booster.BoosterManager;
 import zwuiix.colria.game.Game;
@@ -29,6 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static zwuiix.colria.util.Rotation.facePitchTowards;
 
 public class TowerGame extends TeamGame {
+    @Getter
     private final TowerPoints towerPoints = new TowerPoints();
     private final Renderer renderer = Renderer.create();
     private int nextAppleTick = -1;
@@ -175,6 +177,7 @@ public class TowerGame extends TeamGame {
                 }
             }
 
+            player.scoreboard.title("Tower");
             player.scoreboard.updates(lines);
         }, 20);
     }
@@ -229,10 +232,10 @@ public class TowerGame extends TeamGame {
                     var current = BoosterManager.getInstance().getCurrent();
                     if(current != null) {
                         var booster = current.booster();
-                        if(booster.getOwner().equalsIgnoreCase(player.getUsername())) {
-                            shards = (long) (shards * (booster.getMultiplier() / 100.0f));
+                        if(booster.owner().equalsIgnoreCase(player.getUsername())) {
+                            shards = (long) (shards * (booster.multiplier() / 100.0f));
                         } else {
-                            shards = (long) (shards * (1.0f + (booster.getMultiplier() / 100.0f * 0.5f)));
+                            shards = (long) (shards * (1.0f + (booster.multiplier() / 100.0f * 0.5f)));
                         }
                     }
 
@@ -263,10 +266,6 @@ public class TowerGame extends TeamGame {
     public void addSpectator(EnginePlayer player) {
         super.addSpectator(player);
         initTickerFor(player);
-    }
-
-    public TowerPoints getTowerPoints() {
-        return towerPoints;
     }
 
     @Override

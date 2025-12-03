@@ -7,6 +7,7 @@ import cn.nukkit.level.particle.DustParticle;
 import cn.nukkit.level.particle.FlameParticle;
 import cn.nukkit.level.particle.SmokeParticle;
 import cn.nukkit.math.Vector3;
+import lombok.Getter;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
 
@@ -15,11 +16,16 @@ import java.util.Random;
 public class Particle {
     private static final double TAU = Math.PI * 2;
 
+    @Getter
     private final String identifier;
+    @Getter
     private final TranslationKeys name;
+    @Getter
     private final TranslationKeys description;
     private final Item reference;
+    @Getter
     private final long cost;
+    @Getter
     private final boolean flying;
 
     Particle(String identifier, TranslationKeys name, TranslationKeys description, Item reference, long cost, boolean flying) {
@@ -31,12 +37,7 @@ public class Particle {
         this.flying = flying;
     }
 
-    public String getIdentifier() { return identifier; }
-    public TranslationKeys getName() { return name; }
-    public TranslationKeys getDescription() { return description; }
     public Item getReference() { return reference.clone(); }
-    public long getCost() { return cost; }
-    public boolean isFlying() { return flying; }
 
     public void run(EnginePlayer player, int currentTick) {
         final Position base = player.getPosition();

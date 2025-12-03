@@ -1,5 +1,6 @@
 package zwuiix.colria.discord.cmd;
 
+import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import zwuiix.colria.discord.cmd.impl.LinkCommand;
@@ -8,6 +9,7 @@ import zwuiix.colria.discord.cmd.impl.ProfilCommand;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
+@Getter
 public class DiscordCommandRegistry {
     private static final DiscordCommandRegistry INSTANCE = new DiscordCommandRegistry();
     public static DiscordCommandRegistry getInstance() {
@@ -18,10 +20,6 @@ public class DiscordCommandRegistry {
     private DiscordCommandRegistry() {
         register(new LinkCommand());
         register(new ProfilCommand());
-    }
-
-    public LinkedHashMap<String, DiscordCommand> getCommands() {
-        return commands;
     }
 
     public Optional<DiscordCommand> getCommand(String command) {

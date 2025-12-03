@@ -4,12 +4,14 @@ import cn.nukkit.Player;
 import cn.nukkit.event.Cancellable;
 import cn.nukkit.event.HandlerList;
 import cn.nukkit.event.player.PlayerEvent;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class PlayerKnockbackEvent extends PlayerEvent implements Cancellable {
+    @Getter
     private static final HandlerList handlers = new HandlerList();
-    public static HandlerList getHandlers() {
-        return handlers;
-    }
 
     private double strengthXZ;
     private double strengthY;
@@ -20,19 +22,4 @@ public class PlayerKnockbackEvent extends PlayerEvent implements Cancellable {
         this.strengthY = strengthY;
     }
 
-    public double getStrengthXZ() {
-        return strengthXZ;
-    }
-
-    public void setStrengthXZ(double strengthXZ) {
-        this.strengthXZ = strengthXZ;
-    }
-
-    public double getStrengthY() {
-        return strengthY;
-    }
-
-    public void setStrengthY(double strengthY) {
-        this.strengthY = strengthY;
-    }
 }

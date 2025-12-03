@@ -325,6 +325,7 @@ public class EnginePlayer extends Player {
             lines.add(EngineInfo.VBAR_DEFAULT + processTranslation(TranslationKeys.PLAYER_LOBBY_SCOREBOARD_RANK, getHighestRank().getColoredName()));
             lines.add(EngineInfo.VBAR_DEFAULT + processTranslation(TranslationKeys.PLAYER_LOBBY_SCOREBOARD_SHARDS, getPlayerDataInfo().getShards()));
 
+            scoreboard.title("colria");
             scoreboard.updates(lines);
         });
     }

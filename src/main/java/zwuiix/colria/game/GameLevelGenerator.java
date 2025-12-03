@@ -7,12 +7,7 @@ import zwuiix.colria.util.Fs;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class GameLevelGenerator {
-    private String defaultLevel;
-
-    public GameLevelGenerator(String defaultLevel) {
-        this.defaultLevel = defaultLevel;
-    }
+public record GameLevelGenerator(String defaultLevel) {
 
     public Level create(String id) {
         var server = Server.getInstance();
@@ -23,7 +18,7 @@ public class GameLevelGenerator {
             originalLevel = server.getLevelByName(defaultLevel);
         }
 
-        if(originalLevel == null) {
+        if (originalLevel == null) {
             throw new IllegalArgumentException("Invalid level name: " + defaultLevel);
         }
 
@@ -42,12 +37,12 @@ public class GameLevelGenerator {
             e.printStackTrace();
         }
 
-        if(!server.loadLevel(defaultLevel + "_" + id)) {
+        if (!server.loadLevel(defaultLevel + "_" + id)) {
             throw new IllegalArgumentException("Invalid level name: " + defaultLevel);
         }
 
         Level gameLevel = server.getLevelByName(defaultLevel + "_" + id);
-        if(gameLevel == null) {
+        if (gameLevel == null) {
             throw new IllegalArgumentException("Invalid level name: " + defaultLevel);
         }
 

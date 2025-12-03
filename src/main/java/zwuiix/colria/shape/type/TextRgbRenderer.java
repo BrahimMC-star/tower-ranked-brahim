@@ -3,12 +3,14 @@ package zwuiix.colria.shape.type;
 import cn.nukkit.debugshape.DebugShape;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.TextFormat;
+import lombok.Getter;
 import zwuiix.colria.shape.type.nukkit.NukkitShapeText;
 
 import java.awt.*;
 import java.util.Objects;
 
 public class TextRgbRenderer extends ShapeRenderer {
+    @Getter
     private String text;
     public Vector3 pos;
     public Color start;
@@ -23,8 +25,6 @@ public class TextRgbRenderer extends ShapeRenderer {
         this.end = Objects.requireNonNull(end, "end");
         this.speed = speed;
     }
-
-    public String getText() { return text; }
 
     public TextRgbRenderer update(String text) {
         this.text = Objects.requireNonNullElse(text, "");

@@ -10,11 +10,11 @@ import java.util.function.Consumer;
 
 public class GameTask extends Task {
     private final Game game;
-    private Map<String, Consumer<Integer>> stringRunnableMap = new LinkedHashMap<>();
+    private final Map<String, Consumer<Integer>> stringRunnableMap = new LinkedHashMap<>();
     private final Map<String, Consumer<Integer>> pendingAdd = new LinkedHashMap<>();
     private final Set<String> pendingRemove = new HashSet<>();
 
-    private ArrayList<Consumer<Integer>> tickers = new ArrayList<>();
+    private final ArrayList<Consumer<Integer>> tickers = new ArrayList<>();
 
     public GameTask(Game game) {
         this.game = game;

@@ -26,14 +26,14 @@ public class ThanksCommand extends ColriaPlayerCommand {
         }
 
         var booster = current.booster();
-        var claims = booster.getClaims();
+        var claims = booster.claims();
 
         if(claims.contains(player.getName().toLowerCase())) {
-            player.sendMessage(TranslationKeys.BOOSTER_THANKS_ALREADY, booster.getOwner());
+            player.sendMessage(TranslationKeys.BOOSTER_THANKS_ALREADY, booster.owner());
             return;
         }
 
-        if(booster.getOwner().equalsIgnoreCase(player.getName())) {
+        if(booster.owner().equalsIgnoreCase(player.getName())) {
             player.sendMessage(TranslationKeys.BOOSTER_THANKS_SELF);
             return;
         }
@@ -41,16 +41,16 @@ public class ThanksCommand extends ColriaPlayerCommand {
         claims.add(player.getName().toLowerCase());
 
         int reward = 6 + (int)(Math.random() * ((50 - 6) + 1));
-        long shards = (long) ((long)reward * (booster.getMultiplier() / 100));
+        long shards = (long) ((long)reward * (booster.multiplier() / 100));
 
         player.getPlayerDataInfo().increaseShards(shards);
-        player.sendMessage(TranslationKeys.BOOSTER_CLAIM, booster.getOwner(), shards);
+        player.sendMessage(TranslationKeys.BOOSTER_CLAIM, booster.owner(), shards);
 
-        DB.getPlayerDataInfo(booster.getOwner()).then(info -> {
+        DB.getPlayerDataInfo(booster.owner()).then(info -> {
             var s = (long) (shards * 1.5f);
             info.increaseShards(s);
 
-            var p = Server.getInstance().getPlayerExact(booster.getOwner());
+            var p = Server.getInstance().getPlayerExact(booster.owner());
             if(p instanceof  EnginePlayer e) {
                 e.sendMessage(TranslationKeys.BOOSTER_THANKS, player.getName(), s);
             }

@@ -3,6 +3,7 @@ package zwuiix.colria.player;
 import cn.nukkit.Server;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import lombok.Getter;
 import zwuiix.colria.database.DataBase;
 import zwuiix.colria.database.dao.PlayerDataDao;
 import zwuiix.colria.player.stats.StatsInfo;
@@ -11,8 +12,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.function.Function;
 
+@Getter
 public class PlayerDataInfo {
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
 
     private final String xuid;
     private final String name;
@@ -37,45 +39,9 @@ public class PlayerDataInfo {
         this.particle = particle;
     }
 
-    public String getXuid() {
-        return xuid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDiscordId() {
-        return discordId;
-    }
-
     public void setDiscordId(String discordId) {
         this.discordId = discordId;
         this.update();
-    }
-
-    public long getShards() {
-        return shards;
-    }
-
-    public long getBooster() {
-        return booster;
-    }
-
-    public long getLastLogin() {
-        return lastLogin;
-    }
-
-    public long getPlaytime() {
-        return playtime;
-    }
-
-    public String getJsonData() {
-        return jsonData;
-    }
-
-    public String getParticle() {
-        return particle;
     }
 
     public void setShards(long shards) {
