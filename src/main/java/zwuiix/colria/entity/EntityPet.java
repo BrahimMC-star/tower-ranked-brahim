@@ -41,11 +41,18 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     @Override
     protected void initEntity() {
         super.initEntity();
+
         this.setTarget(owner);
         this.setVariant(getBiomeVariant(getLevel().getBiomeId(getFloorX(), getFloorZ())));
+
         this.setNameTag("§c...");
         this.setNameTagAlwaysVisible();
         this.setDataFlag(DATA_FLAGS, DATA_FLAG_SADDLED, true);
+    }
+
+    @Override
+    public boolean isFeedItem(Item item) {
+        return true;
     }
 
     @Override
@@ -168,7 +175,8 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
 
     @Override
     public void updatePassengers() {
-        if (this.passengers.isEmpty()) return;
+        if (this.passengers.isEmpty())
+            return;
 
         for (Entity passenger : new ArrayList<>(this.passengers)) {
             if (!passenger.isAlive() || this.isInsideOfWater()) {
@@ -209,7 +217,10 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     }
 
     @Override
-    public boolean targetOption(EntityCreature creature, double distance) {
-        return creature == owner;
+    protected void checkTarget() {
+        if (!this.passengers.isEmpty())
+            return;
+
+        super.checkTarget();
     }
 }
