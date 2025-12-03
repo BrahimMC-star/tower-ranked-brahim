@@ -38,6 +38,9 @@ public class EntityPetSlime extends EntityPetWalking {
     public float getPetSpeed() { return 0.3f; }
 
     @Override
+    public float getPetJumpHeight() { return 1.42f; }
+
+    @Override
     public Vector3f getSeatPosition() {
         return new Vector3f(0, 1.85001f, 0);
     }
