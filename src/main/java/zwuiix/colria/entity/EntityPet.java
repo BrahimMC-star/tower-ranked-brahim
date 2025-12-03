@@ -151,7 +151,7 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     public void onPlayerInput(Player player, double strafe, double forward) {
         this.stayTime = 0;
         this.moveTime = 10;
-        this.setPitch(player.pitch);
+        this.setBothYaw(player.yaw);
 
         strafe *= 0.4;
 
@@ -160,26 +160,24 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
 
         if (f >= 1.0E-4) {
             f = Math.sqrt(f);
-
-            if (f < 1) {
-                f = 1;
+            if (f < 1.0) {
+                f = 1.0;
             }
 
             f = friction / f;
             strafe *= f;
             forward *= f;
-            double f1 = Math.sin(this.yaw * 0.017453292);
-            double f2 = Math.cos(this.yaw * 0.017453292);
-            this.motionX = (strafe * f2 - forward * f1);
-            this.motionZ = (forward * f2 + strafe * f1);
-        } else {
-            this.motionX = 0;
-            this.motionZ = 0;
-        }
 
-        var nX = this.getPosition().x + this.motionX;
-        var nZ = this.getPosition().z + this.motionZ;
-        this.yaw = Rotation.faceYawTowards(this.getPosition(), new Vector3(nX, this.getPosition().y, nZ));
+            double radians = Math.toRadians(this.yaw);
+            double sin = Math.sin(radians);
+            double cos = Math.cos(radians);
+
+            this.motionX = (strafe * cos - forward * sin);
+            this.motionZ = (forward * cos + strafe * sin);
+        } else {
+            this.motionX = 0.0;
+            this.motionZ = 0.0;
+        }
 
         this.updateMovement();
         this.broadcastMovement();
