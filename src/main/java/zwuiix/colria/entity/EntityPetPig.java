@@ -12,11 +12,6 @@ public class EntityPetPig extends EntityPet {
     }
 
     @Override
-    public Vector3f getSeatPosition() {
-        return new Vector3f(0, 1.85001f, 0);
-    }
-
-    @Override
     public int getNetworkId() {
         return EntityPig.NETWORK_ID;
     }
@@ -38,7 +33,10 @@ public class EntityPetPig extends EntityPet {
     }
 
     @Override
-    public float getPetSpeed() {
-        return 0.3f;
+    public float getPetSpeed() { return 0.3f; }
+
+    @Override
+    public Vector3f getSeatPosition() {
+        return new Vector3f(0, 1.85001f, 0);
     }
 }
