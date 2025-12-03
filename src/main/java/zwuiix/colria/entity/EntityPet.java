@@ -6,6 +6,8 @@ import cn.nukkit.entity.*;
 import cn.nukkit.entity.data.EntityMetadata;
 import cn.nukkit.entity.data.FloatEntityData;
 import cn.nukkit.entity.data.Vector3fEntityData;
+import cn.nukkit.entity.mob.EntityMob;
+import cn.nukkit.entity.passive.EntityAnimal;
 import cn.nukkit.entity.passive.EntityWalkingAnimal;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.format.FullChunk;
@@ -24,11 +26,18 @@ import java.util.Iterator;
 import java.util.Objects;
 
 @Setter
-abstract public class EntityPet extends EntityWalkingAnimal implements EntityRideable, EntityControllable {
+abstract public class EntityPet extends EntityWalkingAnimal implements EntityRideable, EntityControllable, EntityClimateVariant {
     private Pet info;
     private EnginePlayer owner = null;
 
     public EntityPet(FullChunk chunk, CompoundTag nbt) { super(chunk, nbt); }
+
+    @Override
+    protected void initEntity() {
+        super.initEntity();
+        this.setVariant(getBiomeVariant(getLevel().getBiomeId(getFloorX(), getFloorZ())));
+        this.setDataFlag(DATA_FLAGS, DATA_FLAG_SADDLED, true);
+    }
 
     @Override
     public boolean onInteract(Player player, Item item, Vector3 clickedPos) {
@@ -149,10 +158,8 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     }
 
     @Override
-    protected void checkTarget() {
-        if (this.passengers.isEmpty() || !(this.getPassengers().get(0) instanceof Player) || ((Player) this.getPassengers().get(0)).getInventory().getItemInHandFast().getId() != Item.CARROT_ON_A_STICK) {
-            super.checkTarget();
-        }
+    public boolean targetOption(EntityCreature creature, double distance) {
+        return creature == this.owner;
     }
 
     @Override
