@@ -231,4 +231,10 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     public boolean attack(EntityDamageEvent ev) {
         return false;
     }
+
+    @Override
+    public Vector3 updateMove(int tickDiff) {
+        System.out.println("EntityPet updateMove");
+        return super.updateMove(tickDiff);
+    }
 }
