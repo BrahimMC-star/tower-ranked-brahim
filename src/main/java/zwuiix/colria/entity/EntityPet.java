@@ -245,7 +245,7 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     public boolean canTarget(Entity entity) { return entity == this.owner; }
 
     @Override
-    public boolean targetOption(EntityCreature creature, double distance) { return super.targetOption(creature, 5) && creature == this.owner; }
+    public boolean targetOption(EntityCreature creature, double distance) { return super.targetOption(creature, 5) && creature == this.owner && creature.distance(this) >= 2.0f; }
 
     @Override
     public boolean attack(EntityDamageEvent ev) { return false; }
