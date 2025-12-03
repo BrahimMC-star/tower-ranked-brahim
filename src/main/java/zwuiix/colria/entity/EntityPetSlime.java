@@ -12,7 +12,7 @@ public class EntityPetSlime extends EntityPetJumping {
         super(chunk, nbt);
     }
 
-    protected int size = 4;
+    protected int size = 1;
 
     @Override
     public int getNetworkId() {
