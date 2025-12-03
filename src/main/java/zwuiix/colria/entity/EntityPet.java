@@ -49,7 +49,8 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
         this.setVariant(getBiomeVariant(getLevel().getBiomeId(getFloorX(), getFloorZ())));
 
         this.setNameTag("§c...");
-        this.setNameTagAlwaysVisible();
+        this.setNameTagVisible();
+        this.setNameTagAlwaysVisible(false);
         this.setDataFlag(DATA_FLAGS, DATA_FLAG_SADDLED, true);
     }
 
@@ -182,7 +183,8 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
             this.motionX *= 1.0 / Math.sqrt(2.0);
             this.motionZ *= 1.0 / Math.sqrt(2.0);
         }
-        
+
+        this.move(this.motionX, this.motionY, this.motionZ);
         this.updateMovement();
         this.broadcastMovement();
     }
