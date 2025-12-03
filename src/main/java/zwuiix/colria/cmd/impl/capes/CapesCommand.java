@@ -1,9 +1,6 @@
 package zwuiix.colria.cmd.impl.capes;
 
 import zwuiix.colria.cmd.ColriaPlayerCommand;
-import zwuiix.colria.cmd.impl.cosmetic.AddCosmeticSubCommand;
-import zwuiix.colria.cmd.impl.cosmetic.RemoveCosmeticSubCommand;
-import zwuiix.colria.cmd.impl.cosmetic.ShowCosmeticsSubCommand;
 import zwuiix.colria.permission.Permission;
 import zwuiix.colria.player.EnginePlayer;
 

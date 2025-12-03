@@ -9,6 +9,7 @@ import zwuiix.colria.cmd.impl.StatusCommand;
 import zwuiix.colria.cmd.impl.TellCommand;
 import zwuiix.colria.cmd.impl.booster.BoosterCommand;
 import zwuiix.colria.cmd.impl.booster.ThanksCommand;
+import zwuiix.colria.cmd.impl.capes.CapesCommand;
 import zwuiix.colria.cmd.impl.cosmetic.CosmeticsCommand;
 import zwuiix.colria.cmd.impl.debug.DebugCommand;
 import zwuiix.colria.cmd.impl.game.GameCommand;
@@ -50,6 +51,7 @@ public class CommandRegistry {
         register(new ShardCommand());
         register(new ParticlesCommand());
         register(new CosmeticsCommand());
+        register(new CapesCommand());
 
         register(new BoosterCommand());
         register(new ThanksCommand());

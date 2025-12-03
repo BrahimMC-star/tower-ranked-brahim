@@ -3,7 +3,6 @@ package zwuiix.colria.translator;
 import zwuiix.colria.Loader;
 
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class LanguageRegistry {
