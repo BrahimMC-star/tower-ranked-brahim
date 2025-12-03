@@ -21,6 +21,9 @@ public class ParticlesCommand extends ColriaPlayerCommand {
     public void prepare() {
         setPermission(Permission.RANK_MANAGE.toString());
         registerArgument(0, new TargetArgument("target", false));
+
+        registerSubCommand(new AddParticleCommand());
+        registerSubCommand(new RemoveParticleCommand());
     }
 
     @Override

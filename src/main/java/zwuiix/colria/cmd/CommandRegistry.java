@@ -9,9 +9,9 @@ import zwuiix.colria.cmd.impl.StatusCommand;
 import zwuiix.colria.cmd.impl.TellCommand;
 import zwuiix.colria.cmd.impl.booster.BoosterCommand;
 import zwuiix.colria.cmd.impl.booster.ThanksCommand;
-import zwuiix.colria.cmd.impl.cosmetic.AddCosmeticCommand;
+import zwuiix.colria.cmd.impl.cosmetic.AddCosmeticSubCommand;
 import zwuiix.colria.cmd.impl.cosmetic.CosmeticsCommand;
-import zwuiix.colria.cmd.impl.cosmetic.RemoveCosmeticCommand;
+import zwuiix.colria.cmd.impl.cosmetic.RemoveCosmeticSubCommand;
 import zwuiix.colria.cmd.impl.debug.DebugCommand;
 import zwuiix.colria.cmd.impl.game.GameCommand;
 import zwuiix.colria.cmd.impl.game.admin.GameAdminCommand;
@@ -53,18 +53,9 @@ public class CommandRegistry {
         register(new LatencyCommand());
 
         register(new RanksCommand());
-        register(new AddRankCommand());
-        register(new RemoveRankCommand());
-
         register(new ShardCommand());
-
         register(new ParticlesCommand());
-        register(new AddParticleCommand());
-        register(new RemoveParticleCommand());
-
         register(new CosmeticsCommand());
-        register(new AddCosmeticCommand());
-        register(new RemoveCosmeticCommand());
 
         register(new BoosterCommand());
         register(new ThanksCommand());

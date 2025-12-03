@@ -2,6 +2,7 @@ package zwuiix.colria.cmd.impl.rank;
 
 import cn.nukkit.Server;
 import zwuiix.colria.cmd.ColriaPlayerCommand;
+import zwuiix.colria.cmd.ColriaPlayerSubCommand;
 import zwuiix.colria.cmd.arguments.StringEnumArgument;
 import zwuiix.colria.cmd.arguments.TargetArgument;
 import zwuiix.colria.database.DataBase;
@@ -16,9 +17,9 @@ import zwuiix.colria.util.DB;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class AddRankCommand extends ColriaPlayerCommand {
+public class AddRankCommand extends ColriaPlayerSubCommand {
     public AddRankCommand() {
-        super("addrank", "commands.addrank.description");
+        super("add");
     }
 
     @Override

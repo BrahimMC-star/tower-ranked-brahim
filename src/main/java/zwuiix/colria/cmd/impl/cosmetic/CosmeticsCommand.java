@@ -21,6 +21,9 @@ public class CosmeticsCommand extends ColriaPlayerCommand {
     public void prepare() {
         setPermission(Permission.COSMETIC_MANAGE.toString());
         registerArgument(0, new TargetArgument("target", false));
+
+        registerSubCommand(new AddCosmeticSubCommand());
+        registerSubCommand(new RemoveCosmeticSubCommand());
     }
 
     @Override

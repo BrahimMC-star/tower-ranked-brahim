@@ -1,7 +1,7 @@
 package zwuiix.colria.cmd.impl.cosmetic;
 
 import cn.nukkit.Server;
-import zwuiix.colria.cmd.ColriaPlayerCommand;
+import zwuiix.colria.cmd.ColriaPlayerSubCommand;
 import zwuiix.colria.cmd.arguments.StringEnumArgument;
 import zwuiix.colria.cmd.arguments.TargetArgument;
 import zwuiix.colria.database.DataBase;
@@ -16,9 +16,9 @@ import zwuiix.colria.util.DB;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class AddCosmeticCommand extends ColriaPlayerCommand {
-    public AddCosmeticCommand() {
-        super("addcosmetic", "commands.addcosmetic.description");
+public class AddCosmeticSubCommand extends ColriaPlayerSubCommand {
+    public AddCosmeticSubCommand() {
+        super("add");
     }
 
     @Override

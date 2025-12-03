@@ -2,6 +2,7 @@ package zwuiix.colria.cmd.impl.particle;
 
 import cn.nukkit.Server;
 import zwuiix.colria.cmd.ColriaPlayerCommand;
+import zwuiix.colria.cmd.ColriaPlayerSubCommand;
 import zwuiix.colria.cmd.arguments.StringEnumArgument;
 import zwuiix.colria.cmd.arguments.TargetArgument;
 import zwuiix.colria.database.DataBase;
@@ -16,9 +17,9 @@ import zwuiix.colria.util.DB;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class RemoveParticleCommand extends ColriaPlayerCommand {
+public class RemoveParticleCommand extends ColriaPlayerSubCommand {
     public RemoveParticleCommand() {
-        super("removeparticle", "commands.removeparticle.description");
+        super("remove");
     }
 
     @Override
