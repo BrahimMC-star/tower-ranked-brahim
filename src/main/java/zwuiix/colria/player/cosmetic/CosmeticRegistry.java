@@ -3,7 +3,6 @@ package zwuiix.colria.player.cosmetic;
 import cn.nukkit.block.BlockHeadPlayer;
 import cn.nukkit.entity.data.property.EntityProperty;
 import cn.nukkit.entity.data.property.EnumEntityProperty;
-import cn.nukkit.entity.passive.EntityPig;
 import cn.nukkit.item.ItemRecordPigstep;
 import cn.nukkit.registry.Registries;
 import lombok.Getter;
@@ -12,7 +11,6 @@ import zwuiix.colria.entity.EntityPetPig;
 import zwuiix.colria.item.*;
 import zwuiix.colria.translator.TranslationKeys;
 
-import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -1,7 +1,5 @@
 package zwuiix.colria.player.cosmetic;
 
-import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.passive.EntityPig;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.format.FullChunk;
@@ -54,6 +52,7 @@ public class Pet {
             pet.setInfo(this);
             pet.setOwner(player);
             pet.setTarget(player);
+            pet.setSaddled(saddled);
             pet.spawnToAll();
         } catch (Exception e) {
             e.printStackTrace();

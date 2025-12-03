@@ -137,6 +137,7 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
                 return false;
             }
 
+            this.setTarget(this.owner);
             if(currentTick % 20 == 0) {
                 for (Player player : getViewers().values()) {
                     EnginePlayer p = (EnginePlayer) player;
@@ -155,10 +156,6 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
         super.saveNBT();
 
         this.namedTag.putBoolean("Saddle", this.isSaddled());
-    }
-
-    public boolean isSaddled() {
-        return this.saddled;
     }
 
     public void setSaddled(boolean saddled) {
@@ -207,12 +204,6 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
 
         var rider = this.getPassengers().getFirst();
         if(!(rider instanceof Player)) {
-            super.checkTarget();
-            return;
-        }
-
-        var player = (Player) rider;
-        if(player.getInventory().getItemInHandFast().getId() != Item.CARROT_ON_A_STICK) {
             super.checkTarget();
             return;
         }
