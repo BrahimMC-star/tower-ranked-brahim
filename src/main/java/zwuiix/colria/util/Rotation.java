@@ -15,7 +15,7 @@ public class Rotation {
         double dy = to.y - from.y;
         double dz = to.z - from.z;
         double horiz = Math.sqrt(dx * dx + dz * dz);
-        return (float) -Math.toDegrees(Math.atan2(dy, horiz)); // MC: up = -, down = +
+        return (float) Math.toDegrees(Math.atan2(dy, horiz)); // MC: up = -, down = +
     }
 
     public static float wrapYaw(float yaw) {

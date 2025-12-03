@@ -6,6 +6,7 @@ import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.Sound;
 import cn.nukkit.math.Vector3;
+import cn.nukkit.network.protocol.MovePlayerPacket;
 import cn.nukkit.network.protocol.ProtocolInfo;
 import cn.nukkit.utils.TextFormat;
 import lombok.Getter;
@@ -295,7 +296,6 @@ public class TowerGame extends TeamGame {
         float yaw = 90.0f;
 
         var spawns = getSpawnPoint();
-        final Vector3 spawnA = spawns.first(), spawnB = spawns.second();
         final Team teamA = getTeamA(), teamB = getTeamB();
         final Team myTeam = gamePlayer.getTeam();
 
@@ -310,6 +310,7 @@ public class TowerGame extends TeamGame {
         }
 
         p.teleport(new Location(from.x, from.y, from.z, yaw, pitch, getCurrentLevel()));
+        p.sendPosition(from, yaw, pitch, MovePlayerPacket.MODE_TELEPORT);
     }
 
     private void syncStats(PlayerDataInfo info, TowerPlayer player) {
