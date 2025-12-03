@@ -16,7 +16,7 @@ import zwuiix.colria.translator.TranslationKeys;
 
 public class Pet {
     @Getter
-    private final Class<? extends EntityPig> entityClass;
+    private final Class<? extends EntityPet> entityClass;
     @Getter
     private final String identifier;
     @Getter
@@ -25,14 +25,17 @@ public class Pet {
     private final TranslationKeys description;
     private final Item reference;
     @Getter
+    private final boolean saddled;
+    @Getter
     private final long cost;
 
-    public Pet(Class<? extends EntityPig> entityClass, String identifier, TranslationKeys name, TranslationKeys description, Item reference, long cost) {
+    public Pet(Class<? extends EntityPet> entityClass, String identifier, TranslationKeys name, TranslationKeys description, Item reference, boolean saddled, long cost) {
         this.entityClass = entityClass;
         this.identifier = identifier;
         this.name = name;
         this.description = description;
         this.reference = reference;
+        this.saddled = saddled;
         this.cost = cost;
     }
 
@@ -47,11 +50,10 @@ public class Pet {
 
         try {
             var constructor = entityClass.getDeclaredConstructor(FullChunk.class, CompoundTag.class);
-            EntityPig pet = constructor.newInstance(player.getChunk(), nbt);
-            pet.setSaddled(true);
-            //pet.setInfo(this);
-            //pet.setOwner(player);
-            //pet.setTarget(player);
+            EntityPet pet = constructor.newInstance(player.getChunk(), nbt);
+            pet.setInfo(this);
+            pet.setOwner(player);
+            pet.setTarget(player);
             pet.spawnToAll();
         } catch (Exception e) {
             e.printStackTrace();

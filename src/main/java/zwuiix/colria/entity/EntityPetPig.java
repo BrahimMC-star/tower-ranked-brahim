@@ -36,4 +36,9 @@ public class EntityPetPig extends EntityPet {
         }
         return 0.9f;
     }
+
+    @Override
+    public float getPetSpeed() {
+        return 0.3f;
+    }
 }
