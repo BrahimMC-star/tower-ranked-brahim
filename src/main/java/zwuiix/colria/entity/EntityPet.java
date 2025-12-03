@@ -56,6 +56,11 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     }
 
     @Override
+    public boolean canTarget(Entity entity) {
+        return entity == this.owner;
+    }
+
+    @Override
     public boolean onInteract(Player player, Item item, Vector3 clickedPos) {
         EnginePlayer p = (EnginePlayer) player;
         if(owner != p) {
@@ -88,6 +93,8 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
                 return false;
 
             broadcastLinkPacket(entity, TYPE_RIDE);
+
+            System.out.println("Mounting entity: " + entity.getName() + " to pet: " + this.getName());
 
             entity.riding = this;
             entity.setDataFlag(DATA_FLAGS, DATA_FLAG_RIDING, true);
@@ -214,13 +221,5 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     @Override
     public boolean attack(EntityDamageEvent ev) {
         return false;
-    }
-
-    @Override
-    protected void checkTarget() {
-        if (!this.passengers.isEmpty())
-            return;
-
-        super.checkTarget();
     }
 }

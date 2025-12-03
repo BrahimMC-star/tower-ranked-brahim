@@ -37,14 +37,15 @@ public class Pet {
     public Item getReference() { return reference.clone(); }
 
     public void spawn(EnginePlayer player) {
-        var source = player.getPosition();
+        var source = player.getPosition().add(Math.random() * 2 - 1, 0, Math.random() * 2 - 1);
         CompoundTag nbt = new CompoundTag().putList(new ListTag<DoubleTag>("Pos").add(new DoubleTag("", source.x)).add(new DoubleTag("", source.y)).add(new DoubleTag("", source.z)))
                 .putList(new ListTag<DoubleTag>("Motion").add(new DoubleTag("", 0)).add(new DoubleTag("", 0)).add(new DoubleTag("", 0)))
                 .putList(new ListTag<FloatTag>("Rotation").add(new FloatTag("", source instanceof Location ? (float) ((Location) source).yaw : 0))
                         .add(new FloatTag("", source instanceof Location ? (float) ((Location) source).pitch : 0)));
 
         try {
-            EntityPet pet = entityClass.getDeclaredConstructor(FullChunk.class, CompoundTag.class).newInstance(player.getChunk(), nbt);
+            var constructor = entityClass.getDeclaredConstructor(FullChunk.class, CompoundTag.class);
+            EntityPet pet = constructor.newInstance(player.getChunk(), nbt);
             pet.setInfo(this);
             pet.setOwner(player);
             pet.setTarget(player);
