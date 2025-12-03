@@ -22,6 +22,6 @@ public class CosmeticsCommand extends ColriaPlayerCommand {
 
     @Override
     public void execute(EnginePlayer player, Map<String, Object> args) {
-        throw new UnsupportedOperationException("This command requires a subcommand.");
+        throw new IllegalArgumentException("This command requires a subcommand.");
     }
 }
