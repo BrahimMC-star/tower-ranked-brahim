@@ -161,31 +161,28 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
         Vector2 directionPlane = this.getDirectionPlane();
         double x = directionPlane.getX() / speedFactor;
         double z = directionPlane.getY() / speedFactor;
-
-        double finalMotionX = 0.0;
-        double finalMotionZ = 0.0;
-
-        if(forward == 1L) {
-            finalMotionX = x;
-            finalMotionZ = z;
-        } else if(forward == -1) {
-            finalMotionX = -x;
-            finalMotionZ = -z;
-        } else {
-            double average = (x + z) / 2.0;
-            finalMotionX = (average / Math.sqrt(2)) * motionZ;
-            finalMotionZ = (average / Math.sqrt(2)) * motionX;
+        
+        if (forward == 1) {
+            this.motionX += x;
+            this.motionZ += z;
+        } else if (forward == -1) {
+            this.motionX -= x;
+            this.motionZ -= z;
+        }
+        
+        if (strafe == 1) {
+            this.motionX += -z;
+            this.motionZ += x;
+        } else if (strafe == -1) {
+            this.motionX += z;
+            this.motionZ += -x;
         }
 
-        if(strafe == 1L) {
-            finalMotionX += z;
-            finalMotionZ += -x;
-        } else if(strafe == -1L) {
-            finalMotionX += -z;
-            finalMotionZ += x;
+        if (forward != 0 && strafe != 0) {
+            this.motionX *= 1.0 / Math.sqrt(2.0);
+            this.motionZ *= 1.0 / Math.sqrt(2.0);
         }
-
-        this.move(finalMotionX, this.motionX, finalMotionZ);
+        
         this.updateMovement();
         this.broadcastMovement();
     }
