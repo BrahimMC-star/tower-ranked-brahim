@@ -47,7 +47,7 @@ public class EntityPetSlime extends EntityPetJumping {
     public void initEntity() {
         super.initEntity();
 
-        this.size = Utils.rand(6, 12);
+        this.size = Utils.rand(1, 6);
         this.setScale(0.51f + size * 0.51f);
     }
 }
