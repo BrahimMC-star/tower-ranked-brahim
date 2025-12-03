@@ -82,8 +82,7 @@ public class CosmeticRegistry {
     }
 
     public void registerPets() {
-        register(new Pet(EntityPetSlime.class, "none", TranslationKeys.COSMETIC_CAPE_HEART_NAME, TranslationKeys.COSMETIC_CAPE_HEART_NAME, new ItemRecordPigstep(), true, 1000));
-        register(new Pet(EntityPetPig.class, "piggy", TranslationKeys.COSMETIC_CAPE_HEART_NAME, TranslationKeys.COSMETIC_CAPE_HEART_NAME, new ItemRecordPigstep(), true, 1000));
+        register(new Pet(EntityPetPig.class, "none", TranslationKeys.COSMETIC_CAPE_HEART_NAME, TranslationKeys.COSMETIC_CAPE_HEART_NAME, new ItemRecordPigstep(), true, 1000));
     }
 
     public void registerCapes() {

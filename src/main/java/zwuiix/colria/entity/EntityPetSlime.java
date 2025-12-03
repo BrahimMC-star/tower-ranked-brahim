@@ -40,7 +40,7 @@ public class EntityPetSlime extends EntityPetJumping {
 
     @Override
     public Vector3f getSeatPosition() {
-        return new Vector3f(0, 1.85001f, 0);
+        return new Vector3f(0, 2.2f, 0);
     }
 
     @Override
@@ -50,4 +50,7 @@ public class EntityPetSlime extends EntityPetJumping {
         this.size = Utils.rand(1, 6);
         this.setScale(0.51f + size * 0.51f);
     }
+
+    @Override
+    public void attackEntity(Entity entity) {}
 }
