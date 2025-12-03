@@ -1,5 +1,6 @@
 package zwuiix.colria.entity;
 
+import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.mob.EntitySlime;
 import cn.nukkit.entity.passive.EntityPig;
 import cn.nukkit.level.format.FullChunk;
@@ -48,5 +49,10 @@ public class EntityPetSlime extends EntityPetJumping {
 
         this.size = Utils.rand(6, 12);
         this.setScale(0.51f + size * 0.51f);
+    }
+
+    @Override
+    public void attackEntity(Entity entity) {
+        // NOOP
     }
 }
