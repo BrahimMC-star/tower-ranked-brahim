@@ -28,7 +28,7 @@ public class Particle {
     @Getter
     private final boolean flying;
 
-    Particle(String identifier, TranslationKeys name, TranslationKeys description, Item reference, long cost, boolean flying) {
+    public Particle(String identifier, TranslationKeys name, TranslationKeys description, Item reference, long cost, boolean flying) {
         this.identifier = identifier;
         this.name = name;
         this.description = description;

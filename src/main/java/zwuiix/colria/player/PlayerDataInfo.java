@@ -157,6 +157,54 @@ public class PlayerDataInfo {
         }
     }
 
+    public ArrayList<String> getPets() {
+        JsonObject json = this.getJson();
+        ArrayList<String> pets = new ArrayList<>();
+        if(json.has("pets")) {
+            for(var el : json.getAsJsonArray("pets")) {
+                pets.add(el.getAsString());
+            }
+        }
+        return pets;
+    }
+
+    public void setPets(ArrayList<String> pets) {
+        JsonObject json = this.getJson();
+        json.remove("pets");
+        json.add("pets", gson.toJsonTree(pets));
+        this.setJson(json);
+    }
+
+    public void addPet(String pet) {
+        ArrayList<String> pets = this.getPets();
+        if(!pets.contains(pet)) {
+            pets.add(pet);
+            this.setPets(pets);
+        }
+    }
+
+    public void removePet(String pet) {
+        ArrayList<String> pets = this.getPets();
+        if(pets.contains(pet)) {
+            pets.remove(pet);
+            this.setPets(pets);
+        }
+    }
+
+    public String getPet() {
+        JsonObject json = this.getJson();
+        if(json.has("pet")) {
+            return json.get("pet").getAsString();
+        }
+        return "none";
+    }
+
+    public void setPet(String pet) {
+        JsonObject json = this.getJson();
+        json.addProperty("pet", pet);
+        this.setJson(json);
+    }
+
     public StatsInfo getStats() {
         JsonObject json = this.getJson();
         if(json.has("stats")) {

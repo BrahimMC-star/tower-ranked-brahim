@@ -29,6 +29,7 @@ import zwuiix.colria.player.cosmetic.Cosmetic;
 import zwuiix.colria.player.cosmetic.CosmeticRegistry;
 import zwuiix.colria.player.particle.Particle;
 import zwuiix.colria.player.particle.ParticleRegistry;
+import zwuiix.colria.player.cosmetic.Pet;
 import zwuiix.colria.rank.Rank;
 import zwuiix.colria.rank.RankRegistry;
 import zwuiix.colria.translator.Language;
@@ -61,6 +62,8 @@ public class EnginePlayer extends Player {
     private final ArrayList<Particle> particles = new ArrayList<>();
     @Getter
     private final ArrayList<Cosmetic> cosmetics = new ArrayList<>();
+    @Getter
+    private final ArrayList<Pet> pets = new ArrayList<>();
     @Getter
     private final LinkedHashMap<String, Cooldown> cooldowns = new LinkedHashMap<>();
 
@@ -178,6 +181,29 @@ public class EnginePlayer extends Player {
         cosmetics.remove(cosmetic);
     }
 
+    public boolean hasPet(Pet pet) {
+        return pets.contains(pet);
+    }
+
+    public boolean hasPet(String identifier) {
+        for(Pet pet : pets) {
+            if(pet.getIdentifier().equalsIgnoreCase(identifier)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addPet(Pet pet) {
+        if(!pets.contains(pet)) {
+            pets.add(pet);
+        }
+    }
+
+    public void removePet(Pet pet) {
+        pets.remove(pet);
+    }
+
     public Cooldown getCooldown(String identifier) {
         if(!cooldowns.containsKey(identifier)) {
             var cd = new Cooldown(getXUID(), identifier, 0);
@@ -203,7 +229,7 @@ public class EnginePlayer extends Player {
         String xuid = getXUID();
         String name = getName();
 
-        record Agg(List<Integer> ranks, List<String> particles, List<String> cosmetics, Map<String, Cooldown> cooldows) {}
+        record Agg(List<Integer> ranks, List<String> particles, List<String> cosmetics, List<String> pets, Map<String, Cooldown> cooldows) {}
 
         return db.write(PlayerDataDao.class, (Function<PlayerDataDao, PlayerDataInfo>) dao -> dao.getOrCreate(xuid, name))
                 .thenCompose(info -> {
@@ -212,6 +238,7 @@ public class EnginePlayer extends Player {
                     var ranks = db.query(PlayerRankDao.class, dao -> dao.listByXuid(xuid));
                     var particles = db.query(PlayerParticleDao.class, dao -> dao.listByXuid(xuid));
                     var cosmetics = db.query(PlayerCosmeticDao.class, dao -> dao.listByXuid(xuid));
+                    var pets = db.query(PlayerPetDao.class, dao -> dao.listByXuid(xuid));
                     var cooldowns = db.query(PlayerCooldownDao.class, dao -> dao.listByXuid(xuid));
 
                     return CompletableFuture.allOf(ranks, particles, cosmetics)
@@ -219,6 +246,7 @@ public class EnginePlayer extends Player {
                                     ranks.join(),
                                     particles.join(),
                                     cosmetics.join(),
+                                    pets.join(),
                                     cooldowns.join()
                             ));
                 })
@@ -253,6 +281,14 @@ public class EnginePlayer extends Player {
                         var cape = CosmeticRegistry.getInstance().getCape(cid);
                         if(cape != null) {
                             addCosmetic(cape);
+                        }
+                    }
+
+                    pets.clear();
+                    for (String petId : agg.pets()) {
+                        var pet = CosmeticRegistry.getInstance().getPet(petId);
+                        if (pet != null) {
+                            addPet(pet);
                         }
                     }
 

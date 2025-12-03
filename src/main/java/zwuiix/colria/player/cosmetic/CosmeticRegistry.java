@@ -3,11 +3,15 @@ package zwuiix.colria.player.cosmetic;
 import cn.nukkit.block.BlockHeadPlayer;
 import cn.nukkit.entity.data.property.EntityProperty;
 import cn.nukkit.entity.data.property.EnumEntityProperty;
+import cn.nukkit.item.ItemRecordPigstep;
+import cn.nukkit.registry.Registries;
 import lombok.Getter;
 import zwuiix.colria.Loader;
+import zwuiix.colria.entity.EntityPetPig;
 import zwuiix.colria.item.*;
 import zwuiix.colria.translator.TranslationKeys;
 
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +22,7 @@ public class CosmeticRegistry {
     private static final CosmeticRegistry instance = new CosmeticRegistry();
 
     private final HashMap<String, Cosmetic> cosmetics = new HashMap<>();
+    private final HashMap<String, Pet> pets = new HashMap<>();
     private final HashMap<String, CapeCosmetic> capes = new HashMap<>();
 
     public Cosmetic getCosmetic(String identifier) {
@@ -26,6 +31,15 @@ public class CosmeticRegistry {
 
     public void register(Cosmetic cosmetic) {
         cosmetics.put(cosmetic.getIdentifier(), cosmetic);
+    }
+
+    public Pet getPet(String identifier) {
+        return pets.get(identifier);
+    }
+
+    public void register(Pet pet) {
+        pets.put(pet.getIdentifier(), pet);
+        Registries.ENTITY.register(pet.getIdentifier(), pet.getEntityClass());
     }
 
     public CapeCosmetic getCape(String identifier) {
@@ -37,6 +51,12 @@ public class CosmeticRegistry {
     }
 
     public void invoke(Loader loader) {
+        registerArmor();
+        registerPets();
+        registerCapes();
+    }
+
+    public void registerArmor() {
         register(new ArmorCosmetic("arrow_quiver", TranslationKeys.COSMETIC_ARROW_QUIVER_NAME, TranslationKeys.COSMETIC_ARROW_QUIVER_LORE, new ItemCosmeticArrowQuiver(), 1000, ArmorCosmetic.SLOT_CHESTPLATE));
         register(new ArmorCosmetic("bandolier", TranslationKeys.COSMETIC_BANDOLIER_NAME, TranslationKeys.COSMETIC_BANDOLIER_LORE, new ItemCosmeticBandolier(), 1500, ArmorCosmetic.SLOT_CHESTPLATE));
         register(new ArmorCosmetic("cakeman_plushie", TranslationKeys.COSMETIC_CAKEMAN_PLUSHIE_NAME, TranslationKeys.COSMETIC_CAKEMAN_PLUSHIE_LORE, new ItemCosmeticCakeManPlushie(), 2000, ArmorCosmetic.SLOT_HELMET));
@@ -59,7 +79,13 @@ public class CosmeticRegistry {
         register(new ArmorCosmetic("top_hat", TranslationKeys.COSMETIC_TOP_HAT_NAME, TranslationKeys.COSMETIC_TOP_HAT_LORE, new ItemCosmeticTopHat(), 6500, ArmorCosmetic.SLOT_HELMET));
         register(new ArmorCosmetic("wings", TranslationKeys.COSMETIC_WINGS_NAME, TranslationKeys.COSMETIC_WINGS_LORE, new ItemCosmeticWings(), 10000, ArmorCosmetic.SLOT_CHESTPLATE));
         register(new ArmorCosmetic("wizards_hat", TranslationKeys.COSMETIC_WIZARDS_HAT_NAME, TranslationKeys.COSMETIC_WIZARDS_HAT_LORE, new ItemCosmeticWizardsHat(), 9500, ArmorCosmetic.SLOT_HELMET));
+    }
 
+    public void registerPets() {
+        register(new Pet(EntityPetPig.class, "none", TranslationKeys.COSMETIC_CAPE_HEART_NAME, TranslationKeys.COSMETIC_CAPE_HEART_NAME, new ItemRecordPigstep(), 1000));
+    }
+
+    public void registerCapes() {
         register(new CapeCosmetic("colria",       TranslationKeys.COSMETIC_CAPE_COLRIA_NAME,       TranslationKeys.COSMETIC_CAPE_COLRIA_LORE,       new BlockHeadPlayer().toItem(), 1500,  false)); // très cheap
         register(new CapeCosmetic("bobwhite",     TranslationKeys.COSMETIC_CAPE_BOBWHITE_NAME,     TranslationKeys.COSMETIC_CAPE_BOBWHITE_LORE,     new BlockHeadPlayer().toItem(), 2200,  false));
         register(new CapeCosmetic("penguin",      TranslationKeys.COSMETIC_CAPE_PENGUIN_NAME,      TranslationKeys.COSMETIC_CAPE_PENGUIN_LORE,      new BlockHeadPlayer().toItem(), 2600,  false));

@@ -28,7 +28,7 @@ public class Lobby extends Game {
         super.join(player);
 
         if(player.logged) {
-            player.syncRanks();
+            player.resync();
             player.updateCape(player.getPlayerDataInfo().getCape());
 
             for (String identifier : player.getPlayerDataInfo().getCosmetics()) {
@@ -37,6 +37,14 @@ public class Lobby extends Game {
                 var cosmetic = CosmeticRegistry.getInstance().getCosmetic(identifier);
                 if(cosmetic != null) {
                     cosmetic.apply(player);
+                }
+            }
+
+            var petId = player.getPlayerDataInfo().getPet();
+            if(petId != null) {
+                var pet = CosmeticRegistry.getInstance().getPet(petId);
+                if (pet != null) {
+                    pet.spawn(player);
                 }
             }
         }

@@ -73,6 +73,7 @@ public class Loader extends PluginBase {
         dataBase.write(PlayerRankDao.class, PlayerRankDao::init);
         dataBase.write(PlayerParticleDao.class, PlayerParticleDao::init);
         dataBase.write(PlayerCosmeticDao.class, PlayerCosmeticDao::init);
+        dataBase.write(PlayerPetDao.class, PlayerPetDao::init);
         dataBase.write(PlayerCooldownDao.class, PlayerCooldownDao::init);
 
         getLogger().info(TextFormat.colorize("&bDatabase initialized."));
