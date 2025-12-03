@@ -51,7 +51,6 @@ public class Pet {
             EntityPet pet = constructor.newInstance(player.getChunk(), nbt);
             pet.setInfo(this);
             pet.setOwner(player);
-            pet.setTarget(player);
             pet.setSaddled(saddled);
             pet.spawnToAll();
         } catch (Exception e) {
