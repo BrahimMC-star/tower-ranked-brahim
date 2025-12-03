@@ -3,6 +3,7 @@ package zwuiix.colria.player.cosmetic;
 import cn.nukkit.block.BlockHeadPlayer;
 import cn.nukkit.entity.data.property.EntityProperty;
 import cn.nukkit.entity.data.property.EnumEntityProperty;
+import cn.nukkit.entity.passive.EntityPig;
 import cn.nukkit.item.ItemRecordPigstep;
 import cn.nukkit.registry.Registries;
 import lombok.Getter;
@@ -82,7 +83,7 @@ public class CosmeticRegistry {
     }
 
     public void registerPets() {
-        register(new Pet(EntityPetPig.class, "none", TranslationKeys.COSMETIC_CAPE_HEART_NAME, TranslationKeys.COSMETIC_CAPE_HEART_NAME, new ItemRecordPigstep(), 1000));
+        register(new Pet(EntityPig.class, "none", TranslationKeys.COSMETIC_CAPE_HEART_NAME, TranslationKeys.COSMETIC_CAPE_HEART_NAME, new ItemRecordPigstep(), 1000));
     }
 
     public void registerCapes() {

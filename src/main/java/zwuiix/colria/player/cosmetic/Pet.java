@@ -1,5 +1,7 @@
 package zwuiix.colria.player.cosmetic;
 
+import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.passive.EntityPig;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.format.FullChunk;
@@ -14,7 +16,7 @@ import zwuiix.colria.translator.TranslationKeys;
 
 public class Pet {
     @Getter
-    private final Class<? extends EntityPet> entityClass;
+    private final Class<? extends EntityPig> entityClass;
     @Getter
     private final String identifier;
     @Getter
@@ -25,7 +27,7 @@ public class Pet {
     @Getter
     private final long cost;
 
-    public Pet(Class<? extends EntityPet> entityClass, String identifier, TranslationKeys name, TranslationKeys description, Item reference, long cost) {
+    public Pet(Class<? extends EntityPig> entityClass, String identifier, TranslationKeys name, TranslationKeys description, Item reference, long cost) {
         this.entityClass = entityClass;
         this.identifier = identifier;
         this.name = name;
@@ -45,10 +47,11 @@ public class Pet {
 
         try {
             var constructor = entityClass.getDeclaredConstructor(FullChunk.class, CompoundTag.class);
-            EntityPet pet = constructor.newInstance(player.getChunk(), nbt);
-            pet.setInfo(this);
-            pet.setOwner(player);
-            pet.setTarget(player);
+            EntityPig pet = constructor.newInstance(player.getChunk(), nbt);
+            pet.setSaddled(true);
+            //pet.setInfo(this);
+            //pet.setOwner(player);
+            //pet.setTarget(player);
             pet.spawnToAll();
         } catch (Exception e) {
             e.printStackTrace();
