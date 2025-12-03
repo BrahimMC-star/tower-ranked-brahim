@@ -1,7 +1,6 @@
 package zwuiix.colria.cmd.impl.particle;
 
 import cn.nukkit.Server;
-import zwuiix.colria.cmd.ColriaPlayerCommand;
 import zwuiix.colria.cmd.ColriaPlayerSubCommand;
 import zwuiix.colria.cmd.arguments.StringEnumArgument;
 import zwuiix.colria.cmd.arguments.TargetArgument;
@@ -17,14 +16,14 @@ import zwuiix.colria.util.DB;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class AddParticleCommand extends ColriaPlayerSubCommand {
-    public AddParticleCommand() {
+public class AddParticleSubCommand extends ColriaPlayerSubCommand {
+    public AddParticleSubCommand() {
         super("add");
     }
 
     @Override
     public void prepare() {
-        setPermission(Permission.RANK_MANAGE.toString());
+        setPermission(Permission.PARTICLE_MANAGE.toString());
         registerArgument(0, new TargetArgument("target", false));
         registerArgument(1, new StringEnumArgument("particle", false, ParticleRegistry.getInstance().getParticles().keySet().toArray(String[]::new)));
     }
