@@ -170,7 +170,7 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
         this.moveTime = 10;
         this.setBothYaw(player.yaw);
 
-        strafe *= 0.4;
+        strafe *= getPetSpeed();
 
         double f = strafe * strafe + forward * forward;
         double friction = 0.3;
@@ -246,7 +246,7 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     public boolean canTarget(Entity entity) { return entity == this.owner; }
 
     @Override
-    public boolean targetOption(EntityCreature creature, double distance) { return super.targetOption(creature, 5) && creature == this.owner && creature.distance(this) >= 2.0f && creature.distance(this) <= 8.0f; }
+    public boolean targetOption(EntityCreature creature, double distance) { return super.targetOption(creature, 5) && creature == this.owner && creature.distance(this) >= 3.0f && creature.distance(this) <= 16.0f; }
 
     @Override
     public boolean attack(EntityDamageEvent ev) { return false; }
