@@ -171,7 +171,7 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
         this.setPitch(player.pitch);
         this.setBothYaw(player.yaw);
 
-        double speedFactor = 2.5 * this.getSpeed();
+        double speedFactor = 2.5 * this.getPetSpeed();
 
         Vector2 directionPlane = this.getDirectionPlane();
         double x = directionPlane.getX() / speedFactor;
@@ -198,7 +198,6 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
             this.motionZ *= 1.0 / Math.sqrt(2.0);
         }
 
-        this.move(this.motionX, this.motionY, this.motionZ);
         this.updateMovement();
         this.broadcastMovement();
     }
