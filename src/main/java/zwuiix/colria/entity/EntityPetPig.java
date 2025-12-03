@@ -6,7 +6,7 @@ import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.Vector3f;
 import cn.nukkit.nbt.tag.CompoundTag;
 
-public class EntityPetPig extends EntityPet {
+public class EntityPetPig extends EntityPetWalking {
     public EntityPetPig(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
     }
