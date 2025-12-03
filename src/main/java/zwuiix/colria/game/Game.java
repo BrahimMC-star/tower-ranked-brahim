@@ -296,7 +296,7 @@ abstract public class Game {
     }
 
     public void disband(boolean force) {
-        if (!force) {
+        if (force) {
             broadcast(TranslationKeys.PLAYER_GAME_DISBAND_BROADCAST);
 
             EnginePlayer hoster = (EnginePlayer) Server.getInstance().getPlayerExact(getHoster());

@@ -50,7 +50,7 @@ public final class WorldListener implements Listener {
         p.setDimension(Level.DIMENSION_NETHER);
         p.setDimension(ev.getTarget().getDimension());
 
-        p.getViewers().values().forEach(player -> player.hidePlayer(p));
+        p.despawnFromAll();
         syncTabFor(p);
         p.spawnToAll();
     }
