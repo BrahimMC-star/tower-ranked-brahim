@@ -34,7 +34,7 @@ public class Pet {
 
     public void spawn(EnginePlayer player) {
         try {
-            EntityPet pet = entityClass.getDeclaredConstructor(FullChunk.class, CompoundTag.class).newInstance(player.getChunk(), null);
+            EntityPet pet = entityClass.getDeclaredConstructor(FullChunk.class, CompoundTag.class).newInstance(player.getChunk(), new CompoundTag());
             pet.setInfo(this);
             pet.setOwner(player);
             pet.setTarget(player);
