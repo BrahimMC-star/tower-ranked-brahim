@@ -4,7 +4,6 @@ import cn.nukkit.entity.item.EntityItem;
 import cn.nukkit.event.Cancellable;
 import cn.nukkit.event.Event;
 import lombok.Getter;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import zwuiix.colria.game.GamePlayer;
 
 @Getter

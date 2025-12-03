@@ -184,7 +184,7 @@ public class TowerGame extends TeamGame {
 
     @Override
     public void disband(boolean force) {
-        if(!force) {
+        if(force) {
             boolean equality = towerPoints.first == towerPoints.second;
             Team winner = towerPoints.first > towerPoints.second ? getTeamA() : getTeamB();
 
