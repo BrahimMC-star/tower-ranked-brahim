@@ -16,10 +16,10 @@ public class Cooldown{
     private final String action;
     private long expiresAt;
 
-    public Cooldown(String xuid, String key, long durationMillis) {
+    public Cooldown(String xuid, String action, long expires_at) {
         this.xuid = xuid;
-        this.action = key;
-        this.expiresAt = System.currentTimeMillis() + durationMillis;
+        this.action = action;
+        this.expiresAt = System.currentTimeMillis() + expires_at;
     }
 
     public long getRemainingTime() {
