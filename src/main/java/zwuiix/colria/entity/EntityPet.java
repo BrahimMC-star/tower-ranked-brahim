@@ -9,6 +9,7 @@ import cn.nukkit.entity.data.Vector3fEntityData;
 import cn.nukkit.entity.mob.EntityMob;
 import cn.nukkit.entity.passive.EntityAnimal;
 import cn.nukkit.entity.passive.EntityWalkingAnimal;
+import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.Vector3;
@@ -16,6 +17,7 @@ import cn.nukkit.math.Vector3f;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.SetEntityLinkPacket;
 import cn.nukkit.network.protocol.UpdateAttributesPacket;
+import cn.nukkit.utils.Utils;
 import lombok.Setter;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.player.cosmetic.Pet;
@@ -137,7 +139,6 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
 
     @Override
     public void onPlayerInput(Player player, double strafe, double forward) {
-        System.out.println("Pet input: strafe=" + strafe + ", forward=" + forward);
         this.stayTime = 0;
         this.moveTime = 10;
         this.setBothYaw(player.yaw);
@@ -205,8 +206,7 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     }
 
     @Override
-    protected void checkTarget() {
-        if(owner == null) return;
-        this.setTarget(owner);
+    public boolean attack(EntityDamageEvent ev) {
+        return false;
     }
 }
