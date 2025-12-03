@@ -148,8 +148,6 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
 
     @Override
     public void onPlayerInput(Player player, double strafe, double forward) {
-        System.out.println("Pet input: strafe=" + strafe + ", forward=" + forward);
-
         this.stayTime = 0;
         this.moveTime = 10;
         this.setBothYaw(player.yaw);
@@ -177,6 +175,8 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
             this.motionX = 0;
             this.motionZ = 0;
         }
+
+        this.updateMovement();
     }
 
     @Override
