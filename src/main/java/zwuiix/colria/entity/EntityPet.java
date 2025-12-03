@@ -167,31 +167,39 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     public void onPlayerInput(Player player, double strafe, double forward) {
         this.stayTime = 0;
         this.moveTime = 10;
+        this.setPitch(player.pitch);
         this.setBothYaw(player.yaw);
 
-        strafe *= 0.4;
+        double speedFactor = 2.5 * this.getSpeed();
 
-        double f = strafe * strafe + forward * forward;
-        double friction = this.getPetSpeed();
+        Vector2 directionPlane = this.getDirectionPlane();
+        double x = directionPlane.getX() / speedFactor;
+        double z = directionPlane.getY() / speedFactor;
 
-        if (f >= 1.0E-4) {
-            f = Math.sqrt(f);
-
-            if (f < 1) {
-                f = 1;
-            }
-
-            f = friction / f;
-            strafe *= f;
-            forward *= f;
-            double f1 = Math.sin(this.yaw * 0.017453292);
-            double f2 = Math.cos(this.yaw * 0.017453292);
-            this.motionX = (strafe * f2 - forward * f1);
-            this.motionZ = (forward * f2 + strafe * f1);
-        } else {
-            this.motionX = 0;
-            this.motionZ = 0;
+        if (forward == 1) {
+            this.motionX += x;
+            this.motionZ += z;
+        } else if (forward == -1) {
+            this.motionX -= x;
+            this.motionZ -= z;
         }
+
+        if (strafe == 1) {
+            this.motionX += -z;
+            this.motionZ += x;
+        } else if (strafe == -1) {
+            this.motionX += z;
+            this.motionZ += -x;
+        }
+
+        if (forward != 0 && strafe != 0) {
+            this.motionX *= 1.0 / Math.sqrt(2.0);
+            this.motionZ *= 1.0 / Math.sqrt(2.0);
+        }
+
+        this.move(this.motionX, this.motionY, this.motionZ);
+        this.updateMovement();
+        this.broadcastMovement();
     }
 
     @Override
