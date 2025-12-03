@@ -94,8 +94,6 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
 
             broadcastLinkPacket(entity, TYPE_RIDE);
 
-            System.out.println("Mounting entity: " + entity.getName() + " to pet: " + this.getName());
-
             entity.riding = this;
             entity.setDataFlag(DATA_FLAGS, DATA_FLAG_RIDING, true);
             entity.setDataProperty(new Vector3fEntityData(DATA_RIDER_SEAT_POSITION, this.getSeatPosition()));
@@ -123,7 +121,6 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
         }
 
         var update = super.onUpdate(currentTick);
-        this.setTarget(owner);
 
         if(update) {
             if (this.owner == null || !this.owner.isOnline()) {
@@ -151,6 +148,8 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
 
     @Override
     public void onPlayerInput(Player player, double strafe, double forward) {
+        System.out.println("Pet input: strafe=" + strafe + ", forward=" + forward);
+
         this.stayTime = 0;
         this.moveTime = 10;
         this.setBothYaw(player.yaw);
