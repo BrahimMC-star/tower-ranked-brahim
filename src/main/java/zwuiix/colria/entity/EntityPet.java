@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
 
+import static cn.nukkit.network.protocol.SetEntityLinkPacket.TYPE_RIDE;
+
 @Setter
 abstract public class EntityPet extends EntityWalkingAnimal implements EntityRideable, EntityControllable, EntityClimateVariant {
     private Pet info;
@@ -34,18 +36,16 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
 
     public EntityPet(FullChunk chunk, CompoundTag nbt) { super(chunk, nbt); }
 
+    public abstract Vector3f getSeatPosition();
+
     @Override
     protected void initEntity() {
         super.initEntity();
+        this.setTarget(owner);
         this.setVariant(getBiomeVariant(getLevel().getBiomeId(getFloorX(), getFloorZ())));
         this.setNameTag("§c...");
         this.setNameTagAlwaysVisible();
         this.setDataFlag(DATA_FLAGS, DATA_FLAG_SADDLED, true);
-    }
-
-    @Override
-    public Entity getTarget() {
-        return owner;
     }
 
     @Override
@@ -58,7 +58,7 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
 
         if (this.passengers.isEmpty() && !player.isSneaking()) {
             if (player.riding == null) {
-                this.mountEntity(player);
+                this.mountEntity(player, TYPE_RIDE);
             }
         }
 
@@ -68,9 +68,8 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     @Override
     public boolean mountEntity(Entity entity, byte mode) {
         Objects.requireNonNull(entity, "The target of the mounting entity can't be null");
-        if (entity instanceof Player player && player.isSleeping()) {
+        if (entity instanceof Player player && player.isSleeping())
             return false;
-        }
 
         if (entity.riding != null) {
             dismountEntity(entity);
@@ -78,15 +77,14 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
             this.motionZ = 0;
             this.stayTime = 20;
         } else {
-            if (isPassenger(entity)) {
+            if (isPassenger(entity))
                 return false;
-            }
 
-            broadcastLinkPacket(entity, SetEntityLinkPacket.TYPE_RIDE);
+            broadcastLinkPacket(entity, TYPE_RIDE);
 
             entity.riding = this;
             entity.setDataFlag(DATA_FLAGS, DATA_FLAG_RIDING, true);
-            entity.setDataProperty(new Vector3fEntityData(DATA_RIDER_SEAT_POSITION, new Vector3f(0, 1.85001f, 0)));
+            entity.setDataProperty(new Vector3fEntityData(DATA_RIDER_SEAT_POSITION, this.getSeatPosition()));
             entity.setDataProperty(new FloatEntityData(DATA_RIDER_MAX_ROTATION, 181));
             passengers.add(entity);
         }
@@ -208,5 +206,10 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     @Override
     public boolean attack(EntityDamageEvent ev) {
         return false;
+    }
+
+    @Override
+    public boolean targetOption(EntityCreature creature, double distance) {
+        return creature == owner;
     }
 }
