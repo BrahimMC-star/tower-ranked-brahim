@@ -9,6 +9,7 @@ import cn.nukkit.entity.data.Vector3fEntityData;
 import cn.nukkit.entity.mob.EntityZombiePigman;
 import cn.nukkit.entity.passive.EntityWalkingAnimal;
 import cn.nukkit.event.entity.CreatureSpawnEvent;
+import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.Vector3;
@@ -171,7 +172,7 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
         strafe *= 0.4;
 
         double f = strafe * strafe + forward * forward;
-        double friction = 0.3;
+        double friction = this.getPetSpeed();
 
         if (f >= 1.0E-4) {
             f = Math.sqrt(f);
@@ -203,12 +204,6 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
 
         var rider = this.getPassengers().getFirst();
         if(!(rider instanceof Player)) {
-            super.checkTarget();
-            return;
-        }
-
-        var player = (Player) rider;
-        if(player.getInventory().getItemInHandFast().getId() != Item.CARROT_ON_A_STICK) {
             super.checkTarget();
             return;
         }
@@ -247,9 +242,13 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     }
 
     @Override
-    public boolean canTarget(Entity entity) {
-        return entity == this.owner;
-    }
+    public boolean canTarget(Entity entity) { return entity == this.owner; }
+
+    @Override
+    public boolean targetOption(EntityCreature creature, double distance) { return super.targetOption(creature, 5) && creature == this.owner; }
+
+    @Override
+    public boolean attack(EntityDamageEvent ev) { return false; }
 
     abstract public float getPetSpeed();
 }
