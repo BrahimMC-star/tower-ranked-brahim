@@ -12,6 +12,8 @@ import cn.nukkit.entity.passive.EntityWalkingAnimal;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.math.Vector2;
+import cn.nukkit.math.Vector2f;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.math.Vector3f;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -151,34 +153,39 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     public void onPlayerInput(Player player, double strafe, double forward) {
         this.stayTime = 0;
         this.moveTime = 10;
+        this.setPitch(player.pitch);
         this.setBothYaw(player.yaw);
 
-        strafe *= 0.4;
+        double speedFactor = 2.5 * this.getSpeed();
 
-        double f = strafe * strafe + forward * forward;
-        double friction = 0.3;
+        Vector2 directionPlane = this.getDirectionPlane();
+        double x = directionPlane.getX() / speedFactor;
+        double z = directionPlane.getY() / speedFactor;
 
-        if (f >= 1.0E-4) {
-            f = Math.sqrt(f);
-            if (f < 1.0) {
-                f = 1.0;
-            }
+        double finalMotionX = 0.0;
+        double finalMotionZ = 0.0;
 
-            f = friction / f;
-            strafe *= f;
-            forward *= f;
-
-            double radians = Math.toRadians(this.yaw);
-            double sin = Math.sin(radians);
-            double cos = Math.cos(radians);
-
-            this.motionX = (strafe * cos - forward * sin);
-            this.motionZ = (forward * cos + strafe * sin);
+        if(forward == 1L) {
+            finalMotionX = x;
+            finalMotionZ = z;
+        } else if(forward == -1) {
+            finalMotionX = -x;
+            finalMotionZ = -z;
         } else {
-            this.motionX = 0.0;
-            this.motionZ = 0.0;
+            double average = (x + z) / 2.0;
+            finalMotionX = (average / Math.sqrt(2)) * motionZ;
+            finalMotionZ = (average / Math.sqrt(2)) * motionX;
         }
 
+        if(strafe == 1L) {
+            finalMotionX += z;
+            finalMotionZ += -x;
+        } else if(strafe == -1L) {
+            finalMotionX += -z;
+            finalMotionZ += x;
+        }
+
+        this.move(finalMotionX, this.motionX, finalMotionZ);
         this.updateMovement();
         this.broadcastMovement();
     }
