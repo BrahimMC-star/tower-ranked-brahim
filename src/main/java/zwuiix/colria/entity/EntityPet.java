@@ -36,8 +36,14 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     protected void initEntity() {
         super.initEntity();
         this.setVariant(getBiomeVariant(getLevel().getBiomeId(getFloorX(), getFloorZ())));
+        this.setNameTag("§c...");
         this.setNameTagAlwaysVisible();
         this.setDataFlag(DATA_FLAGS, DATA_FLAG_SADDLED, true);
+    }
+
+    @Override
+    public Entity getTarget() {
+        return owner;
     }
 
     @Override
@@ -121,7 +127,7 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
                     EnginePlayer p = (EnginePlayer) player;
                     var name = p.processTranslation(this.info.getName());
 
-                    p.sendData(p, new EntityMetadata().putString(Entity.DATA_NAMETAG, p.processTranslation(TranslationKeys.PET_NAMETAG, name, owner.getName())));
+                    this.sendData(p, new EntityMetadata().putString(Entity.DATA_NAMETAG, p.processTranslation(TranslationKeys.PET_NAMETAG, name, owner.getName())));
                 }
             }
         }

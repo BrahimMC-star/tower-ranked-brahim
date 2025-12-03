@@ -48,7 +48,6 @@ public class Pet {
             pet.setInfo(this);
             pet.setOwner(player);
             pet.setTarget(player);
-            pet.setNameTagVisible(true);
             pet.spawnToAll();
         } catch (Exception e) {
             e.printStackTrace();
