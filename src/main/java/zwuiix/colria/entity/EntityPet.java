@@ -234,7 +234,6 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
 
     @Override
     public Vector3 updateMove(int tickDiff) {
-        System.out.println("EntityPet updateMove");
         return super.updateMove(tickDiff);
     }
 }
