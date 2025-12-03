@@ -2,6 +2,8 @@ package zwuiix.colria.player.cooldown;
 
 import cn.nukkit.Server;
 import lombok.Getter;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import zwuiix.colria.database.DataBase;
 import zwuiix.colria.database.dao.PlayerCooldownDao;
 import zwuiix.colria.player.EnginePlayer;
@@ -16,10 +18,15 @@ public class Cooldown{
     private final String action;
     private long expiresAt;
 
-    public Cooldown(String xuid, String key, long durationMillis) {
+    @JdbiConstructor
+    public Cooldown(
+            @ColumnName("xuid") String xuid,
+            @ColumnName("action") String action,
+            @ColumnName("expires_at") long expiresAt
+    ) {
         this.xuid = xuid;
-        this.action = key;
-        this.expiresAt = System.currentTimeMillis() + durationMillis;
+        this.action = action;
+        this.expiresAt = expiresAt;
     }
 
     public long getRemainingTime() {

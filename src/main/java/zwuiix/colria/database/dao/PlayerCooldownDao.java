@@ -70,12 +70,12 @@ public interface PlayerCooldownDao {
     );
 
     @SqlQuery("""
-        SELECT action, expires_at AS expiresAt
-        FROM cooldowns
-        WHERE xuid = :xuid
-          AND expires_at > :now
-        ORDER BY action
-        """)
+    SELECT xuid, action, expires_at
+    FROM cooldowns
+    WHERE xuid = :xuid
+      AND expires_at > :now
+    ORDER BY action
+    """)
     @RegisterConstructorMapper(Cooldown.class)
     List<Cooldown> listActive(
             @Bind("xuid") String xuid,
