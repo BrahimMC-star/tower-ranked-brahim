@@ -464,9 +464,9 @@ public class EnginePlayer extends Player {
 
             var identifier = this.getPlayerDataInfo().getParticle();
             var canShowParticle = isInLobby() || (game != null && game.getState().equals(Game.State.LOBBY));
-            if (identifier != null && canShowParticle) {
+            if (identifier != null && canShowParticle && this.riding == null) {
                 var particle = ParticleRegistry.getInstance().getParticle(identifier);
-                if (particle != null) {
+                if (particle != null && hasParticle(identifier)) {
                     if (particle.isFlying()) setAllowFlight(true);
                     if (particle.isFlying()
                             && this.isFlying()
