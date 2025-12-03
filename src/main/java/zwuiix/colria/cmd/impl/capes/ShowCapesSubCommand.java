@@ -1,6 +1,5 @@
-package zwuiix.colria.cmd.impl.cosmetic;
+package zwuiix.colria.cmd.impl.capes;
 
-import zwuiix.colria.cmd.ColriaPlayerCommand;
 import zwuiix.colria.cmd.ColriaPlayerSubCommand;
 import zwuiix.colria.cmd.arguments.TargetArgument;
 import zwuiix.colria.database.DataBase;
@@ -13,14 +12,14 @@ import zwuiix.colria.util.DB;
 
 import java.util.Map;
 
-public class ShowCosmeticsSubCommand extends ColriaPlayerSubCommand {
-    public ShowCosmeticsSubCommand() {
+public class ShowCapesSubCommand extends ColriaPlayerSubCommand {
+    public ShowCapesSubCommand() {
         super("show");
     }
 
     @Override
     public void prepare() {
-        setPermission(Permission.COSMETIC_MANAGE.toString());
+        setPermission(Permission.CAPE_MANAGE.toString());
         registerArgument(0, new TargetArgument("target", false));
     }
 
@@ -36,22 +35,22 @@ public class ShowCosmeticsSubCommand extends ColriaPlayerSubCommand {
     private void processAsync(EnginePlayer player, String xuid, String targetName) {
         DataBase.getInstance()
                 .query(PlayerCosmeticDao.class, dao -> dao.listByXuid(xuid))
-                .whenCompleteAsync((cosmetics, ex) -> {
+                .whenCompleteAsync((capes, ex) -> {
                     if(ex != null) {
                         ex.printStackTrace();
                     }
 
-                    if(cosmetics.isEmpty()) {
+                    if(capes.isEmpty()) {
                         player.sendMessage(TranslationKeys.PLAYER_COMMAND_CAPE_LIST_EMPTY, targetName);
                         return;
                     }
 
                     StringBuilder names = new StringBuilder();
-                    for (String identifier : cosmetics) {
-                        var cosmetic = CosmeticRegistry.getInstance().getCosmetic(identifier);
-                        if(cosmetic != null) {
+                    for (String identifier : capes) {
+                        var cape = CosmeticRegistry.getInstance().getCape(identifier);
+                        if(cape != null) {
                             if (!names.isEmpty()) names.append("§r§7, ");
-                            names.append(player.processTranslation(cosmetic.getName()));
+                            names.append(player.processTranslation(cape.getName()));
                         }
                     }
 

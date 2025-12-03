@@ -10,6 +10,7 @@ public enum Permission {
     SHARD_MANAGE,
     PARTICLE_MANAGE,
     COSMETIC_MANAGE,
+    CAPE_MANAGE,
     BOOSTER_MANAGE,
     LINK_MANAGE,
 

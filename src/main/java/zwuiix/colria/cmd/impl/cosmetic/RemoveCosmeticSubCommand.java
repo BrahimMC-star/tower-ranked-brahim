@@ -34,7 +34,7 @@ public class RemoveCosmeticSubCommand extends ColriaPlayerSubCommand {
         var identifier = args.get("cosmetic").toString().toLowerCase();
         var cosmetic = CosmeticRegistry.getInstance().getCosmetic(identifier);
         if (cosmetic == null) {
-            player.sendMessage(TranslationKeys.PLAYER_COMMAND_COSMETIC_NOEXIST, identifier);
+            player.sendMessage(TranslationKeys.PLAYER_COMMAND_CAPE_NOEXIST, identifier);
             return;
         }
 
@@ -57,7 +57,7 @@ public class RemoveCosmeticSubCommand extends ColriaPlayerSubCommand {
                     }
 
                     if(!has) {
-                        player.sendMessage(TranslationKeys.PLAYER_COMMAND_COSMETIC_NOTHAS, targetName, player.processTranslation(cosmetic.getName()));
+                        player.sendMessage(TranslationKeys.PLAYER_COMMAND_CAPE_NOTHAS, targetName, player.processTranslation(cosmetic.getName()));
                         return;
                     }
 
@@ -65,7 +65,7 @@ public class RemoveCosmeticSubCommand extends ColriaPlayerSubCommand {
                     EnginePlayer targetPlayer = (EnginePlayer) Server.getInstance().getPlayerExact(targetName);
                     if(targetPlayer != null) targetPlayer.resync();
 
-                    player.sendMessage(TranslationKeys.PLAYER_COMMAND_COSMETIC_REMOVED, player.processTranslation(cosmetic.getName()), targetName);
+                    player.sendMessage(TranslationKeys.PLAYER_COMMAND_CAPE_REMOVED, player.processTranslation(cosmetic.getName()), targetName);
                 });
     }
 }
