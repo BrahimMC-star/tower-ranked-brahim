@@ -36,6 +36,7 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     protected void initEntity() {
         super.initEntity();
         this.setVariant(getBiomeVariant(getLevel().getBiomeId(getFloorX(), getFloorZ())));
+        this.setNameTagAlwaysVisible();
         this.setDataFlag(DATA_FLAGS, DATA_FLAG_SADDLED, true);
     }
 
@@ -87,28 +88,6 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
 
     @Override
     public boolean onUpdate(int currentTick) {
-        if(!isClosed()) {
-            if (this.owner == null || !this.owner.isOnline()) {
-                this.close();
-                return false;
-            }
-
-            if(owner.getLevel().getId() != this.getLevel().getId()) {
-                this.close();
-                return false;
-            }
-
-            setTarget(owner);
-            if(currentTick % 20 == 0) {
-                for (Player player : getViewers().values()) {
-                    EnginePlayer p = (EnginePlayer) player;
-                    var name = p.processTranslation(this.info.getName());
-
-                    p.sendData(p, new EntityMetadata().putString(Entity.DATA_NAMETAG, p.processTranslation(TranslationKeys.PET_NAMETAG, name, owner.getName())));
-                }
-            }
-        }
-
         Iterator<Entity> linkedIterator = this.passengers.iterator();
 
         while (linkedIterator.hasNext()) {
@@ -123,7 +102,31 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
             }
         }
 
-        return super.onUpdate(currentTick);
+        var update = super.onUpdate(currentTick);
+        this.setTarget(owner);
+
+        if(update) {
+            if (this.owner == null || !this.owner.isOnline()) {
+                this.close();
+                return false;
+            }
+
+            if(owner.getLevel().getId() != this.getLevel().getId()) {
+                this.close();
+                return false;
+            }
+
+            if(currentTick % 20 == 0) {
+                for (Player player : getViewers().values()) {
+                    EnginePlayer p = (EnginePlayer) player;
+                    var name = p.processTranslation(this.info.getName());
+
+                    p.sendData(p, new EntityMetadata().putString(Entity.DATA_NAMETAG, p.processTranslation(TranslationKeys.PET_NAMETAG, name, owner.getName())));
+                }
+            }
+        }
+
+        return update;
     }
 
     @Override
@@ -155,11 +158,6 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
             this.motionX = 0;
             this.motionZ = 0;
         }
-    }
-
-    @Override
-    public boolean targetOption(EntityCreature creature, double distance) {
-        return creature == this.owner;
     }
 
     @Override
@@ -197,5 +195,11 @@ abstract public class EntityPet extends EntityWalkingAnimal implements EntityRid
     @Override
     public boolean canDespawn() {
         return false;
+    }
+
+    @Override
+    protected void checkTarget() {
+        if(owner == null) return;
+        this.setTarget(owner);
     }
 }
