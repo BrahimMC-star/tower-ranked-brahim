@@ -7,7 +7,7 @@ import cn.nukkit.math.Vector3f;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.Utils;
 
-public class EntityPetSlime extends EntityPetWalking {
+public class EntityPetSlime extends EntityPetJumping {
     public EntityPetSlime(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
     }
@@ -36,9 +36,6 @@ public class EntityPetSlime extends EntityPetWalking {
 
     @Override
     public float getPetSpeed() { return 0.3f; }
-
-    @Override
-    public float getPetJumpHeight() { return 1.42f; }
 
     @Override
     public Vector3f getSeatPosition() {

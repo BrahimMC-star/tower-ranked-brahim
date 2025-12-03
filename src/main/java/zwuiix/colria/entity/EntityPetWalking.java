@@ -188,10 +188,6 @@ abstract public class EntityPetWalking extends EntityWalkingAnimal implements En
             this.motionX = 0;
             this.motionZ = 0;
         }
-
-        if(isOnGround()) {
-            this.motionY = this.getPetJumpHeight();
-        }
     }
 
     @Override
@@ -251,5 +247,4 @@ abstract public class EntityPetWalking extends EntityWalkingAnimal implements En
     public boolean attack(EntityDamageEvent ev) { return false; }
 
     abstract public float getPetSpeed();
-    abstract public float getPetJumpHeight();
 }
