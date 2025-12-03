@@ -6,6 +6,7 @@ import cn.nukkit.entity.*;
 import cn.nukkit.entity.data.EntityMetadata;
 import cn.nukkit.entity.data.FloatEntityData;
 import cn.nukkit.entity.data.Vector3fEntityData;
+import cn.nukkit.entity.mob.EntityJumpingMob;
 import cn.nukkit.entity.passive.EntityJumpingAnimal;
 import cn.nukkit.entity.passive.EntityWalkingAnimal;
 import cn.nukkit.event.entity.EntityDamageEvent;
@@ -28,7 +29,7 @@ import static cn.nukkit.network.protocol.SetEntityLinkPacket.TYPE_RIDE;
 
 @Getter
 @Setter
-abstract public class EntityPetJumping extends EntityJumpingAnimal implements EntityRideable, EntityControllable, EntityClimateVariant, EntityPet {
+abstract public class EntityPetJumping extends EntityJumpingMob implements EntityRideable, EntityControllable, EntityClimateVariant, EntityPet {
     private Pet info;
     private EnginePlayer owner = null;
     private boolean saddled = false;
