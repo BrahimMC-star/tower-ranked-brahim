@@ -50,9 +50,4 @@ public class EntityPetSlime extends EntityPetJumping {
         this.size = Utils.rand(6, 12);
         this.setScale(0.51f + size * 0.51f);
     }
-
-    @Override
-    public void attackEntity(Entity entity) {
-        // NOOP
-    }
 }
