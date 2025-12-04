@@ -12,6 +12,7 @@ import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
 
 import java.util.Random;
+import java.util.function.DoubleFunction;
 
 public class Particle {
     private static final double TAU = Math.PI * 2;
@@ -285,46 +286,73 @@ public class Particle {
             case "dancing_flame" -> {
                 var ember = dust(240, 140, 60);
 
+                DoubleFunction<Double> swirl = t -> Math.sin(phase * 2.4 + t * 6.0) * 0.10;
+                DoubleFunction<Double> liftCurve = t -> Math.sin(phase * 1.3 + t * 3.0) * 0.06;
+
                 if (moving) {
                     if (fastTick) {
                         footsteps(player, FlameParticle::new, base, right, 0.35, 0.08);
 
-                        trail(player, pos -> new FlameParticle(pos),
-                                base.add(0, 0.6, 0),
-                                fwd, 1.1, 5, 0.0);
+                        trail(player, pos -> {
+                            double tw = Math.sin(phase * 4.0 + pos.y * 2.0) * 0.12;
+                            Vector3 offset = right.multiply(tw);
+                            return new FlameParticle(pos.add(offset));
+                        }, base.add(0, 0.6, 0), fwd, 1.1, 5, 0.0);
 
-                        burstRandom(player, ember, base.add(0, 1.0, 0),
-                                0.5, 2, seed, 0.0, 0.5);
+                        if (((seed + (int) phase) & 5) == 0) {
+                            burstRandom(player, ember, base.add(0, 0.9 + Math.random() * 0.4, 0),
+                                    0.15, 1, seed ^ 0x55AAL, 0.0, 0.20);
+                        }
                     }
 
                     if (medTick) {
                         int segs = 6;
                         double radius = 0.8;
-                        double y = base.y + 0.9;
+                        double yBase = base.y + 0.9;
+
                         for (int i = 0; i < segs; i++) {
                             double t = i / (double) (segs - 1);
-                            double ang = (Math.PI * 0.7) + t * (Math.PI * 0.6); // arc centré derrière
+
+                            // Arc angle
+                            double ang = (Math.PI * 0.7) + t * (Math.PI * 0.6);
+
+                            // Base arc position
                             double x = base.x - fwd.x * 0.4 + Math.cos(ang) * radius * 0.4;
                             double z = base.z - fwd.z * 0.4 + Math.sin(ang) * radius * 0.4;
+
+                            // Apply premium swirl movement
+                            x += right.x * swirl.apply(t);
+                            z += right.z * swirl.apply(t);
+
+                            // Vertical organic motion
+                            double y = yBase + liftCurve.apply(t);
+
                             spawn(player, ember.at(new Vector3(x, y, z)));
                         }
                     }
 
                 } else {
                     if (fastTick) {
-                        double yFeet = base.y + 0.04;
                         ring(player, ember, base, 0.6, 12, phase * 0.7, 0.04);
 
                         int segments = 4;
                         for (int side = -1; side <= 1; side += 2) {
+
                             double sx = right.x * 0.4 * side;
                             double sz = right.z * 0.4 * side;
+
                             for (int i = 0; i < segments; i++) {
                                 double t = i / (double) (segments - 1);
+
                                 double wobble = Math.sin(phase * 0.6 + t * 3.0 + side * 0.8) * 0.12;
-                                double x = base.x + sx + fwd.x * wobble;
-                                double z = base.z + sz + fwd.z * wobble;
-                                double y = base.y + 0.3 + t * 1.2;
+
+                                // Premium swirl idle
+                                double swirlIdle = Math.cos(phase * 0.4 + t * 2.0) * 0.06;
+
+                                double x = base.x + sx + fwd.x * wobble + right.x * swirlIdle;
+                                double z = base.z + sz + fwd.z * wobble + right.z * swirlIdle;
+                                double y = base.y + 0.3 + t * 1.2 + Math.sin(t * 5.0) * 0.05;
+
                                 spawn(player, new FlameParticle(new Vector3(x, y, z)));
                             }
                         }
@@ -332,12 +360,20 @@ public class Particle {
 
                     if (slowTick) {
                         int pts = 7;
+
                         for (int i = 0; i < pts; i++) {
                             double t = i / (double) (pts - 1);
+
                             double y = base.y + 0.4 + t * 1.6;
+                            y += Math.sin(phase * 2.0 + t * 4.0) * 0.05;
+
                             double sway = Math.sin(phase * 0.9 + t * 4.0) * 0.12;
+
+                            sway += Math.cos(phase * 0.7 + t * 3.5) * 0.07;
+
                             double x = base.x + sway * right.x;
                             double z = base.z + sway * right.z;
+
                             spawn(player, new FlameParticle(new Vector3(x, y, z)));
                         }
 
@@ -496,35 +532,46 @@ public class Particle {
                 var white = dust(255, 255, 255);
                 var sky   = dust(160, 210, 255);
 
+                boolean wingsTick = (currentTick % 10) == 0;
+                boolean haloTick  = wingsTick;
+
                 if (moving) {
                     if (fastTick) {
-                        int segs = 5;
-                        double length = 1.6;
-                        double y = base.y + 1.0;
+                        int segs = 6;
+                        double length = 1.9;
+                        double y = base.y + 1.05;
+
                         for (int i = 0; i < segs; i++) {
                             double t = i / (double) (segs - 1);
-                            double dist = t * length;
-                            double sway = Math.sin(phase * 0.7 + t * 3.5) * 0.12;
 
+                            double sway = Math.sin(phase * 0.9 + t * 4.0) * 0.15;
+
+                            double dist = t * length;
                             double x = base.x - fwd.x * dist + right.x * sway;
                             double z = base.z - fwd.z * dist + right.z * sway;
 
                             spawn(player, sky.at(new Vector3(x, y, z)));
+
                             if (i == segs - 1) {
-                                spawn(player, gold.at(new Vector3(x, y + 0.05, z)));
+                                spawn(player, white.at(new Vector3(x, y + 0.06, z)));
                             }
                         }
                     }
 
-                    if ((currentTick % 15) == 0) {
-                        int segs = 5;
+                    if (wingsTick) {
+                        int segs = 7;
                         double baseY = base.y + 1.1;
+
+                        double flap = Math.sin(phase * 2.5) * 0.2;
+
                         for (int side = -1; side <= 1; side += 2) {
+
                             for (int i = 0; i < segs; i++) {
                                 double t = i / (double) (segs - 1);
-                                double arch = Math.sin(t * Math.PI);
-                                double spread = 0.35 + 0.45 * t;
-                                double back   = 0.15 + 0.4 * t;
+
+                                double arch   = Math.sin(t * Math.PI) * (0.35 + flap);
+                                double spread = 0.45 + 0.55 * t;
+                                double back   = 0.20 + 0.40 * t;
 
                                 double x = base.x
                                         - fwd.x * back
@@ -532,64 +579,72 @@ public class Particle {
                                 double z = base.z
                                         - fwd.z * back
                                         + right.z * (side * spread);
-                                double y = baseY + arch * 0.4;
+                                double y = baseY + arch;
 
                                 spawn(player, gold.at(new Vector3(x, y, z)));
                             }
                         }
                     }
 
-                    if ((currentTick % 20) == 0) {
-                        ring(player, white, base, 0.55, 8, phase * 0.8, 1.8);
+                    if (haloTick) {
+                        double r = 0.55;
+                        double y = base.y + 1.95;
+
+                        ring(player, white, base.add(0, 1.95 - base.y, 0), r, 10, phase * 1.2, 0.03);
                     }
 
-                } else {
-                    if (fastTick) {
-                        double yFeet = base.y + 0.04;
+                }
 
-                        ring(player, sky, base, 0.9, 18, phase * 0.4, 0.04);
-                        ring(player, gold, base, 0.55, 12, -phase * 0.6, 0.04);
+                else {
+                    if (fastTick) {
+                        ring(player, sky, base, 0.95, 18, phase * 0.4, 0.04);
+
+                        ring(player, gold, base, 0.58, 12, -phase * 0.7, 0.04);
 
                         int rays = 4;
                         int steps = 3;
-                        double stepLen = 0.23;
+                        double stepLen = 0.25;
+
                         for (int i = 0; i < rays; i++) {
-                            double ang = phase * 0.3 + i * (TAU / rays);
+                            double ang = phase * 0.45 + i * (TAU / rays);
                             double dx = Math.cos(ang);
                             double dz = Math.sin(ang);
+
                             for (int s = 1; s <= steps; s++) {
-                                double dist = stepLen * s;
+                                double dist = s * stepLen;
                                 double x = base.x + dx * dist;
                                 double z = base.z + dz * dist;
-                                spawn(player, white.at(new Vector3(x, yFeet, z)));
+                                spawn(player, white.at(new Vector3(x, base.y + 0.04, z)));
                             }
                         }
                     }
 
                     if ((currentTick % 18) == 0) {
-                        int pts = 10;
-                        double h = 1.6;
+                        int pts = 12;
+                        double h = 1.7;
                         double r = 0.45;
+
                         for (int i = 0; i < pts; i++) {
                             double t = i / (double) (pts - 1);
-                            double ang = phase * 0.9 + t * TAU * 1.2;
-                            double x = base.x + Math.cos(ang) * (r + 0.05 * t);
-                            double z = base.z + Math.sin(ang) * (r + 0.05 * t);
-                            double y = base.y + 0.5 + t * h;
+                            double ang = phase * 1.1 + t * TAU * 1.3;
+
+                            double x = base.x + Math.cos(ang) * (r + 0.06 * t);
+                            double z = base.z + Math.sin(ang) * (r + 0.06 * t);
+                            double y = base.y + 0.45 + t * h;
 
                             var fx = (i % 2 == 0) ? white : gold;
                             spawn(player, fx.at(new Vector3(x, y, z)));
                         }
                     }
 
-                    if ((currentTick % 24) == 0) {
+                    if ((currentTick % 20) == 0) {
                         double crownY = base.y + 1.9;
-                        int stars = 6;
-                        double r = 0.6;
+                        int stars = 8;
+                        double r = 0.65;
 
                         for (int i = 0; i < stars; i++) {
                             double t = i / (double) stars;
-                            double ang = phase * 1.0 + t * TAU;
+                            double ang = phase * 1.2 + t * TAU;
 
                             double x = base.x + Math.cos(ang) * r;
                             double z = base.z + Math.sin(ang) * r;
@@ -601,13 +656,15 @@ public class Particle {
 
                     if (medTick) {
                         double midY = base.y + 1.0;
-                        int pts = 8;
-                        double r = 0.45;
+                        int pts = 10;
+                        double r = 0.48;
+
                         for (int i = 0; i < pts; i++) {
-                            double a = phase * 0.8 + i * (TAU / pts);
+                            double a = phase * 0.85 + i * (TAU / pts);
                             double x = base.x + Math.cos(a) * r;
                             double z = base.z + Math.sin(a) * r;
-                            double y = midY + 0.03 * Math.sin(phase * 1.3 + i);
+                            double y = midY + 0.03 * Math.sin(phase * 1.2 + i);
+
                             spawn(player, sky.at(new Vector3(x, y, z)));
                         }
                     }
@@ -698,40 +755,91 @@ public class Particle {
 
             // Spectral Smoke
             case "spectral_smoke" -> {
-                PFactory smoke = pos -> new SmokeParticle(pos);
+
+                // Particules gris + violet spectral
+                PFactory grey   = pos -> dust(90, 90, 90).at(pos);
+                PFactory violet = pos -> dust(150, 70, 180).at(pos);
+
+                PFactory smokeGrey   = SmokeParticle::new;
+                PFactory smokeViolet = pos -> dust(150, 70, 180).at(pos);
+
+                boolean hasTint = true;
+
                 if (moving) {
-                    int segs = 7;
-                    double back = 1.4;
-                    double side = 0.4;
+
+                    int segs = 8;
+                    double back = 1.5;
+                    double sideOffset = 0.55;
+
                     for (int sideSign = -1; sideSign <= 1; sideSign += 2) {
                         for (int i = 0; i < segs; i++) {
+
                             double t = i / (double) (segs - 1);
+
+                            double sway = Math.sin(phase * 0.7 + t * 3.8 + sideSign * 0.5) * 0.15;
+
                             double dist = t * back;
-                            double sway = Math.sin(phase * 0.6 + t * 3.0 + sideSign) * 0.1;
-                            double cx = base.x - fwd.x * dist + right.x * (sideSign * side + sway);
-                            double cz = base.z - fwd.z * dist + right.z * (sideSign * side + sway);
-                            double cy = base.y + 0.8 + t * 0.3;
-                            spawn(player, new SmokeParticle(new Vector3(cx, cy, cz)));
+
+                            double cx = base.x - fwd.x * dist + right.x * (sideSign * sideOffset + sway);
+                            double cz = base.z - fwd.z * dist + right.z * (sideSign * sideOffset + sway);
+                            double cy = base.y + 0.6 + t * 0.45;
+
+                            if (i % 2 == 0) spawn(player, smokeGrey.at(new Vector3(cx, cy, cz)));
+                            else spawn(player, hasTint ? smokeViolet.at(new Vector3(cx, cy, cz))
+                                    : violet.at(new Vector3(cx, cy, cz)));
                         }
                     }
-                } else {
+
                     if (fastTick) {
-                        int columns = 4;
-                        double radius = 0.9;
-                        int heightSteps = 4;
-                        for (int i = 0; i < columns; i++) {
-                            double ang = phase * 0.3 + i * (TAU / columns);
+                        int cols = 5;
+                        double radius = 0.65;
+
+                        for (int c = 0; c < cols; c++) {
+                            double ang = phase * 0.7 + c * (TAU / cols);
                             double x = base.x + Math.cos(ang) * radius;
                             double z = base.z + Math.sin(ang) * radius;
+
+                            double y = base.y + 0.4 + Math.sin(phase * 0.6 + c) * 0.15;
+
+                            spawn(player, smokeGrey.at(new Vector3(x, y, z)));
+                            spawn(player, hasTint ? smokeViolet.at(new Vector3(x, y + 0.1, z))
+                                    : violet.at(new Vector3(x, y + 0.1, z)));
+                        }
+                    }
+                }
+
+                else {
+
+                    if (fastTick) {
+                        int columns = 6;
+                        double radius = 1.1;
+                        int heightSteps = 5;
+
+                        for (int i = 0; i < columns; i++) {
+
+                            double ang = phase * 0.25 + i * (TAU / columns);
+                            double x = base.x + Math.cos(ang) * radius;
+                            double z = base.z + Math.sin(ang) * radius;
+
                             for (int h = 0; h < heightSteps; h++) {
+
                                 double t = h / (double) (heightSteps - 1);
-                                double y = base.y + 0.4 + t * 1.4;
-                                spawn(player, smoke.at(new Vector3(x, y, z)));
+
+                                double y = base.y + 0.35 + t * 1.6;
+
+                                if (h % 2 == 0) spawn(player, smokeGrey.at(new Vector3(x, y, z)));
+                                else spawn(player, hasTint ? smokeViolet.at(new Vector3(x, y, z))
+                                        : violet.at(new Vector3(x, y, z)));
                             }
                         }
                     }
+
                     if (slowTick) {
-                        spawn(player, new SmokeParticle(base.add(0, 1.8, 0)));
+                        double y = base.y + 1.7;
+
+                        spawn(player, smokeGrey.at(base.add(0, 1.7, 0)));
+                        spawn(player, hasTint ? smokeViolet.at(base.add(0, 1.85, 0))
+                                : violet.at(base.add(0, 1.85, 0)));
                     }
                 }
             }
@@ -912,34 +1020,69 @@ public class Particle {
             // 🌪️ Tempête Miniature
             case "mini_storm" -> {
                 var light = dust(245, 245, 255);
-                var dark  = dust(180, 180, 190);
+                var dark  = dust(170, 170, 185);
 
-                // Tornade constante autour du joueur
                 if (fastTick) {
-                    int rings = 3;
-                    int points = 10;
-                    double heightStep = 0.45;
+                    int rings = 5;
+                    int points = 14;
+                    double heightStep = 0.38;
+                    double baseHeight = base.y + 0.15;
 
                     for (int r = 0; r < rings; r++) {
-                        double y = base.y + 0.15 + r * heightStep;
-                        double radius = 0.35 + r * 0.18;
+                        double y = baseHeight + r * heightStep;
+
+                        double radius = 0.42 + r * 0.22;
 
                         for (int i = 0; i < points; i++) {
+
                             double t = i / (double) points;
-                            double ang = phase * 0.6 + t * TAU + r * 0.7;
+
+                            double ang = phase * (0.8 + r * 0.1)
+                                    + t * TAU
+                                    + r * 0.55;
+
+                            ang += Math.sin(phase * 0.4 + r * 0.7) * 0.3;
 
                             double x = base.x + Math.cos(ang) * radius;
                             double z = base.z + Math.sin(ang) * radius;
 
-                            var fx = ((i + r + currentTick) % 2 == 0) ? light : dark;
+                            var fx = ((i + r + currentTick) % 3 == 0) ? light : dark;
+
                             spawn(player, fx.at(new Vector3(x, y, z)));
                         }
                     }
+
+                    for (int h = 0; h < 4; h++) {
+
+                        double t = h / 3.0;
+
+                        double y = base.y + 0.25 + t * 1.6;
+                        double swirl = Math.sin(phase * 1.2 + t * 4.0) * 0.15;
+
+                        double x = base.x + swirl * right.x;
+                        double z = base.z + swirl * right.z;
+
+                        spawn(player, light.at(new Vector3(x, y, z)));
+                    }
                 }
 
-                // Petit nuage au sommet quand le joueur est statique
                 if (!moving && slowTick) {
                     spawn(player, new SmokeParticle(base.add(0, 1.9, 0)));
+
+                    int p = 8;
+                    double r = 0.45;
+                    double yTop = base.y + 1.85;
+
+                    for (int i = 0; i < p; i++) {
+
+                        double ang = phase * 0.9 + i * (TAU / p);
+
+                        double x = base.x + Math.cos(ang) * r;
+                        double z = base.z + Math.sin(ang) * r;
+
+                        var fx = (i % 2 == 0) ? light : dark;
+                        spawn(player, fx.at(new Vector3(x, yTop, z)));
+                    }
                 }
             }
 
@@ -947,32 +1090,106 @@ public class Particle {
             case "frost_heart" -> {
                 var frost = dust(160, 220, 255);
                 var deep  = dust(110, 180, 245);
+                var white = dust(240, 250, 255);
 
                 Position chest = base.add(0, 1.1, 0);
 
-                // Pulsation glaciale autour du cœur
-                if (fastTick) {
-                    int pts = 8;
-                    double baseR = 0.22;
-                    double pulse = 0.06 * Math.sin(phase * 0.6);
+                if (moving) {
 
-                    for (int i = 0; i < pts; i++) {
-                        double t = i / (double) pts;
-                        double ang = phase * 0.7 + t * TAU;
-                        double r = baseR + pulse;
+                    if (fastTick) {
+                        int shards = 8;
+                        for (int i = 0; i < shards; i++) {
+
+                            double ang = (i / (double) shards) * TAU + phase * 0.6;
+                            double speed = 0.18 + Math.random() * 0.1;
+
+                            double x = chest.x + Math.cos(ang) * 0.15;
+                            double z = chest.z + Math.sin(ang) * 0.15;
+                            double y = chest.y + Math.random() * 0.15;
+
+                            Vector3 dir = new Vector3(
+                                    Math.cos(ang) * speed,
+                                    0.07 + Math.random() * 0.05,
+                                    Math.sin(ang) * speed
+                            );
+
+                            var fx = (i % 2 == 0) ? frost : deep;
+                            spawn(player, fx.at(new Vector3(x + dir.x, y + dir.y, z + dir.z)));
+                        }
+                    }
+
+                    if (fastTick) {
+                        trail(player, pos -> frost.at(pos),
+                                base.add(0, 0.2, 0),
+                                fwd, 1.3, 6, 0.0);
+                    }
+
+                    if (fastTick) {
+                        int cracks = 4;
+                        double r = 0.32;
+
+                        for (int i = 0; i < cracks; i++) {
+                            double ang = i * (TAU / cracks) + phase * 1.4;
+
+                            double x = base.x + Math.cos(ang) * r;
+                            double z = base.z + Math.sin(ang) * r;
+                            double y = base.y + 0.05;
+
+                            spawn(player, deep.at(new Vector3(x, y, z)));
+                            spawn(player, frost.at(new Vector3(x, y + 0.03, z)));
+                        }
+                    }
+
+                    return;
+                }
+
+                if (fastTick) {
+                    int shards = 6;
+                    for (int i = 0; i < shards; i++) {
+                        double t = i / (double) shards;
+                        double ang = t * TAU + Math.sin(phase * 0.5) * 0.3;
+
+                        double height = 0.05 + Math.sin(phase * 0.4 + t * 3.0) * 0.06;
+
+                        double x = chest.x + Math.cos(ang) * 0.18;
+                        double z = chest.z + Math.sin(ang) * 0.18;
+                        double y = chest.y + height;
+
+                        var fx = (i % 2 == 0) ? frost : deep;
+                        spawn(player, fx.at(new Vector3(x, y, z)));
+                    }
+
+                    double vapY = chest.y + 0.25;
+                    spawn(player, white.at(new Vector3(
+                            chest.x,
+                            vapY + Math.sin(phase * 0.3) * 0.04,
+                            chest.z
+                    )));
+                }
+
+                if (medTick) {
+                    int orbit = 3;
+                    double r = 0.3;
+                    for (int i = 0; i < orbit; i++) {
+                        double ang = phase * 0.6 + i * (TAU / orbit);
 
                         double x = chest.x + Math.cos(ang) * r;
                         double z = chest.z + Math.sin(ang) * r;
-                        double y = chest.y + 0.03 * Math.sin(phase * 1.2 + t * 4.0);
+                        double y = chest.y + 0.07 * Math.sin(phase + i);
 
                         var fx = (i % 2 == 0) ? frost : deep;
                         spawn(player, fx.at(new Vector3(x, y, z)));
                     }
                 }
 
-                // Anneau glacé au sol quand le joueur ne bouge pas
-                if (!moving && medTick) {
-                    ring(player, frost, base, 0.7, 14, phase * 0.5, 0.04);
+                if (slowTick) {
+                    double y = chest.y + 0.12;
+
+                    spawn(player, white.at(new Vector3(
+                            chest.x + Math.random() * 0.1 - 0.05,
+                            y,
+                            chest.z + Math.random() * 0.1 - 0.05
+                    )));
                 }
             }
 
