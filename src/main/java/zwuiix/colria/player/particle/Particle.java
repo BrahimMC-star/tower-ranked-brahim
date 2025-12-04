@@ -1544,17 +1544,109 @@ public class Particle {
 
             // 🔮 Faille Dimensionnelle
             case "dimensional_rift" -> {
-                var core   = dust(180, 0, 230);
-                var fringe = dust(120, 0, 170);
 
-                Position c = base.add(0, 0.5, 0);
+                var violet   = dust(180, 0, 230);
+                var magenta  = dust(255, 40, 180);
+                var cyan     = dust(80, 200, 255);
+                var darkRift = dust(60, 0, 90);
+
+                Position c = base.add(0, 0.55, 0);
 
                 if (fastTick) {
-                    dualSpiral(player, core, c, 0.55, 1.5, 18, phase * 0.9);
+
+                    int shards = 10;
+                    for (int i = 0; i < shards; i++) {
+
+                        double t = i / (double) shards;
+
+                        double ang = phase * 1.3 + t * TAU + Math.sin(phase * 2 + i) * 0.4;
+                        double dist = 0.25 + Math.sin(phase * 3 + i * 0.7) * 0.18;
+
+                        double x = c.x + Math.cos(ang) * dist;
+                        double z = c.z + Math.sin(ang) * dist;
+                        double y = c.y + Math.sin(phase * 1.7 + t * 6) * 0.1;
+
+                        var fx = (i % 3 == 0) ? cyan : (i % 2 == 0 ? magenta : violet);
+                        spawn(player, fx.at(new Vector3(x, y, z)));
+
+                        Vector3 p2 = new Vector3(
+                                x + (Math.cos(ang) * 0.12),
+                                y + (Math.sin(t * 9) * 0.07),
+                                z + (Math.sin(ang) * 0.12)
+                        );
+
+                        spawn(player, darkRift.at(p2));
+                    }
+
+                    int cracks = 6;
+                    for (int i = 0; i < cracks; i++) {
+
+                        double ang = i * (TAU / cracks) + phase * 1.2;
+
+                        double rx = c.x + Math.cos(ang) * 0.45;
+                        double rz = c.z + Math.sin(ang) * 0.45;
+                        double ry = c.y + Math.sin(phase * 3 + i) * 0.15;
+
+                        var fx = (i % 2 == 0) ? violet : magenta;
+                        spawn(player, fx.at(new Vector3(rx, ry, rz)));
+                    }
                 }
 
-                if (medTick) {
-                    ring(player, fringe, base, 0.85, 16, -phase * 0.6, 0.04);
+                if (moving && fastTick) {
+
+                    int fractures = 4;
+                    for (int i = 0; i < fractures; i++) {
+
+                        double back = 0.25 + i * 0.17;
+
+                        double x = base.x - fwd.x * back + right.x * Math.sin(phase * 2 + i) * 0.12;
+                        double z = base.z - fwd.z * back + right.z * Math.sin(phase * 2 + i) * 0.12;
+                        double y = base.y + 0.2 + Math.sin(phase * 1.8 + i) * 0.07;
+
+                        var fx = (i % 3 == 0) ? cyan : (i % 2 == 0 ? magenta : violet);
+                        spawn(player, fx.at(new Vector3(x, y, z)));
+
+                        Vector3 shard = new Vector3(
+                                x + (Math.random() * 0.15 - 0.075),
+                                y + 0.1,
+                                z + (Math.random() * 0.15 - 0.075)
+                        );
+                        spawn(player, darkRift.at(shard));
+                    }
+
+                    double t = phase * 1.4;
+                    double vx = base.x + Math.cos(t) * 0.35;
+                    double vz = base.z + Math.sin(t) * 0.35;
+                    double vy = base.y + 1.0 + Math.sin(t * 3) * 0.12;
+
+                    spawn(player, cyan.at(new Vector3(vx, vy, vz)));
+                    spawn(player, new EndRodParticle(new Vector3(vx, vy, vz)));
+                }
+
+                if (!moving && medTick) {
+
+                    int swirlPts = 16;
+                    double r = 0.85;
+
+                    for (int i = 0; i < swirlPts; i++) {
+
+                        double a = phase * 0.6 + i * (TAU / swirlPts);
+
+                        double x = base.x + Math.cos(a) * r;
+                        double z = base.z + Math.sin(a) * r;
+
+                        double y = base.y + 0.07 * Math.sin(phase * 1.3 + i);
+
+                        var fx = (i % 4 == 0) ? cyan : (i % 2 == 0 ? magenta : violet);
+                        spawn(player, fx.at(new Vector3(x, y, z)));
+                    }
+
+                    double vx = base.x;
+                    double vz = base.z;
+                    double vy = base.y + 1.15 + Math.sin(phase * 2.2) * 0.12;
+
+                    spawn(player, darkRift.at(new Vector3(vx, vy, vz)));
+                    spawn(player, new EndRodParticle(new Vector3(vx, vy, vz)));
                 }
             }
 
