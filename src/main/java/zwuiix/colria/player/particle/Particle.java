@@ -5,6 +5,7 @@ import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.particle.DustParticle;
 import cn.nukkit.level.particle.FlameParticle;
+import cn.nukkit.level.particle.HeartParticle;
 import cn.nukkit.level.particle.SmokeParticle;
 import cn.nukkit.math.Vector3;
 import lombok.Getter;
@@ -1480,29 +1481,64 @@ public class Particle {
 
             // 🩷 Pluie d’Amour
             case "love_rain" -> {
+
                 var pink  = dust(255, 160, 210);
                 var deep  = dust(230, 90, 160);
+                var soft  = dust(255, 200, 220);
 
                 Random rng = new Random(seed);
 
-                // Gouttes qui tombent autour du joueur
                 if (fastTick) {
-                    int drops = 5;
+
+                    int drops = 6;
                     for (int i = 0; i < drops; i++) {
+
                         double a = rng.nextDouble() * TAU;
-                        double r = 0.2 + rng.nextDouble() * 0.8;
+                        double r = 0.25 + rng.nextDouble() * 0.95;
+
                         double x = base.x + Math.cos(a) * r;
                         double z = base.z + Math.sin(a) * r;
-                        double y = base.y + 1.6 + rng.nextDouble() * 0.6;
+                        double y = base.y + 1.6 + rng.nextDouble() * 0.7;
 
-                        var fx = rng.nextBoolean() ? pink : deep;
+                        var fx = (i % 3 == 0) ? soft : (rng.nextBoolean() ? pink : deep);
                         spawn(player, fx.at(new Vector3(x, y, z)));
+
+                        if (i % 2 == 0) {
+                            spawn(player, new HeartParticle(new Vector3(x, y + 0.1, z)));
+                        }
                     }
                 }
 
-                // À l’arrêt : petit cercle “puddle” au sol
+                if (moving && fastTick) {
+
+                    double t = (phase * 1.2) % TAU;
+                    double swirlR = 0.32;
+
+                    double sx = base.x + Math.cos(t) * swirlR;
+                    double sz = base.z + Math.sin(t) * swirlR;
+                    double sy = base.y + 0.2 + Math.sin(phase * 2.0) * 0.06;
+
+                    spawn(player, pink.at(new Vector3(sx, sy, sz)));
+                    spawn(player, new HeartParticle(new Vector3(sx, sy + 0.05, sz)));
+
+                    int steps = 3;
+                    for (int i = 0; i < steps; i++) {
+
+                        double back = 0.25 + i * 0.15;
+                        double px = base.x - fwd.x * back + right.x * (Math.sin(phase * 2 + i) * 0.1);
+                        double pz = base.z - fwd.z * back + right.z * (Math.sin(phase * 2 + i) * 0.1);
+                        double py = base.y + 0.1 + Math.sin(phase * 3 + i * 1.4) * 0.03;
+
+                        spawn(player, deep.at(new Vector3(px, py, pz)));
+
+                        if (i == 1)
+                            spawn(player, new HeartParticle(new Vector3(px, py + 0.06, pz)));
+                    }
+                }
+
                 if (!moving && medTick) {
-                    ring(player, pink, base, 0.65, 14, phase * 0.5, 0.03);
+                    ring(player, pink, base, 0.7, 14, phase * 0.5, 0.03);
+                    spawn(player, new HeartParticle(base.add(0, 1.3 + Math.sin(phase) * 0.05, 0)));
                 }
             }
 

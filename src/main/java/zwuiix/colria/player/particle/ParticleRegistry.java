@@ -42,7 +42,7 @@ public class ParticleRegistry {
         register(new Particle("life_essence", TranslationKeys.PARTICLE_LIFE_ESSENCE_NAME, TranslationKeys.PARTICLE_LIFE_ESSENCE_LORE, new ItemAppleGold(), 7_500, true));
         register(new Particle("love_rain", TranslationKeys.PARTICLE_LOVE_RAIN_NAME, TranslationKeys.PARTICLE_LOVE_RAIN_LORE, new ItemHeartOfTheSea(), 3_500, false));
         register(new Particle("dimensional_rift", TranslationKeys.PARTICLE_DIMENSIONAL_RIFT_NAME, TranslationKeys.PARTICLE_DIMENSIONAL_RIFT_LORE, new ItemEnderEye(), 5_000, false));
-        register(new Particle("comet", TranslationKeys.PARTICLE_COMET_NAME, TranslationKeys.PARTICLE_COMET_LORE, new BlockAmethystCluster().toItem(), 7_500, true));
+        register(new Particle("comet", TranslationKeys.PARTICLE_COMET_NAME, TranslationKeys.PARTICLE_COMET_LORE, new BlockAmethystCluster().toItem(), 15_000, true));
         register(new Particle("marine_splash", TranslationKeys.PARTICLE_MARINE_SPLASH_NAME, TranslationKeys.PARTICLE_MARINE_SPLASH_LORE, new ItemBucket(ItemBucket.WATER_BUCKET), 1_500, false));
         register(new Particle("wandering_souls", TranslationKeys.PARTICLE_WANDERING_SOULS_NAME, TranslationKeys.PARTICLE_WANDERING_SOULS_LORE, new BlockSoulSand().toItem(), 10_000, true));
     }
