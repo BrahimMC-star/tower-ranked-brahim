@@ -323,190 +323,47 @@ public class Particle {
 
             // Void Purple
             case "void_purple" -> {
-
                 var purple = dust(140, 0, 200);
-                var cyan   = dust(80, 190, 255);
-                var voidDark = dust(50, 0, 90);
-                PFactory smoke = pos -> new SmokeParticle(pos);
-
-                Random rng = new Random(seed);
+                PFactory darkSmoke = pos -> new SmokeParticle(pos);
 
                 if (moving) {
-
-                    if (fastTick) {
-                        int segs = 6;
-                        double back = 1.5;
-
-                        for (int i = 0; i < segs; i++) {
-                            double t = i / (double)(segs - 1);
-                            double dist = t * back;
-
-                            double sway = Math.sin(phase * 2.0 + t * 5.0) * 0.18;
-
-                            double x = base.x - fwd.x * dist + right.x * sway;
-                            double z = base.z - fwd.z * dist + right.z * sway;
-                            double y = base.y + 0.06;
-
-                            spawn(player, purple.at(new Vector3(x, y, z)));
-
-                            if (i % 2 == 0)
-                                spawn(player, cyan.at(new Vector3(x, y + 0.04, z)));
-
-                            if (i == segs - 1)
-                                spawn(player, voidDark.at(new Vector3(x, y + 0.25, z)));
-                        }
-
-                        int shards = 5;
-                        for (int i = 0; i < shards; i++) {
-
-                            double ang = phase * 1.3 + i * 1.9;
-                            double speed = 0.12 + rng.nextDouble() * 0.06;
-
-                            Vector3 origin = base.add(
-                                    Math.cos(ang) * 0.18,
-                                    0.25 + rng.nextDouble() * 0.15,
-                                    Math.sin(ang) * 0.18
-                            );
-
-                            Vector3 dir = new Vector3(
-                                    Math.cos(ang) * speed,
-                                    0.05 + rng.nextDouble() * 0.04,
-                                    Math.sin(ang) * speed
-                            );
-
-                            var fx = (i % 2 == 0) ? cyan : purple;
-                            spawn(player, fx.at(origin.add(dir)));
-                        }
-                    }
-
                     if (medTick) {
-
-                        int rings = 8;
-                        double r = 0.55;
-                        double y0 = base.y + 0.05;
-
-                        for (int i = 0; i < rings; i++) {
-                            double a = phase * 0.9 + i * (TAU / rings);
-                            double x = base.x + Math.cos(a) * r;
-                            double z = base.z + Math.sin(a) * r;
-                            spawn(player, voidDark.at(new Vector3(x, y0, z)));
-                        }
-
-                        double cx = base.x - fwd.x * 0.5;
-                        double cy = base.y + 0.35 + Math.sin(phase * 3.0) * 0.08;
-                        double cz = base.z - fwd.z * 0.5;
-
-                        spawn(player, cyan.at(new Vector3(cx, cy, cz)));
-                        spawn(player, purple.at(new Vector3(cx, cy + 0.04, cz)));
-                    }
-
-                    if (slowTick) {
-                        spawn(player, voidDark.at(base.add(0, 1.3, 0)));
-                    }
-
-                } else {
-
-                    if (fastTick) {
-
-                        int layers = 3;
-                        for (int L = 0; L < layers; L++) {
-                            int pts = 5 + L * 2;
-                            double r = 0.45 + L * 0.25;
-                            double y = base.y + 0.65 + L * 0.45;
-
-                            for (int i = 0; i < pts; i++) {
-
-                                double t = i / (double) pts;
-                                double ang = phase * (0.7 + L * 0.25) + t * TAU + L * 0.8;
-
-                                double swirl = Math.sin(phase * 2.0 + t * 6.0 + L) * 0.14;
-
-                                double x = base.x + Math.cos(ang) * (r + swirl);
-                                double z = base.z + Math.sin(ang) * (r + swirl);
-
-                                var fx = (i % 3 == 0) ? cyan : purple;
-                                spawn(player, fx.at(new Vector3(x, y, z)));
-
-                                if (L == 1)
-                                    spawn(player, voidDark.at(new Vector3(x, y + 0.08, z)));
+                        int segs = 7;
+                        double back = 1.6;
+                        for (int i = 0; i < segs; i++) {
+                            double t = i / (double) (segs - 1);
+                            double dist = t * back;
+                            double x = base.x - fwd.x * dist;
+                            double z = base.z - fwd.z * dist;
+                            double y = base.y + 0.05;
+                            spawn(player, purple.at(new Vector3(x, y, z)));
+                            if ((i % 2) == 0) {
+                                spawn(player, darkSmoke.at(new Vector3(x, y + 0.3, z)));
                             }
                         }
 
-                        double cx = base.x + Math.sin(phase * 2.0) * 0.12;
-                        double cy = base.y + 1.25 + Math.sin(phase * 1.7) * 0.12;
-                        double cz = base.z + Math.cos(phase * 2.0) * 0.12;
-
-                        spawn(player, voidDark.at(new Vector3(cx, cy, cz)));
-
-                        if ((currentTick % 18) == 0)
-                            spawn(player, cyan.at(new Vector3(cx, cy + 0.12, cz)));
+                        coneBurst(player, darkSmoke, base.add(0, 1.0, 0), fwd, 1.0, 5, seed, 0.5, 1.2);
                     }
-
-                    if (medTick) {
-
-                        double y = base.y + 0.04;
-                        int rings = 12;
-                        double r = 0.8;
-
-                        for (int i = 0; i < rings; i++) {
-                            double a = phase * 0.4 + i * (TAU / rings);
-
-                            double dx = Math.cos(a) * r;
-                            double dz = Math.sin(a) * r;
-
-                            double fx = base.x + dx;
-                            double fz = base.z + dz;
-
-                            var col = ((i + currentTick) % 3 == 0) ? cyan : purple;
-                            spawn(player, col.at(new Vector3(fx, y, fz)));
-                        }
-
-                        int accrete = 5;
-                        for (int i = 0; i < accrete; i++) {
-
-                            double ang = rng.nextDouble() * TAU;
-                            double dist = 0.3 + rng.nextDouble() * 0.5;
-
-                            double ox = base.x + Math.cos(ang) * dist;
-                            double oz = base.z + Math.sin(ang) * dist;
-                            double oy = base.y + 0.25 + rng.nextDouble() * 0.4;
-
-                            double dx = base.x - ox;
-                            double dz = base.z - oz;
-                            double dy = (base.y + 1.0) - oy;
-
-                            Vector3 pos = new Vector3(
-                                    ox + dx * 0.15,
-                                    oy + dy * 0.15,
-                                    oz + dz * 0.15
-                            );
-
-                            var fx = (i % 2 == 0) ? voidDark : purple;
-                            spawn(player, fx.at(pos));
+                } else {
+                    if (fastTick) {
+                        double[] heights = {0.7, 1.2, 1.7};
+                        double[] radii = {0.5, 0.7, 0.6};
+                        for (int h = 0; h < heights.length; h++) {
+                            for (int orb = 0; orb < 3; orb++) {
+                                double ang = phase * (0.35 + 0.15 * h) + orb * (TAU / 3.0) + h * 0.7;
+                                double r = radii[h];
+                                double x = base.x + Math.cos(ang) * r;
+                                double z = base.z + Math.sin(ang) * r;
+                                double y = base.y + heights[h];
+                                spawn(player, purple.at(new Vector3(x, y, z)));
+                                if (h == 1) {
+                                    spawn(player, darkSmoke.at(new Vector3(x, y + 0.1, z)));
+                                }
+                            }
                         }
                     }
-
-                    if (slowTick) {
-
-                        int shards = 6;
-                        for (int i = 0; i < shards; i++) {
-
-                            double ang = phase * 1.1 + i * (TAU / shards);
-                            double dist = 0.28 + Math.sin(phase * 3.0 + i) * 0.08;
-
-                            double x = base.x + Math.cos(ang) * dist;
-                            double z = base.z + Math.sin(ang) * dist;
-                            double y = base.y + 0.45;
-
-                            var fx = (i % 2 == 0) ? cyan : purple;
-                            spawn(player, fx.at(new Vector3(x, y, z)));
-
-                            spawn(player, voidDark.at(new Vector3(
-                                    x * 0.97 + base.x * 0.03,
-                                    y + 0.02,
-                                    z * 0.97 + base.z * 0.03
-                            )));
-                        }
+                    if ((currentTick % 12) == 0) {
+                        burstRandom(player, darkSmoke, base.add(0, 1.0, 0), 0.9, 4, seed, 0.5, 1.2);
                     }
                 }
             }
