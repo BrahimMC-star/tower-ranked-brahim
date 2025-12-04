@@ -368,103 +368,187 @@ public class Particle {
                 }
             }
 
-            // Dancing Flame
+            // 🔥 Dancing Flame
             case "dancing_flame" -> {
-                var ember = dust(240, 140, 60);
+                var ember      = dust(240, 140, 60);  // orange chaud
+                var emberHot   = dust(255, 210, 120); // jaune très chaud
+                var emberDeep  = dust(180, 70, 40);   // rouge sombre
 
-                DoubleFunction<Double> swirl = t -> Math.sin(phase * 2.4 + t * 6.0) * 0.10;
-                DoubleFunction<Double> liftCurve = t -> Math.sin(phase * 1.3 + t * 3.0) * 0.06;
+                Random rng = new Random(seed ^ 0xF1A3E11L);
+                Position center = base.add(0, 0.1, 0);
 
+                // ========= MOUVEMENT =========
                 if (moving) {
+
+                    // 1) Jet de flammes sous les pieds + traînée arrière
                     if (fastTick) {
-                        footsteps(player, FlameParticle::new, base, right, 0.35, 0.08);
+                        // petites flammes footprints
+                        footsteps(player, FlameParticle::new, base, right, 0.30, 0.02);
 
-                        trail(player, pos -> {
-                            double tw = Math.sin(phase * 4.0 + pos.y * 2.0) * 0.12;
-                            Vector3 offset = right.multiply(tw);
-                            return new FlameParticle(pos.add(offset));
-                        }, base.add(0, 0.6, 0), fwd, 1.1, 5, 0.0);
+                        // double jet derrière le joueur (gauche/droite)
+                        Position jetBase = base.add(-fwd.x * 0.7, 0.4, -fwd.z * 0.7);
 
-                        if (((seed + (int) phase) & 5) == 0) {
-                            burstRandom(player, ember, base.add(0, 0.9 + Math.random() * 0.4, 0),
-                                    0.15, 1, seed ^ 0x55AAL, 0.0, 0.20);
+                        for (int side = -1; side <= 1; side += 2) {
+                            double sideOffset = 0.28 * side;
+                            for (int i = 0; i < 4; i++) {
+                                double t = i / 3.0;
+                                double rise = 0.5 + t * 0.7;
+
+                                double x = jetBase.x + right.x * sideOffset;
+                                double z = jetBase.z + right.z * sideOffset;
+                                double y = jetBase.y + rise + Math.sin(phase * 1.6 + t * 5.0) * 0.05;
+
+                                Vector3 pos = new Vector3(x, y, z);
+                                spawn(player, new FlameParticle(pos));
+                                if (i >= 2) {
+                                    spawn(player, emberHot.at(pos.add(0, 0.05, 0)));
+                                }
+                            }
+                        }
+
+                        // léger ruban de braises dans le dos
+                        int segs = 5;
+                        for (int i = 0; i < segs; i++) {
+                            double t = i / (double) (segs - 1);
+                            double dist = 0.3 + t * 0.9;
+
+                            double sway = Math.sin(phase * 1.3 + t * 4.0) * 0.10;
+
+                            double x = base.x - fwd.x * dist + right.x * sway;
+                            double z = base.z - fwd.z * dist + right.z * sway;
+                            double y = base.y + 0.6 + t * 0.25;
+
+                            var fx = (i % 2 == 0) ? ember : emberHot;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
                         }
                     }
 
+                    // 2) Arc de flammes qui contourne le torse en arrière
                     if (medTick) {
                         int segs = 6;
-                        double radius = 0.8;
-                        double yBase = base.y + 0.9;
+                        double radius = 0.7;
+                        double yBase = base.y + 1.0;
 
                         for (int i = 0; i < segs; i++) {
                             double t = i / (double) (segs - 1);
 
-                            // Arc angle
-                            double ang = (Math.PI * 0.7) + t * (Math.PI * 0.6);
+                            double ang = (Math.PI * 0.9) + t * (Math.PI * 0.8); // arc derrière
+                            double x = base.x - fwd.x * 0.25 + Math.cos(ang) * radius * 0.40;
+                            double z = base.z - fwd.z * 0.25 + Math.sin(ang) * radius * 0.40;
 
-                            // Base arc position
-                            double x = base.x - fwd.x * 0.4 + Math.cos(ang) * radius * 0.4;
-                            double z = base.z - fwd.z * 0.4 + Math.sin(ang) * radius * 0.4;
+                            double sway = Math.sin(phase * 1.1 + t * 5.0) * 0.10;
+                            x += right.x * sway;
+                            z += right.z * sway;
 
-                            // Apply premium swirl movement
-                            x += right.x * swirl.apply(t);
-                            z += right.z * swirl.apply(t);
+                            double y = yBase + Math.sin(phase * 1.4 + t * 4.0) * 0.10;
 
-                            // Vertical organic motion
-                            double y = yBase + liftCurve.apply(t);
-
-                            spawn(player, ember.at(new Vector3(x, y, z)));
+                            var fx = (i % 2 == 0) ? ember : emberDeep;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
                         }
                     }
 
+                    // ========= IDLE =========
                 } else {
+
+                    // 3) Double hélice de flammes autour du corps
                     if (fastTick) {
-                        ring(player, ember, base, 0.6, 12, phase * 0.7, 0.04);
+                        Position spiralCenter = base.add(0, 0.3, 0);
+                        double radius = 0.45;
+                        double height = 1.5;
+                        int points = 14;
 
-                        int segments = 4;
-                        for (int side = -1; side <= 1; side += 2) {
+                        // Hélice 1
+                        spiral(player, ember, spiralCenter, radius, height, points, phase * 0.9);
+                        // Hélice 2 décalée
+                        spiral(player, emberHot, spiralCenter, radius * 0.9, height, points, phase * 0.9 + Math.PI);
 
-                            double sx = right.x * 0.4 * side;
-                            double sz = right.z * 0.4 * side;
+                        // quelques flammes brutes qui flottent au milieu
+                        int extra = 3;
+                        for (int i = 0; i < extra; i++) {
+                            double t = i / (double) extra;
+                            double y = base.y + 0.5 + t * 1.2;
+                            double offset = Math.sin(phase * 1.5 + t * 6.0) * 0.10;
 
-                            for (int i = 0; i < segments; i++) {
-                                double t = i / (double) (segments - 1);
-
-                                double wobble = Math.sin(phase * 0.6 + t * 3.0 + side * 0.8) * 0.12;
-
-                                // Premium swirl idle
-                                double swirlIdle = Math.cos(phase * 0.4 + t * 2.0) * 0.06;
-
-                                double x = base.x + sx + fwd.x * wobble + right.x * swirlIdle;
-                                double z = base.z + sz + fwd.z * wobble + right.z * swirlIdle;
-                                double y = base.y + 0.3 + t * 1.2 + Math.sin(t * 5.0) * 0.05;
-
-                                spawn(player, new FlameParticle(new Vector3(x, y, z)));
-                            }
+                            double x = base.x + offset * right.x;
+                            double z = base.z + offset * right.z;
+                            spawn(player, new FlameParticle(new Vector3(x, y, z)));
                         }
                     }
 
+                    // 4) Colonne centrée et petite couronne de braises
                     if (slowTick) {
-                        int pts = 7;
+                        int pts = 6;
 
+                        // colonne centrale
                         for (int i = 0; i < pts; i++) {
                             double t = i / (double) (pts - 1);
-
                             double y = base.y + 0.4 + t * 1.6;
-                            y += Math.sin(phase * 2.0 + t * 4.0) * 0.05;
+                            y += Math.sin(phase * 1.8 + t * 4.0) * 0.06;
 
-                            double sway = Math.sin(phase * 0.9 + t * 4.0) * 0.12;
-
-                            sway += Math.cos(phase * 0.7 + t * 3.5) * 0.07;
-
+                            double sway = Math.sin(phase * 0.9 + t * 3.5) * 0.08;
                             double x = base.x + sway * right.x;
                             double z = base.z + sway * right.z;
 
                             spawn(player, new FlameParticle(new Vector3(x, y, z)));
                         }
 
-                        burstRandom(player, ember, base.add(0, 1.8, 0),
-                                0.4, 3, seed ^ 0x77A3L, 0.0, 0.4);
+                        // couronne au-dessus de la tête
+                        double crownY = base.y + 1.9;
+                        double crownR = 0.6;
+                        int crownPts = 8;
+
+                        for (int i = 0; i < crownPts; i++) {
+                            double a = phase * 0.7 + i * (TAU / crownPts);
+                            double x = base.x + Math.cos(a) * crownR;
+                            double z = base.z + Math.sin(a) * crownR;
+                            double y = crownY + Math.sin(phase * 1.6 + i) * 0.05;
+
+                            var fx = (i % 2 == 0) ? emberHot : ember;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
+                        }
+
+                        burstRandom(player, emberDeep, base.add(0, 1.4, 0),
+                                0.4, 3, seed ^ 0xF1A3E21L, 0.0, 0.5);
+                    }
+                }
+
+                // ========= EVENTS GLOBAUX =========
+
+                // 5) Anneau de flammes au sol qui “pulse”
+                if ((currentTick % 45) == 0) {
+                    // anneau de braises
+                    ring(player, emberDeep, base, 0.55, 12, phase * 1.1, 0.03);
+                    // anneau plus chaud juste au-dessus
+                    ring(player, emberHot, base, 0.35, 8, -phase * 0.9, 0.05);
+                }
+
+                // 6) "Battement d’ailes" de feu (comme un mini phénix)
+                if ((currentTick % 90) == 0) {
+                    for (int side = -1; side <= 1; side += 2) {
+                        double sideSign = side;
+
+                        int segs = 5;
+                        for (int i = 0; i < segs; i++) {
+                            double t = i / (double) (segs - 1);
+
+                            double spread = 0.3 + t * 0.7;
+                            double height = base.y + 0.7 + t * 0.8;
+                            double forward = -0.3 + t * 0.5;
+
+                            double x = base.x
+                                    + right.x * spread * sideSign
+                                    + fwd.x * forward;
+                            double z = base.z
+                                    + right.z * spread * sideSign
+                                    + fwd.z * forward;
+                            double y = height + Math.sin(phase * 1.4 + t * 5.0) * 0.06;
+
+                            Vector3 pos = new Vector3(x, y, z);
+                            spawn(player, new FlameParticle(pos));
+                            if (i >= 2) {
+                                spawn(player, emberHot.at(pos.add(0, 0.05, 0)));
+                            }
+                        }
                     }
                 }
             }
@@ -1193,112 +1277,114 @@ public class Particle {
 
             // 🌪️ Tempête Miniature
             case "mini_storm" -> {
-                var light = dust(245, 245, 255);
-                var dark  = dust(180, 180, 195);
+                var main = dust(235, 240, 255);
+                var soft = dust(195, 205, 220);
 
+                Position center = base.add(0, 0.05, 0);
                 Random rng = new Random(seed ^ 0xC0F57A1L);
-
-                Position feet = base.add(0, 0.10, 0);
 
                 if (fastTick) {
                     int points = 10;
+                    double inner = 0.22;
+                    double outer = 0.45;
 
-                    double radiusFeet = 0.32;
-                    double yFeet = feet.y + 0.02;
+                    double yLow = center.y + 0.02;
+                    double yMid = center.y + 0.35;
+
                     for (int i = 0; i < points; i++) {
                         double t = i / (double) points;
-                        double ang = phase * 0.9 + t * TAU;
 
-                        double x = feet.x + Math.cos(ang) * radiusFeet;
-                        double z = feet.z + Math.sin(ang) * radiusFeet;
-                        var fx = (i % 2 == 0) ? light : dark;
-                        spawn(player, fx.at(new Vector3(x, yFeet, z)));
+                        double ang = phase * 1.0 + t * TAU;
+                        double wave = 0.08 * Math.sin(phase * 1.3 + t * 5.0);
+
+                        double r1 = inner + wave * 0.5;
+                        double x1 = center.x + Math.cos(ang) * r1;
+                        double z1 = center.z + Math.sin(ang) * r1;
+                        spawn(player, soft.at(new Vector3(x1, yLow, z1)));
+
+                        double r2 = outer + wave;
+                        double x2 = center.x + Math.cos(-ang * 0.9) * r2;
+                        double z2 = center.z + Math.sin(-ang * 0.9) * r2;
+                        var fx2 = ((i + currentTick) % 3 == 0) ? main : soft;
+                        spawn(player, fx2.at(new Vector3(x2, yMid, z2)));
                     }
 
-                    double radiusKnee = 0.40;
-                    double yKnee = feet.y + 0.45;
-                    for (int i = 0; i < points; i++) {
-                        double t = i / (double) points;
-                        double ang = phase * 1.0 + t * TAU + Math.sin(phase * 0.7 + t * 5.0) * 0.15;
+                    int colSteps = 3;
+                    for (int i = 0; i < colSteps; i++) {
+                        double t = i / (double) (colSteps - 1);
+                        double y = center.y + 0.18 + t * 0.45;
+                        double offset = Math.sin(phase * 1.4 + t * 6.0) * 0.06;
 
-                        double x = feet.x + Math.cos(ang) * radiusKnee;
-                        double z = feet.z + Math.sin(ang) * radiusKnee;
-                        var fx = ((i + currentTick) % 3 == 0) ? light : dark;
-                        spawn(player, fx.at(new Vector3(x, yKnee, z)));
-                    }
+                        double x = center.x + offset * right.x;
+                        double z = center.z + offset * right.z;
 
-                    int columnSteps = 4;
-                    for (int i = 0; i < columnSteps; i++) {
-                        double t = i / (double) (columnSteps - 1);
-                        double y = feet.y + 0.20 + t * 0.70;
-                        double sway = Math.sin(phase * 1.1 + t * 5.0) * 0.07;
-
-                        double x = feet.x + sway * right.x;
-                        double z = feet.z + sway * right.z;
-                        spawn(player, light.at(new Vector3(x, y, z)));
+                        spawn(player, main.at(new Vector3(x, y, z)));
                     }
                 }
 
                 if (moving && medTick) {
                     int segs = 4;
-                    double back = 1.0;
+                    double back = 1.1;
 
                     for (int i = 0; i < segs; i++) {
                         double t = i / (double) (segs - 1);
                         double dist = t * back;
 
-                        double sway = Math.sin(phase * 0.9 + t * 4.0) * 0.10;
+                        double sway = Math.sin(phase * 1.1 + t * 4.0) * 0.10;
 
                         double x = base.x - fwd.x * dist + right.x * sway;
                         double z = base.z - fwd.z * dist + right.z * sway;
-                        double y = base.y + 0.06 + t * 0.10;
+                        double y = base.y + 0.04 + t * 0.12;
 
-                        var fx = (i % 2 == 0) ? dark : light;
+                        var fx = (i % 2 == 0) ? soft : main;
                         spawn(player, fx.at(new Vector3(x, y, z)));
                     }
                 }
 
                 if (!moving && slowTick) {
-                    spawn(player, new SmokeParticle(base.add(0, 1.7, 0)));
+                    int pts = 8;
+                    double r = 0.40;
+                    double y = base.y + 0.12;
 
-                    int p = 6;
-                    double r = 0.55;
-                    double yTop = base.y + 1.5;
-
-                    for (int i = 0; i < p; i++) {
-                        double ang = phase * 0.8 + i * (TAU / p);
+                    for (int i = 0; i < pts; i++) {
+                        double ang = phase * 0.8 + i * (TAU / pts);
                         double x = base.x + Math.cos(ang) * r;
                         double z = base.z + Math.sin(ang) * r;
 
-                        var fx = (i % 2 == 0) ? light : dark;
-                        spawn(player, fx.at(new Vector3(x, yTop, z)));
+                        var fx = (i % 2 == 0) ? soft : main;
+                        spawn(player, fx.at(new Vector3(x, y, z)));
                     }
+
+                    spawn(player, main.at(new Vector3(base.x, y + 0.05, base.z)));
                 }
 
-                if ((currentTick % 32) == 0 && moving) {
+                if ((currentTick % 40) == 0 && moving) {
                     int sideSign = rng.nextBoolean() ? 1 : -1;
                     Vector3 sideDir = new Vector3(right.x * sideSign, 0, right.z * sideSign);
-                    Position origin = base.add(sideDir.multiply(0.5)).add(0, 0.6, 0);
 
-                    int gustPts = 5;
+                    Position origin = base.add(sideDir.multiply(0.45)).add(0, 0.7, 0);
+
+                    int gustPts = 4;
                     for (int i = 0; i < gustPts; i++) {
                         double t = i / (double) (gustPts - 1);
 
-                        double along = 0.5 + t * 0.6;
-                        double lift  = 0.05 + t * 0.25;
+                        double along = 0.25 + t * 0.5;
+                        double lift  = 0.05 + t * 0.22;
 
-                        double x = origin.x - fwd.x * along + sideDir.x * (0.2 * (1.0 - t));
-                        double z = origin.z - fwd.z * along + sideDir.z * (0.2 * (1.0 - t));
-                        double y = origin.y + lift;
+                        double x1 = origin.x - fwd.x * along + sideDir.x * (0.10 * (1.0 - t));
+                        double z1 = origin.z - fwd.z * along + sideDir.z * (0.10 * (1.0 - t));
+                        double y1 = origin.y + lift;
 
-                        var fx = (i == gustPts - 1) ? light : dark;
-                        spawn(player, fx.at(new Vector3(x, y, z)));
+                        var fx1 = (i == gustPts - 1) ? main : soft;
+                        spawn(player, fx1.at(new Vector3(x1, y1, z1)));
                     }
                 }
 
-                if ((currentTick % 70) == 0) {
-                    ring(player, light, base, 0.55, 10, phase * 1.2, 0.03);
-                    ring(player, dark, base, 0.35, 8, -phase * 0.9, 0.02);
+                if ((currentTick % 90) == 0) {
+                    ring(player, main, base, 0.55, 12, phase * 1.3, 0.03);
+                    ring(player, soft, base, 0.32, 8, -phase * 0.9, 0.02);
+
+                    spawn(player, new SmokeParticle(base.add(0, 0.20, 0)));
                 }
             }
 
