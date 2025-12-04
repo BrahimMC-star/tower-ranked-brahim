@@ -8,7 +8,7 @@ import cn.nukkit.math.Vector3f;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.Utils;
 
-public class EntityPetParrot extends EntityPetWalking {
+public class EntityPetParrot extends EntityPetFlying {
 
     private static final int[] VARIANTS = {0, 1, 2, 3, 4};
 
