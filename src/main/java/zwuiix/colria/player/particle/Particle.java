@@ -1478,7 +1478,6 @@ public class Particle {
 
             // 🩷 Pluie d’Amour
             case "love_rain" -> {
-
                 var pink  = dust(255, 160, 210);
                 var deep  = dust(230, 90, 160);
                 var soft  = dust(255, 200, 220);
@@ -1486,8 +1485,7 @@ public class Particle {
                 Random rng = new Random(seed);
 
                 if (fastTick) {
-
-                    int drops = 3;
+                    int drops = 1;
                     for (int i = 0; i < drops; i++) {
 
                         double a = rng.nextDouble() * TAU;
@@ -1789,24 +1787,107 @@ public class Particle {
 
             // 🌊 Éclaboussures Marines
             case "marine_splash" -> {
-                var water1 = dust(70, 160, 255);
-                var water2 = dust(40, 120, 230);
 
-                // En mouvement : splash aux pieds
+                var water1   = dust(70, 160, 255);
+                var water2   = dust(40, 120, 230);
+                var aqua     = dust(90, 220, 255);
+                var bubble   = dust(180, 240, 255);
+                var gleam    = dust(255, 255, 255);
+
+                Random rng = new Random(seed);
+
                 if (moving && fastTick) {
-                    double side = 0.35;
-                    double yOff = 0.03;
 
-                    Vector3 lp = new Vector3(base.x - right.x * side, base.y + yOff, base.z - right.z * side);
-                    Vector3 rp = new Vector3(base.x + right.x * side, base.y + yOff, base.z + right.z * side);
+                    double side = 0.34;
+                    double y = base.y + 0.04;
+
+                    Vector3 lp = new Vector3(base.x - right.x * side, y, base.z - right.z * side);
+                    Vector3 rp = new Vector3(base.x + right.x * side, y, base.z + right.z * side);
 
                     spawn(player, water1.at(lp));
                     spawn(player, water2.at(rp));
+
+                    int bub = 2;
+                    for (int i = 0; i < bub; i++) {
+                        double ang = rng.nextDouble() * TAU;
+                        double dist = 0.12 + rng.nextDouble() * 0.15;
+
+                        double bx = base.x + Math.cos(ang) * dist;
+                        double bz = base.z + Math.sin(ang) * dist;
+                        double by = y + 0.07 + rng.nextDouble() * 0.05;
+
+                        spawn(player, bubble.at(new Vector3(bx, by, bz)));
+                    }
+
+                    int ripples = 3;
+                    for (int i = 0; i < ripples; i++) {
+                        double ang = phase * 2.0 + i * 2.1;
+                        double rx = base.x + Math.cos(ang) * 0.45;
+                        double rz = base.z + Math.sin(ang) * 0.45;
+                        double ry = base.y + 0.03;
+
+                        spawn(player, water2.at(new Vector3(rx, ry, rz)));
+                    }
+
+                    if ((seed + currentTick) % 22 == 0) {
+                        double gx = base.x - fwd.x * 0.4;
+                        double gz = base.z - fwd.z * 0.4;
+                        double gy = base.y + 0.15;
+
+                        spawn(player, gleam.at(new Vector3(gx, gy, gz)));
+                    }
                 }
 
-                // Statique : vague circulaire très légère
-                if (!moving && medTick) {
-                    ring(player, water1, base, 0.75, 14, phase * 0.5, 0.03);
+                if (moving && medTick) {
+
+                    int droplets = 4;
+                    for (int i = 0; i < droplets; i++) {
+
+                        double ang = (i / 4.0) * TAU + phase * 1.1;
+                        double speed = 0.08 + rng.nextDouble() * 0.05;
+
+                        double px = base.x + Math.cos(ang) * 0.2;
+                        double pz = base.z + Math.sin(ang) * 0.2;
+                        double py = base.y + 0.1;
+
+                        Vector3 dir = new Vector3(
+                                Math.cos(ang) * speed,
+                                0.05 + rng.nextDouble() * 0.03,
+                                Math.sin(ang) * speed
+                        );
+
+                        var fx = (i % 2 == 0) ? aqua : water1;
+                        spawn(player, fx.at(new Vector3(px + dir.x, py + dir.y, pz + dir.z)));
+                    }
+                }
+
+                if (!moving && fastTick) {
+
+                    int ringPts = 14;
+                    double r = 0.75;
+
+                    for (int i = 0; i < ringPts; i++) {
+                        double a = phase * 0.7 + i * (TAU / ringPts);
+
+                        double x = base.x + Math.cos(a) * r;
+                        double z = base.z + Math.sin(a) * r;
+
+                        double y = base.y + 0.04 + Math.sin(i * 0.7 + phase * 1.5) * 0.02;
+
+                        var fx = (i % 3 == 0) ? aqua : water1;
+                        spawn(player, fx.at(new Vector3(x, y, z)));
+                    }
+
+                    double cx = base.x;
+                    double cy = base.y + 0.1 + Math.sin(phase * 2.2) * 0.05;
+                    double cz = base.z;
+
+                    spawn(player, aqua.at(new Vector3(cx, cy, cz)));
+                    spawn(player, bubble.at(new Vector3(cx, cy + 0.03, cz)));
+
+                    if (rng.nextDouble() < 0.05) {
+                        spawn(player, gleam.at(new Vector3(cx, cy + 0.08, cz)));
+                    }
                 }
             }
 
