@@ -8,6 +8,7 @@ import cn.nukkit.item.ItemSpawnEgg;
 import cn.nukkit.registry.Registries;
 import lombok.Getter;
 import zwuiix.colria.Loader;
+import zwuiix.colria.entity.EntityPetParrot;
 import zwuiix.colria.entity.EntityPetPig;
 import zwuiix.colria.entity.EntityPetSlime;
 import zwuiix.colria.entity.EntityPetSnowman;
@@ -86,6 +87,7 @@ public class CosmeticRegistry {
     public void registerPets() {
         register(new Pet(EntityPetSlime.class, "slime", TranslationKeys.PET_SLIME_NAME, TranslationKeys.PET_SLIME_LORE, new ItemSpawnEgg(), true, 17500));
         register(new Pet(EntityPetPig.class, "pig", TranslationKeys.PET_PIG_NAME, TranslationKeys.PET_PIG_LORE, new ItemSpawnEgg(), true, 13000));
+        register(new Pet(EntityPetParrot.class, "parrot", TranslationKeys.PET_PARROT_NAME, TranslationKeys.PET_PARROT_LORE, new ItemSpawnEgg(), false, 20000));
         register(new Pet(EntityPetSnowman.class, "snowman", TranslationKeys.PET_SNOWMAN_NAME, TranslationKeys.PET_SNOWMAN_LORE, new ItemSpawnEgg(), false, 15000));
     }
 
