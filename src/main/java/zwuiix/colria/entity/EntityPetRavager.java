@@ -17,6 +17,12 @@ public class EntityPetRavager extends EntityPetWalking {
     }
 
     @Override
+    public void initEntity() {
+        super.initEntity();
+        setScale(0.5f);
+    }
+
+    @Override
     public float getHeight() {
         return 2.2f;
     }
@@ -34,6 +40,6 @@ public class EntityPetRavager extends EntityPetWalking {
 
     @Override
     public Vector3f getSeatPosition() {
-        return new Vector3f(0, 1.85001f, 0);
+        return new Vector3f(0, 2.85001f, 0);
     }
 }
