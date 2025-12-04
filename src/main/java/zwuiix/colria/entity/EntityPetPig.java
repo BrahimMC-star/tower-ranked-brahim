@@ -32,7 +32,10 @@ public class EntityPetPig extends EntityPetWalking {
     }
 
     @Override
-    public float getPetSpeed() { return 0.3f; }
+    public float getPetSpeed() { return 0.6f; }
+
+    @Override
+    public double getSpeed() { return 1.1D; }
 
     @Override
     public Vector3f getSeatPosition() {

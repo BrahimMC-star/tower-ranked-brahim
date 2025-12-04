@@ -38,6 +38,9 @@ public class EntityPetSnowman extends EntityPetWalking {
     public float getPetSpeed() { return 1.3f; }
 
     @Override
+    public double getSpeed() { return 1.4D; }
+
+    @Override
     public boolean onUpdate(int currentTick) {
         var onUpdate = super.onUpdate(currentTick);
         if(onUpdate && this.isOnGround()) {
