@@ -10,7 +10,6 @@ import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
 
 import java.util.Random;
-import java.util.function.DoubleFunction;
 
 public class Particle {
     private static final double TAU = Math.PI * 2;

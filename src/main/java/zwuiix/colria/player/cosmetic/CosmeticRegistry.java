@@ -7,7 +7,6 @@ import cn.nukkit.item.ItemRecordPigstep;
 import cn.nukkit.registry.Registries;
 import lombok.Getter;
 import zwuiix.colria.Loader;
-import zwuiix.colria.entity.EntityPetPig;
 import zwuiix.colria.entity.EntityPetSlime;
 import zwuiix.colria.item.*;
 import zwuiix.colria.translator.TranslationKeys;
