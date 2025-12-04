@@ -29,6 +29,7 @@ public class GameShopGUI {
         subMenus.add(new CosmeticsMenu(this, player));
         subMenus.add(new ParticlesMenu(this, player));
         subMenus.add(new CapesMenu(this, player));
+        subMenus.add(new PetsMenu(this, player));
 
         syncContents();
     }

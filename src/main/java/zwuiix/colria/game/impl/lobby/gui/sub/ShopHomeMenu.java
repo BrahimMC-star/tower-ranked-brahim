@@ -1,11 +1,10 @@
 package zwuiix.colria.game.impl.lobby.gui.sub;
 
-import cn.nukkit.block.BlockBlueIce;
-import cn.nukkit.block.BlockCopperBars;
-import cn.nukkit.block.BlockHeadPlayer;
+import cn.nukkit.block.*;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemArmorStand;
 import cn.nukkit.item.ItemRedstone;
+import cn.nukkit.item.ItemSpawnEgg;
 import cn.nukkit.level.Sound;
 import zwuiix.colria.game.gui.sub.SubMenu;
 import zwuiix.colria.game.impl.lobby.gui.GameShopGUI;
@@ -65,6 +64,15 @@ public class ShopHomeMenu extends SubMenu {
         capes.setLore(gui.player.processTranslation(TranslationKeys.PLAYER_LOBBY_SHOP_GUI_CAPES_LORE));
         gui.inventory.setItem(32, capes).onClick((click -> {
             gui.state = 4;
+            gui.syncContents();
+            gui.player.addSound(Sound.RANDOM_CLICK,0.5f, 1f);
+        }));
+
+        Item pets = new BlockMobSpawner().toItem();
+        pets.setCustomName(gui.player.processTranslation(TranslationKeys.PLAYER_LOBBY_SHOP_GUI_CAPES_NAME));
+        pets.setLore(gui.player.processTranslation(TranslationKeys.PLAYER_LOBBY_SHOP_GUI_CAPES_LORE));
+        gui.inventory.setItem(29, pets).onClick((click -> {
+            gui.state = 5;
             gui.syncContents();
             gui.player.addSound(Sound.RANDOM_CLICK,0.5f, 1f);
         }));

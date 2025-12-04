@@ -3,6 +3,7 @@ package zwuiix.colria.entity;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.mob.EntitySlime;
 import cn.nukkit.entity.passive.EntityPig;
+import cn.nukkit.level.Sound;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.Vector3f;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -40,7 +41,12 @@ public class EntityPetSlime extends EntityPetJumping {
 
     @Override
     public Vector3f getSeatPosition() {
-        return new Vector3f(0, 2f, 0);
+        return switch (size) {
+            case 1 -> new Vector3f(0, 1.2f, 0);
+            case 2 -> new Vector3f(0, 1.6f, 0);
+            case 3 -> new Vector3f(0, 2.2f, 0);
+            default -> new Vector3f(0, 2f, 0);
+        };
     }
 
     @Override
@@ -53,4 +59,10 @@ public class EntityPetSlime extends EntityPetJumping {
 
     @Override
     public void attackEntity(Entity entity) {}
+
+    @Override
+    public void resetFallDistance() {
+        super.resetFallDistance();
+        this.getLevel().addSound(this, Sound.FALL_SLIME, 0.5f, 1f);
+    }
 }
