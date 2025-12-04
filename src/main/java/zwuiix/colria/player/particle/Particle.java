@@ -1197,63 +1197,164 @@ public class Particle {
             case "void_orbits" -> {
                 var core  = dust(90, 0, 120);
                 var trail = dust(50, 0, 80);
+                var pulse = dust(120, 0, 160);
 
-                double baseY = base.y + 1.0;
-                double radius = 0.75;
+                double baseY = base.y + 1.05;
 
-                // Trois orbes en orbite autour du joueur
+                double radius = 1.05;
+                double vertical = 0.17;
+
                 if (fastTick) {
                     int orbs = 3;
+
                     for (int i = 0; i < orbs; i++) {
-                        double ang = phase * 0.15 + i * (TAU / orbs);
-                        double x = base.x + Math.cos(ang) * radius;
-                        double z = base.z + Math.sin(ang) * radius;
-                        double y = baseY + Math.sin(phase * 0.5 + i) * 0.12;
 
-                        Vector3 p = new Vector3(x, y, z);
-                        spawn(player, core.at(p));
+                        double orbitSpeed = moving ? 0.35 : 0.18;
+                        double ang = phase * orbitSpeed + i * (TAU / orbs);
 
-                        // petite traînée derrière
-                        double tx = base.x + Math.cos(ang + 0.45) * (radius * 0.6);
-                        double tz = base.z + Math.sin(ang + 0.45) * (radius * 0.6);
-                        double ty = y - 0.05;
+                        double x = base.x + Math.cos(ang) * radius * 1.1;
+                        double z = base.z + Math.sin(ang) * radius * 0.9;
+
+                        double y = baseY + Math.sin(phase * 0.7 + i) * vertical;
+
+                        Vector3 pos = new Vector3(x, y, z);
+
+                        spawn(player, core.at(pos));
+
+                        double tAng = ang - 0.55;
+                        double tx = base.x + Math.cos(tAng) * (radius * 0.85);
+                        double tz = base.z + Math.sin(tAng) * (radius * 0.85);
+                        double ty = y - 0.04;
+
                         spawn(player, trail.at(new Vector3(tx, ty, tz)));
                     }
                 }
 
-                // Quand statique : anneau sombre plus serré
+                if (moving && fastTick) {
+                    trail(player,
+                            pos -> trail.at(pos),
+                            base.add(0, 0.3, 0),
+                            fwd, 1.4, 6, 0.0);
+
+                    double backX = base.x - fwd.x * 0.5;
+                    double backZ = base.z - fwd.z * 0.5;
+                    double backY = base.y + 0.9 + Math.sin(phase * 2.0) * 0.05;
+
+                    spawn(player, pulse.at(new Vector3(backX, backY, backZ)));
+                }
+
                 if (!moving && medTick) {
-                    ring(player, trail, base, 0.55, 12, -phase * 0.4, 0.04);
+
+                    ring(player, trail, base, 0.65, 14, -phase * 0.3, 0.04);
+
+                    spawn(player, pulse.at(new Vector3(
+                            base.x,
+                            base.y + 1.0,
+                            base.z
+                    )));
                 }
             }
 
             // 🪶 Poussière d’Ombre
             case "shadow_dust" -> {
-                var dark = dust(15, 15, 20);
+                var dark  = dust(15, 15, 20);
+                var voidP = dust(40, 0, 60);
+                var wisp  = dust(90, 0, 120);
 
-                // En mouvement : poussière derrière les pas
-                if (moving && fastTick) {
-                    double side = 0.32;
-                    double yOff = 0.03;
+                double yFeet = base.y + 0.05;
 
-                    Vector3 lp = new Vector3(base.x - right.x * side, base.y + yOff, base.z - right.z * side);
-                    Vector3 rp = new Vector3(base.x + right.x * side, base.y + yOff, base.z + right.z * side);
+                if (fastTick) {
+                    int layers = 2;
+                    int pts = 12;
+                    double baseR = 0.55;
 
-                    spawn(player, dark.at(lp));
-                    spawn(player, dark.at(rp));
+                    for (int L = 0; L < layers; L++) {
+                        for (int i = 0; i < pts; i++) {
 
-                    spawn(player, new SmokeParticle(base.add(0, 0.15, 0)));
+                            double t = i / (double) pts;
+                            double ang = phase * (0.25 + L * 0.1) + t * TAU;
+
+                            double distort = Math.sin(phase * 1.6 + t * 6.0) * 0.12;
+                            double r = baseR + distort + L * 0.10;
+
+                            double x = base.x + Math.cos(ang) * r;
+                            double z = base.z + Math.sin(ang) * r;
+
+                            double y = base.y + 0.1 + Math.sin(phase * 0.9 + L) * 0.05;
+
+                            var fx = (i % 2 == 0) ? dark : voidP;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
+                        }
+                    }
                 }
 
-                // À l’arrêt : halo discret au sol
+                if (fastTick) {
+                    int rising = 3;
+                    for (int i = 0; i < rising; i++) {
+
+                        double t = i / 2.0;
+                        double y = yFeet + t * 0.45;
+
+                        double sway = Math.sin(phase * 1.4 + t * 4.0) * 0.06;
+
+                        spawn(player, dark.at(new Vector3(
+                                base.x + sway,
+                                y,
+                                base.z - sway
+                        )));
+                    }
+                }
+
+                if (moving && fastTick) {
+
+                    double offset = 0.28;
+
+                    Vector3 left  = new Vector3(base.x - right.x * offset, yFeet, base.z - right.z * offset);
+                    Vector3 rightP = new Vector3(base.x + right.x * offset, yFeet, base.z + right.z * offset);
+
+                    spawn(player, dark.at(left));
+                    spawn(player, dark.at(rightP));
+
+                    spawn(player, voidP.at(base.add(0, 0.12, 0)));
+                }
+
+                if (moving && fastTick) {
+
+                    int shards = 6;
+                    for (int i = 0; i < shards; i++) {
+
+                        double ang = (i / (double) shards) * TAU + phase * 0.8;
+                        double speed = 0.10 + Math.random() * 0.07;
+
+                        Vector3 origin = base.add(
+                                Math.cos(ang) * 0.2,
+                                0.25 + Math.random() * 0.15,
+                                Math.sin(ang) * 0.2
+                        );
+
+                        Vector3 dir = new Vector3(
+                                Math.cos(ang) * speed,
+                                0.03 + Math.random() * 0.03,
+                                Math.sin(ang) * speed
+                        );
+
+                        spawn(player, wisp.at(origin.add(dir)));
+                    }
+                }
+
                 if (!moving && medTick) {
-                    int pts = 16;
-                    double r = 0.7;
-                    double y = base.y + 0.03;
+
+                    int pts = 14;
+                    double r = 0.75;
+
                     for (int i = 0; i < pts; i++) {
-                        double a = phase * 0.4 + i * (TAU / pts);
+                        double a = phase * 0.25 + i * (TAU / pts);
+
                         double x = base.x + Math.cos(a) * r;
                         double z = base.z + Math.sin(a) * r;
+
+                        double y = base.y + 0.05 + Math.sin(i * 0.6) * 0.03;
+
                         spawn(player, dark.at(new Vector3(x, y, z)));
                     }
                 }
@@ -1266,7 +1367,6 @@ public class Particle {
 
                 Position mid = base.add(0, 1.0, 0);
 
-                // Aura vivante autour du torse
                 if (fastTick) {
                     int pts = 10;
                     double r = 0.55;
