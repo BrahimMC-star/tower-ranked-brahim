@@ -54,72 +54,160 @@ public class Particle {
 
         switch (this.getIdentifier()) {
             case "freezing_flakes" -> {
-                var flake = dust(230, 240, 255);
+
+                var flake     = dust(230, 240, 255);
+                var blueCryo  = dust(150, 200, 255);
+                var frost     = dust(200, 230, 255);
+                var shine     = dust(255, 255, 255);
+
+                Random rng = new Random(seed);
 
                 if (moving) {
-                    if (medTick) {
-                        int segs = 7;
-                        double back = 1.6;
-                        double side = 0.35;
 
-                        for (int sideSign = -1; sideSign <= 1; sideSign += 2) {
-                            for (int i = 0; i < segs; i++) {
-                                double t = i / (double) (segs - 1);
-                                double dist = t * back;
-                                double sway = Math.sin(phase * 0.5 + t * 3.0 + sideSign) * 0.10;
+                    if (fastTick) {
+                        double y = base.y + 0.04;
 
-                                double x = base.x - fwd.x * dist + right.x * (sideSign * side + sway);
-                                double z = base.z - fwd.z * dist + right.z * (sideSign * side + sway);
-                                double y = base.y + 0.04; // bien au sol
+                        int dual = 2;
+                        for (int side = -1; side <= 1; side += 2) {
+                            for (int i = 0; i < dual; i++) {
+
+                                double ang = phase * 2.0 + i * 1.4;
+                                double sway = Math.sin(phase * 3 + i) * 0.12;
+
+                                double x = base.x - fwd.x * (0.3 + i * 0.25) + right.x * (side * 0.32 + sway);
+                                double z = base.z - fwd.z * (0.3 + i * 0.25) + right.z * (side * 0.32 + sway);
 
                                 spawn(player, flake.at(new Vector3(x, y, z)));
+
+                                if ((i + currentTick) % 3 == 0) {
+                                    spawn(player, blueCryo.at(new Vector3(x, y + 0.04, z)));
+                                }
                             }
                         }
 
-                        spawn(player, new SmokeParticle(base.add(0, 1.55, 0)));
-                    }
-                } else if (slowTick) {
-                    int arms = 6;
-                    int steps = 6;
-                    for (int a = 0; a < arms; a++) {
-                        for (int s = 0; s < steps; s++) {
-                            double t = s / (double) (steps - 1);
-                            double radius = 0.20 + t * 0.55;
-                            double ang = phase * 0.5 + a * (TAU / arms) + t * 0.8;
-
-                            double x = base.x + Math.cos(ang) * radius;
-                            double z = base.z + Math.sin(ang) * radius;
-                            double y = base.y + 0.03; // collé au sol
-
-                            spawn(player, flake.at(new Vector3(x, y, z)));
+                        if ((currentTick % 13) == 0) {
+                            spawn(player, shine.at(new Vector3(
+                                    base.x - fwd.x * 0.4 + (rng.nextDouble() - 0.5) * 0.25,
+                                    base.y + 0.35 + rng.nextDouble() * 0.25,
+                                    base.z - fwd.z * 0.4 + (rng.nextDouble() - 0.5) * 0.25
+                            )));
                         }
                     }
 
-                    int ringPoints = 14;
-                    double ringRadius = 0.8;
-                    for (int i = 0; i < ringPoints; i++) {
-                        double ang = phase * 0.3 + i * (TAU / ringPoints);
-                        double x = base.x + Math.cos(ang) * ringRadius;
-                        double z = base.z + Math.sin(ang) * ringRadius;
-                        double y = base.y + 0.035;
+                    if (medTick) {
 
-                        if ((i + currentTick) % 2 == 0) {
+                        int segs = 6;
+                        double back = 1.5;
+
+                        for (int i = 0; i < segs; i++) {
+
+                            double t = i / (double)(segs - 1);
+                            double dist = t * back;
+
+                            double sway = Math.sin(phase * 1.5 + t * 4.0) * 0.14;
+
+                            double x = base.x - fwd.x * dist + right.x * sway;
+                            double z = base.z - fwd.z * dist + right.z * sway;
+                            double y = base.y + 0.05;
+
                             spawn(player, flake.at(new Vector3(x, y, z)));
+
+                            if (i % 2 == 0) {
+                                spawn(player, frost.at(new Vector3(x, y + 0.04, z)));
+                            }
                         }
                     }
 
-                    int sparkles = 4;
-                    for (int i = 0; i < sparkles; i++) {
-                        double ang = phase * 0.9 + i * (TAU / sparkles);
-                        double r = 0.15 + 0.15 * Math.sin(phase * 1.3 + i);
-                        double x = base.x + Math.cos(ang) * r;
-                        double z = base.z + Math.sin(ang) * r;
-                        double y = base.y + 0.04;
+                    if (slowTick) {
+                        double cx = base.x;
+                        double cz = base.z;
+                        double cy = base.y + 0.08;
 
-                        spawn(player, flake.at(new Vector3(x, y, z)));
+                        spawn(player, frost.at(new Vector3(cx, cy, cz)));
+                    }
+
+                } else {
+
+                    if (fastTick) {
+
+                        double r = 0.55;
+                        int pts = 14;
+
+                        for (int i = 0; i < pts; i++) {
+                            double t = i / (double) pts;
+                            double ang = phase * 0.9 + t * TAU;
+
+                            double spir = Math.sin(phase * 1.8 + i) * 0.15;
+
+                            double x = base.x + Math.cos(ang) * (r + spir);
+                            double z = base.z + Math.sin(ang) * (r + spir);
+                            double y = base.y + 0.06 + Math.sin(t * 8 + phase) * 0.03;
+
+                            var fx = (i % 3 == 0) ? blueCryo : flake;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
+
+                            if (i % 5 == 0) {
+                                spawn(player, frost.at(new Vector3(x, y + 0.05, z)));
+                            }
+                        }
+
+                        if ((seed + currentTick) % 18 == 0) {
+                            spawn(player, shine.at(base.add(0, 1.5 + Math.sin(phase * 2.0) * 0.12, 0)));
+                        }
+                    }
+
+                    if (medTick) {
+
+                        double y = base.y + 0.03;
+                        int arms = 6;
+                        int steps = 6;
+
+                        for (int a = 0; a < arms; a++) {
+                            for (int s = 0; s < steps; s++) {
+
+                                double t = s / (double)(steps - 1);
+                                double radius = 0.22 + t * 0.58;
+                                double ang = phase * 0.5 + a * (TAU / arms) + t * 0.9;
+
+                                double x = base.x + Math.cos(ang) * radius;
+                                double z = base.z + Math.sin(ang) * radius;
+
+                                var fx = (s % 2 == 0) ? flake : frost;
+                                spawn(player, fx.at(new Vector3(x, y, z)));
+                            }
+                        }
+
+                        int ringPts = 16;
+                        double rr = 0.85;
+
+                        for (int i = 0; i < ringPts; i++) {
+                            double ang = phase * 0.25 + i * (TAU / ringPts);
+                            double x = base.x + Math.cos(ang) * rr;
+                            double z = base.z + Math.sin(ang) * rr;
+                            double y0 = base.y + 0.04;
+
+                            var fx = ((i + currentTick) % 3 == 0) ? frost : flake;
+                            spawn(player, fx.at(new Vector3(x, y0, z)));
+                        }
+                    }
+
+                    if (slowTick) {
+
+                        int clouds = 5;
+                        for (int i = 0; i < clouds; i++) {
+                            double ang = rng.nextDouble() * TAU;
+                            double dist = 0.1 + rng.nextDouble() * 0.25;
+
+                            double x = base.x + Math.cos(ang) * dist;
+                            double z = base.z + Math.sin(ang) * dist;
+                            double y = base.y + 0.45 + rng.nextDouble() * 0.25;
+
+                            spawn(player, frost.at(new Vector3(x, y, z)));
+                        }
                     }
                 }
             }
+
 
             // Emerald
             case "emerald" -> {
