@@ -3,15 +3,13 @@ package zwuiix.colria.player.cosmetic;
 import cn.nukkit.block.BlockHeadPlayer;
 import cn.nukkit.entity.data.property.EntityProperty;
 import cn.nukkit.entity.data.property.EnumEntityProperty;
+import cn.nukkit.entity.passive.EntityCat;
 import cn.nukkit.item.ItemRecordPigstep;
 import cn.nukkit.item.ItemSpawnEgg;
 import cn.nukkit.registry.Registries;
 import lombok.Getter;
 import zwuiix.colria.Loader;
-import zwuiix.colria.entity.EntityPetParrot;
-import zwuiix.colria.entity.EntityPetPig;
-import zwuiix.colria.entity.EntityPetSlime;
-import zwuiix.colria.entity.EntityPetSnowman;
+import zwuiix.colria.entity.*;
 import zwuiix.colria.item.*;
 import zwuiix.colria.translator.TranslationKeys;
 
@@ -86,8 +84,14 @@ public class CosmeticRegistry {
 
     public void registerPets() {
         register(new Pet(EntityPetSlime.class, "slime", TranslationKeys.PET_SLIME_NAME, TranslationKeys.PET_SLIME_LORE, new ItemSpawnEgg(), true, 17500));
+        register(new Pet(EntityPetMagmaCube.class, "magma_cube", TranslationKeys.PET_MAGMA_CUBE_NAME, TranslationKeys.PET_MAGMA_CUBE_LORE, new ItemSpawnEgg(), true, 19500));
+        register(new Pet(EntityPetRavager.class, "ravager", TranslationKeys.PET_RAVAGER_NAME, TranslationKeys.PET_RAVAGER_LORE, new ItemSpawnEgg(), true, 22500));
         register(new Pet(EntityPetPig.class, "pig", TranslationKeys.PET_PIG_NAME, TranslationKeys.PET_PIG_LORE, new ItemSpawnEgg(), true, 13000));
-        register(new Pet(EntityPetParrot.class, "parrot", TranslationKeys.PET_PARROT_NAME, TranslationKeys.PET_PARROT_LORE, new ItemSpawnEgg(), false, 20000));
+        register(new Pet(EntityPetParrot.class, "parrot", TranslationKeys.PET_PARROT_NAME, TranslationKeys.PET_PARROT_LORE, new ItemSpawnEgg(), false, 20_000));
+        register(new Pet(EntityPetBee.class, "bee", TranslationKeys.PET_BEE_NAME, TranslationKeys.PET_BEE_LORE, new ItemSpawnEgg(), false, 21_500));
+        register(new Pet(EntityPetFox.class, "fox", TranslationKeys.PET_FOX_NAME, TranslationKeys.PET_FOX_LORE, new ItemSpawnEgg(), false, 18000));
+        register(new Pet(EntityPetCat.class, "cat", TranslationKeys.PET_CAT_NAME, TranslationKeys.PET_CAT_LORE, new ItemSpawnEgg(), false, 24500));
+        register(new Pet(EntityPetWolf.class, "wolf", TranslationKeys.PET_WOLF_NAME, TranslationKeys.PET_WOLF_LORE, new ItemSpawnEgg(), false, 14500));
         register(new Pet(EntityPetSnowman.class, "snowman", TranslationKeys.PET_SNOWMAN_NAME, TranslationKeys.PET_SNOWMAN_LORE, new ItemSpawnEgg(), false, 15000));
     }
 
