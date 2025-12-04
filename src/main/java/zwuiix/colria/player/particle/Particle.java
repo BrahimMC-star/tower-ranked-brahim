@@ -1543,105 +1543,161 @@ public class Particle {
                 var violet   = dust(180, 0, 230);
                 var magenta  = dust(255, 40, 180);
                 var cyan     = dust(80, 200, 255);
-                var darkRift = dust(60, 0, 90);
+                var darkRift = dust(40, 0, 70);
 
                 Position c = base.add(0, 0.55, 0);
+                Random rng = new Random(seed ^ 0xD1A3F51L);
 
                 if (fastTick) {
+                    int shards = 18;
+                    double baseR = 0.35;
+                    double maxR  = 1.2;
 
-                    int shards = 10;
                     for (int i = 0; i < shards; i++) {
-
                         double t = i / (double) shards;
 
-                        double ang = phase * 1.3 + t * TAU + Math.sin(phase * 2 + i) * 0.4;
-                        double dist = 0.25 + Math.sin(phase * 3 + i * 0.7) * 0.18;
+                        double wave = Math.sin(phase * 1.4 + t * 6.0) * 0.18;
+                        double r = baseR + (maxR - baseR) * t * 0.85 + wave;
 
-                        double x = c.x + Math.cos(ang) * dist;
-                        double z = c.z + Math.sin(ang) * dist;
-                        double y = c.y + Math.sin(phase * 1.7 + t * 6) * 0.1;
+                        double ang = phase * 0.8 + t * TAU + Math.sin(phase * 2.3 + i) * 0.4;
 
-                        var fx = (i % 3 == 0) ? cyan : (i % 2 == 0 ? magenta : violet);
+                        double x = c.x + Math.cos(ang) * r;
+                        double z = c.z + Math.sin(ang) * r;
+                        double y = c.y + 0.02 * Math.sin(phase * 1.6 + t * 7.0);
+
+                        var fx = (i % 5 == 0)
+                                ? cyan
+                                : (i % 2 == 0 ? magenta : violet);
+
                         spawn(player, fx.at(new Vector3(x, y, z)));
 
-                        Vector3 p2 = new Vector3(
-                                x + (Math.cos(ang) * 0.12),
-                                y + (Math.sin(t * 9) * 0.07),
-                                z + (Math.sin(ang) * 0.12)
+                        Vector3 shadow = new Vector3(
+                                x * 0.96 + c.x * 0.04,
+                                y - 0.05,
+                                z * 0.96 + c.z * 0.04
                         );
-
-                        spawn(player, darkRift.at(p2));
-                    }
-
-                    int cracks = 6;
-                    for (int i = 0; i < cracks; i++) {
-
-                        double ang = i * (TAU / cracks) + phase * 1.2;
-
-                        double rx = c.x + Math.cos(ang) * 0.45;
-                        double rz = c.z + Math.sin(ang) * 0.45;
-                        double ry = c.y + Math.sin(phase * 3 + i) * 0.15;
-
-                        var fx = (i % 2 == 0) ? violet : magenta;
-                        spawn(player, fx.at(new Vector3(rx, ry, rz)));
+                        spawn(player, darkRift.at(shadow));
                     }
                 }
 
                 if (moving && fastTick) {
-
-                    int fractures = 4;
+                    int fractures = 5;
                     for (int i = 0; i < fractures; i++) {
+                        double back = 0.4 + i * 0.25;
 
-                        double back = 0.25 + i * 0.17;
-
-                        double x = base.x - fwd.x * back + right.x * Math.sin(phase * 2 + i) * 0.12;
-                        double z = base.z - fwd.z * back + right.z * Math.sin(phase * 2 + i) * 0.12;
-                        double y = base.y + 0.2 + Math.sin(phase * 1.8 + i) * 0.07;
+                        double swing = Math.sin(phase * 2.0 + i * 1.3) * 0.18;
+                        double x = base.x - fwd.x * back + right.x * swing;
+                        double z = base.z - fwd.z * back + right.z * swing;
+                        double y = base.y + 0.2 + Math.sin(phase * 1.8 + i) * 0.08;
 
                         var fx = (i % 3 == 0) ? cyan : (i % 2 == 0 ? magenta : violet);
-                        spawn(player, fx.at(new Vector3(x, y, z)));
+                        Vector3 crack = new Vector3(x, y, z);
+                        spawn(player, fx.at(crack));
 
                         Vector3 shard = new Vector3(
-                                x + (Math.random() * 0.15 - 0.075),
-                                y + 0.1,
-                                z + (Math.random() * 0.15 - 0.075)
+                                x + (rng.nextDouble() * 0.20 - 0.10),
+                                y - 0.10,
+                                z + (rng.nextDouble() * 0.20 - 0.10)
                         );
                         spawn(player, darkRift.at(shard));
                     }
 
-                    double t = phase * 1.4;
-                    double vx = base.x + Math.cos(t) * 0.35;
-                    double vz = base.z + Math.sin(t) * 0.35;
-                    double vy = base.y + 1.0 + Math.sin(t * 3) * 0.12;
+                    double t = phase * 1.6;
+                    double rv = 0.55;
+                    double vx = base.x + Math.cos(t) * rv;
+                    double vz = base.z + Math.sin(t) * rv;
+                    double vy = base.y + 1.1 + Math.sin(t * 3.2) * 0.14;
 
-                    spawn(player, cyan.at(new Vector3(vx, vy, vz)));
-                    spawn(player, new EnchantmentTableParticle(new Vector3(vx, vy, vz)));
+                    Vector3 orb = new Vector3(vx, vy, vz);
+                    spawn(player, cyan.at(orb));
+                    spawn(player, new EnchantmentTableParticle(orb));
                 }
 
                 if (!moving && medTick) {
+                    int ringPts = 18;
+                    double r = 1.0;
 
-                    int swirlPts = 16;
-                    double r = 0.85;
-
-                    for (int i = 0; i < swirlPts; i++) {
-
-                        double a = phase * 0.6 + i * (TAU / swirlPts);
+                    for (int i = 0; i < ringPts; i++) {
+                        double a = phase * 0.5 + i * (TAU / ringPts);
 
                         double x = base.x + Math.cos(a) * r;
                         double z = base.z + Math.sin(a) * r;
-
-                        double y = base.y + 0.07 * Math.sin(phase * 1.3 + i);
+                        double y = base.y + 0.05 * Math.sin(phase * 1.3 + i);
 
                         var fx = (i % 4 == 0) ? cyan : (i % 2 == 0 ? magenta : violet);
                         spawn(player, fx.at(new Vector3(x, y, z)));
                     }
 
-                    double vx = base.x;
-                    double vz = base.z;
-                    double vy = base.y + 1.15 + Math.sin(phase * 2.2) * 0.12;
+                    double vy = base.y + 1.2 + Math.sin(phase * 2.0) * 0.11;
+                    Vector3 corePos = new Vector3(base.x, vy, base.z);
+                    spawn(player, darkRift.at(corePos));
+                    spawn(player, new EnchantmentTableParticle(corePos));
 
-                    spawn(player, darkRift.at(new Vector3(vx, vy, vz)));
-                    spawn(player, new EnchantmentTableParticle(new Vector3(vx, vy, vz)));
+                    dualSpiral(player, magenta, base.add(0, 0.4, 0), 0.5, 1.6, 14, phase * 0.9);
+                }
+
+                if ((currentTick % 34) == 0) {
+                    double sliceAng = rng.nextDouble() * TAU;
+                    double cos = Math.cos(sliceAng);
+                    double sin = Math.sin(sliceAng);
+
+                    double len = 2.8;
+                    int segs = 8;
+
+                    for (int i = 0; i <= segs; i++) {
+                        double t = i / (double) segs;
+                        double offset = (t - 0.5) * len;
+
+                        double x = base.x + cos * offset;
+                        double z = base.z + sin * offset;
+                        double y = base.y + 0.5 + Math.sin(phase * 1.5 + t * 5.0) * 0.15;
+
+                        var fx = (i % 3 == 0) ? cyan : (i % 2 == 0 ? magenta : violet);
+                        spawn(player, fx.at(new Vector3(x, y, z)));
+                    }
+                }
+
+                if ((currentTick % 80) == 0) {
+                    burstRandom(player, darkRift, c, 0.4, 10, seed ^ 0xB1A4A011L, 0.0, 0.4);
+
+                    ring(player, violet, c, 0.45, 14, phase * 1.4, 0.02);
+
+                    int rays = 10;
+                    double maxR = 2.2;
+
+                    for (int i = 0; i < rays; i++) {
+                        double ang = phase * 0.9 + i * (TAU / rays);
+                        double dx = Math.cos(ang);
+                        double dz = Math.sin(ang);
+
+                        int steps = 4;
+                        for (int s = 1; s <= steps; s++) {
+                            double t = s / (double) steps;
+                            double dist = 0.6 + (maxR - 0.6) * t;
+
+                            double x = c.x + dx * dist;
+                            double z = c.z + dz * dist;
+                            double y = c.y + 0.1 + t * 0.4 + Math.sin(phase * 2.0 + t * 6.0) * 0.12;
+
+                            var fx = (s == steps) ? cyan : (s % 2 == 0 ? magenta : violet);
+                            spawn(player, fx.at(new Vector3(x, y, z)));
+                        }
+                    }
+
+                    burstRandom(player, cyan,    base.add(0, 1.4, 0), 1.8, 8, seed ^ 0xB1A4A021L, 0.2, 0.9);
+                    burstRandom(player, magenta, base.add(0, 1.4, 0), 1.8, 6, seed ^ 0xB1A4A031L, 0.2, 0.9);
+                }
+
+                if ((currentTick % 18) == 0) {
+                    int sparks = 4;
+                    for (int i = 0; i < sparks; i++) {
+                        double a = rng.nextDouble() * TAU;
+                        double r = 0.2 + rng.nextDouble() * 0.5;
+                        double x = base.x + Math.cos(a) * r;
+                        double z = base.z + Math.sin(a) * r;
+                        double y = base.y + 1.0 + rng.nextDouble() * 0.7;
+                        spawn(player, cyan.at(new Vector3(x, y, z)));
+                    }
                 }
             }
 
