@@ -1490,7 +1490,7 @@ public class Particle {
 
                 if (fastTick) {
 
-                    int drops = 6;
+                    int drops = 3;
                     for (int i = 0; i < drops; i++) {
 
                         double a = rng.nextDouble() * TAU;
