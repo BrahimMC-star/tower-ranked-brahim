@@ -1446,7 +1446,7 @@ public class Particle {
                 var tail2  = dust(150, 120, 230);   // violet plus profond
 
                 Position center = base.add(0, 1.2, 0);
-                Random rng = new Random(seed ^ 0xC0M3TL);
+                Random rng = new Random(seed ^ 0xC0FFEE1L);
 
                 // 1) Orbites principales autour du joueur (toujours actives)
                 if (fastTick) {
@@ -1544,8 +1544,8 @@ public class Particle {
                     }
 
                     // Petit impact autour du joueur
-                    burstRandom(player, core, center, 1.2, 6, seed ^ 0xC0M3T1L, 0.0, 0.4);
-                    burstRandom(player, tail2, center, 1.6, 8, seed ^ 0xC0M3T2L, 0.2, 0.9);
+                    burstRandom(player, core, center, 1.2, 6, seed ^ 0xC0FFEE2L, 0.0, 0.4);
+                    burstRandom(player, tail2, center, 1.6, 8, seed ^ 0xC0FFEE3, 0.2, 0.9);
                     ring(player, tail1, center, 1.4, 16, phase * 1.2, 0.05);
                 }
 
