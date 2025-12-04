@@ -13,6 +13,8 @@ public class EntityPetSlime extends EntityPetJumping {
         super(chunk, nbt);
     }
 
+    protected int size;
+
     @Override
     public int getNetworkId() {
         return EntitySlime.NETWORK_ID;
@@ -20,17 +22,17 @@ public class EntityPetSlime extends EntityPetJumping {
 
     @Override
     public float getWidth() {
-        return 0.52f;
+        return 0.51f + size * 0.51f;
     }
 
     @Override
     public float getHeight() {
-        return 0.52f;
+        return 0.51f + size * 0.51f;
     }
 
     @Override
     public float getLength() {
-        return 0.52f;
+        return 0.51f + size * 0.51f;
     }
 
     @Override
@@ -38,12 +40,15 @@ public class EntityPetSlime extends EntityPetJumping {
 
     @Override
     public Vector3f getSeatPosition() {
-        return new Vector3f(0, 2.2f, 0);
+        return new Vector3f(0, 2f, 0);
     }
 
     @Override
     public void initEntity() {
         super.initEntity();
+
+        this.size = Utils.rand(1, 3);
+        this.setScale(0.51f + size * 0.51f);
     }
 
     @Override
