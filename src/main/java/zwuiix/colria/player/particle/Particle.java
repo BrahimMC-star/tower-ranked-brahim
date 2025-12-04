@@ -2269,6 +2269,428 @@ public class Particle {
                     spawn(player, soul.at(new Vector3(base.x, base.y + 1.9, base.z)));
                 }
             }
+
+            case "demoniac_aura" -> {
+                var blood   = dust(190, 20, 40);
+                var voidP   = dust(100, 0, 140);
+                var ember   = dust(255, 80, 140);
+                var shadow  = dust(20, 0, 25);
+
+                boolean wingsTick = (currentTick % 10) == 0;
+                boolean hornsTick = wingsTick;
+
+                if (moving) {
+
+                    if (fastTick) {
+                        int segs = 7;
+                        double length = 1.9;
+                        double y = base.y + 1.0;
+
+                        for (int i = 0; i < segs; i++) {
+                            double t = i / (double)(segs - 1);
+                            double dist = t * length;
+                            double sway = Math.sin(phase * 1.4 + t * 6.0) * 0.22;
+
+                            double x = base.x - fwd.x * dist + right.x * sway;
+                            double z = base.z - fwd.z * dist + right.z * sway;
+
+                            var fx = (i % 2 == 0) ? voidP : blood;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
+
+                            if (i == segs - 1) {
+                                spawn(player, ember.at(new Vector3(x, y + 0.08, z)));
+                            }
+                        }
+                    }
+
+                    if (wingsTick) {
+                        int segs = 8;
+                        double baseY = base.y + 1.05;
+                        double flap = Math.sin(phase * 2.8) * 0.25;
+
+                        for (int side = -1; side <= 1; side += 2) {
+                            for (int i = 0; i < segs; i++) {
+                                double t = i / (double)(segs - 1);
+
+                                double arch = Math.sin(t * Math.PI) * (0.25 + flap);
+                                double tear = Math.sin(t * 6.0 + phase * 3.0) * 0.12;
+                                double spread = 0.45 + 0.65 * t;
+                                double back = 0.15 + 0.45 * t;
+
+                                double x = base.x
+                                        - fwd.x * back
+                                        + right.x * (side * spread + tear * side);
+                                double z = base.z
+                                        - fwd.z * back
+                                        + right.z * (side * spread + tear * side);
+                                double y = baseY + arch - 0.05 * t;
+
+                                var fx = (i % 2 == 0) ? blood : voidP;
+                                spawn(player, fx.at(new Vector3(x, y, z)));
+                            }
+                        }
+                    }
+
+                    if (hornsTick) {
+                        double headY = base.y + 1.85;
+                        int segs = 5;
+
+                        for (int side = -1; side <= 1; side += 2) {
+                            for (int i = 0; i < segs; i++) {
+                                double t = i / (double)(segs - 1);
+
+                                double rise = t * 0.25;
+                                double curve = Math.sin(t * Math.PI * 0.8) * 0.18;
+
+                                double x = base.x + right.x * side * (0.22 + 0.10 * t) + fwd.x * 0.05 + right.x * curve * 0.3;
+                                double z = base.z + right.z * side * (0.22 + 0.10 * t) + fwd.z * 0.05 + right.z * curve * 0.3;
+                                double y = headY + rise + Math.sin(phase * 2.4 + side * 0.8) * 0.03;
+
+                                var fx = (i == segs - 1) ? ember : blood;
+                                spawn(player, fx.at(new Vector3(x, y, z)));
+                            }
+                        }
+                    }
+
+                    if (medTick) {
+                        int segs = 6;
+                        double back = 1.5;
+
+                        for (int i = 0; i < segs; i++) {
+                            double t = i / (double)(segs - 1);
+                            double dist = t * back;
+                            double sway = Math.sin(phase * 2.0 + t * 5.0) * 0.18;
+
+                            double x = base.x - fwd.x * dist + right.x * sway;
+                            double z = base.z - fwd.z * dist + right.z * sway;
+                            double y = base.y + 0.08;
+
+                            var fx = (i % 2 == 0) ? shadow : voidP;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
+                        }
+                    }
+
+                } else {
+
+                    if (fastTick) {
+                        int outerPts = 24;
+                        double outerR = 0.95;
+
+                        for (int i = 0; i < outerPts; i++) {
+                            double t = i / (double)outerPts;
+                            double ang = phase * 0.5 + t * TAU;
+                            double jitter = Math.sin(phase * 2.0 + t * 10.0) * 0.08;
+
+                            double x = base.x + Math.cos(ang) * (outerR + jitter);
+                            double z = base.z + Math.sin(ang) * (outerR + jitter);
+                            double y = base.y + 0.04;
+
+                            var fx = (i % 3 == 0) ? voidP : blood;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
+                        }
+
+                        int spikes = 7;
+                        double innerR = 0.35;
+                        double outerSpikeR = 0.78;
+
+                        for (int i = 0; i < spikes; i++) {
+                            double ang = phase * 0.6 + i * (TAU / spikes);
+
+                            double ix = base.x + Math.cos(ang) * innerR;
+                            double iz = base.z + Math.sin(ang) * innerR;
+                            double ox = base.x + Math.cos(ang) * outerSpikeR;
+                            double oz = base.z + Math.sin(ang) * outerSpikeR;
+
+                            int steps = 3;
+                            for (int s = 0; s <= steps; s++) {
+                                double u = s / (double)steps;
+                                double x = ix + (ox - ix) * u;
+                                double z = iz + (oz - iz) * u;
+                                double y = base.y + 0.045 + u * 0.02;
+
+                                var fx = (s == steps) ? ember : blood;
+                                spawn(player, fx.at(new Vector3(x, y, z)));
+                            }
+                        }
+
+                        int innerPts = 10;
+                        double r2 = 0.55;
+                        double midY = base.y + 0.06;
+
+                        for (int i = 0; i < innerPts; i++) {
+                            double a = phase * 0.9 + i * (TAU / innerPts);
+                            double x = base.x + Math.cos(a) * r2;
+                            double z = base.z + Math.sin(a) * r2;
+                            var fx = (i % 2 == 0) ? voidP : shadow;
+                            spawn(player, fx.at(new Vector3(x, midY, z)));
+                        }
+                    }
+
+                    if (medTick) {
+                        double midY = base.y + 1.0;
+                        int pts = 10;
+                        double r = 0.5;
+
+                        for (int i = 0; i < pts; i++) {
+                            double a = phase * 1.0 + i * (TAU / pts);
+                            double x = base.x + Math.cos(a) * r;
+                            double z = base.z + Math.sin(a) * r;
+                            double y = midY + 0.05 * Math.sin(phase * 2.1 + i);
+
+                            var fx = (i % 2 == 0) ? voidP : blood;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
+                        }
+
+                        double coreY = base.y + 1.1 + Math.sin(phase * 2.3) * 0.08;
+                        spawn(player, shadow.at(new Vector3(base.x, coreY, base.z)));
+                        spawn(player, ember.at(new Vector3(base.x, coreY + 0.06, base.z)));
+                    }
+
+                    if (slowTick) {
+                        int risePts = 10;
+                        double h = 1.6;
+                        double r = 0.38;
+
+                        for (int i = 0; i < risePts; i++) {
+                            double t = i / (double)(risePts - 1);
+                            double ang = phase * 1.2 + t * TAU * 1.3;
+
+                            double x = base.x + Math.cos(ang) * (r + 0.08 * t);
+                            double z = base.z + Math.sin(ang) * (r + 0.08 * t);
+                            double y = base.y + 0.35 + t * h;
+
+                            var fx = (i % 2 == 0) ? voidP : blood;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
+                        }
+                    }
+                }
+            }
+
+            case "monster_fame" -> {
+                var white = dust(245, 245, 255);
+                var black = dust(20, 20, 24);
+                var red   = dust(210, 40, 60);
+                var pink  = dust(255, 120, 190);
+
+                double feetY  = base.y + 0.04;
+                double midY   = base.y + 1.0;
+                double headY  = base.y + 1.8;
+
+                if (moving) {
+
+                    if (fastTick) {
+                        int segs = 6;
+                        double back = 1.8;
+
+                        for (int i = 0; i < segs; i++) {
+                            double t = i / (double)(segs - 1);
+                            double dist = t * back;
+                            double sway = Math.sin(phase * 2.0 + t * 6.0) * 0.16;
+
+                            double x = base.x - fwd.x * dist + right.x * sway;
+                            double z = base.z - fwd.z * dist + right.z * sway;
+                            double y = feetY + 0.03;
+
+                            var fx = (i % 2 == 0) ? white : red;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
+
+                            if (i % 3 == 0) {
+                                double tx = x + right.x * 0.25;
+                                double tz = z + right.z * 0.25;
+                                spawn(player, black.at(new Vector3(tx, y, tz)));
+                            }
+                        }
+
+                        double trainLen = 1.6;
+                        int trainSegs = 4;
+                        for (int side = -1; side <= 1; side += 2) {
+                            for (int i = 0; i < trainSegs; i++) {
+                                double t = i / (double)(trainSegs - 1);
+                                double dist = 0.4 + t * trainLen;
+                                double spread = 0.25 + t * 0.35;
+
+                                double x = base.x - fwd.x * dist + right.x * side * spread;
+                                double z = base.z - fwd.z * dist + right.z * side * spread;
+                                double y = feetY + 0.02 + t * 0.06;
+
+                                var fx = (i % 2 == 0) ? pink : white;
+                                spawn(player, fx.at(new Vector3(x, y, z)));
+                            }
+                        }
+                    }
+
+                    if (medTick) {
+                        int flashes = 3;
+                        for (int i = 0; i < flashes; i++) {
+                            double off = 0.4 + i * 0.25;
+                            double jitter = Math.sin(phase * 2.5 + i) * 0.15;
+
+                            double x = base.x - fwd.x * off + right.x * jitter;
+                            double z = base.z - fwd.z * off + right.z * jitter;
+                            double y = midY + 0.12;
+
+                            spawn(player, white.at(new Vector3(x, y, z)));
+                            spawn(player, pink.at(new Vector3(x, y + 0.04, z)));
+                        }
+
+                        int shards = 4;
+                        for (int i = 0; i < shards; i++) {
+                            double ang = phase * 1.3 + i * (TAU / shards);
+                            double r = 0.4 + 0.15 * Math.sin(phase * 3.0 + i);
+
+                            double x = base.x + Math.cos(ang) * r;
+                            double z = base.z + Math.sin(ang) * r;
+                            double y = midY + 0.05;
+
+                            var fx = (i % 2 == 0) ? red : white;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
+                        }
+                    }
+
+                    if (slowTick) {
+                        double fx = base.x - fwd.x * 0.5;
+                        double fz = base.z - fwd.z * 0.5;
+                        double fy = midY + 0.25;
+
+                        spawn(player, white.at(new Vector3(fx, fy, fz)));
+                        spawn(player, pink.at(new Vector3(fx, fy + 0.05, fz)));
+                    }
+
+                } else {
+
+                    if (fastTick) {
+                        int ringPts = 18;
+                        double r = 0.75;
+
+                        for (int i = 0; i < ringPts; i++) {
+                            double t = i / (double)ringPts;
+                            double ang = phase * 0.8 + t * TAU;
+                            double jitter = Math.sin(phase * 2.0 + t * 10.0) * 0.08;
+
+                            double x = base.x + Math.cos(ang) * (r + jitter);
+                            double z = base.z + Math.sin(ang) * (r + jitter);
+                            double y = feetY + 0.02;
+
+                            var fx = (i % 3 == 0) ? red : white;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
+                        }
+
+                        int steps = 3;
+                        for (int s = 0; s < steps; s++) {
+                            double t = s / (double)(steps - 1);
+                            double len = 0.45 + t * 0.25;
+                            double ang = phase * 1.4 + t * 1.7;
+
+                            double x = base.x + Math.cos(ang) * len;
+                            double z = base.z + Math.sin(ang) * len;
+                            double y = feetY + 0.03 + t * 0.08;
+
+                            var fx = (s == steps - 1) ? red : white;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
+                        }
+
+                        int spots = 3;
+                        for (int i = 0; i < spots; i++) {
+                            double ang = i * (TAU / spots) + phase * 0.4;
+                            double dist = 0.35;
+
+                            double x = base.x + Math.cos(ang) * dist;
+                            double z = base.z + Math.sin(ang) * dist;
+                            double y = feetY + 0.01;
+
+                            spawn(player, white.at(new Vector3(x, y, z)));
+                        }
+                    }
+
+                    if (medTick) {
+                        int wings = 7;
+                        double baseY = midY + 0.05;
+                        double flap = Math.sin(phase * 2.6) * 0.22;
+
+                        for (int side = -1; side <= 1; side += 2) {
+                            for (int i = 0; i < wings; i++) {
+                                double t = i / (double)(wings - 1);
+
+                                double arch = Math.sin(t * Math.PI) * (0.22 + flap);
+                                double tear = Math.sin(t * 5.0 + phase * 3.0) * 0.1;
+                                double spread = 0.40 + 0.55 * t;
+                                double back = 0.12 + 0.35 * t;
+
+                                double x = base.x
+                                        - fwd.x * back
+                                        + right.x * (side * spread + tear * side);
+                                double z = base.z
+                                        - fwd.z * back
+                                        + right.z * (side * spread + tear * side);
+                                double y = baseY + arch - 0.05 * t;
+
+                                var fx = (i % 2 == 0) ? white : black;
+                                spawn(player, fx.at(new Vector3(x, y, z)));
+                            }
+                        }
+
+                        int hornsSegs = 5;
+                        for (int side = -1; side <= 1; side += 2) {
+                            for (int i = 0; i < hornsSegs; i++) {
+                                double t = i / (double)(hornsSegs - 1);
+
+                                double rise = t * 0.25;
+                                double curve = Math.sin(t * Math.PI * 0.8) * 0.18;
+
+                                double x = base.x + right.x * side * (0.20 + 0.10 * t)
+                                        + fwd.x * 0.05 + right.x * curve * 0.25;
+                                double z = base.z + right.z * side * (0.20 + 0.10 * t)
+                                        + fwd.z * 0.05 + right.z * curve * 0.25;
+                                double y = headY + rise + Math.sin(phase * 2.2 + side * 0.7) * 0.03;
+
+                                var fx = (i == hornsSegs - 1) ? red : black;
+                                spawn(player, fx.at(new Vector3(x, y, z)));
+                            }
+                        }
+
+                        double coreY = midY + Math.sin(phase * 2.1) * 0.06;
+                        spawn(player, black.at(new Vector3(base.x, coreY, base.z)));
+                        spawn(player, red.at(new Vector3(base.x, coreY + 0.05, base.z)));
+                    }
+
+                    if (slowTick) {
+                        int pts = 9;
+                        double h = 1.4;
+                        double r = 0.40;
+
+                        for (int i = 0; i < pts; i++) {
+                            double t = i / (double)(pts - 1);
+                            double ang = phase * 1.1 + t * TAU * 1.2;
+
+                            double x = base.x + Math.cos(ang) * (r + 0.06 * t);
+                            double z = base.z + Math.sin(ang) * (r + 0.06 * t);
+                            double y = base.y + 0.45 + t * h;
+
+                            var fx = (i % 2 == 0) ? white : red;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
+                        }
+
+                        if ((currentTick % 3) == 0) {
+                            double fx = base.x - fwd.x * 0.45;
+                            double fz = base.z - fwd.z * 0.45;
+                            double fy = midY + 0.25;
+
+                            spawn(player, white.at(new Vector3(fx, fy, fz)));
+                            spawn(player, pink.at(new Vector3(fx, fy + 0.04, fz)));
+                        }
+
+                        if ((currentTick % 90) == 0) {
+                            double ex = base.x;
+                            double ey = headY + 0.05;
+                            double ez = base.z;
+
+                            spawn(player, black.at(new Vector3(ex - 0.12, ey, ez)));
+                            spawn(player, black.at(new Vector3(ex + 0.12, ey, ez)));
+                            spawn(player, red.at(new Vector3(ex, ey, ez)));
+                        }
+                    }
+                }
+            }
         }
     }
 
