@@ -383,102 +383,187 @@ public class Particle {
 
             // Static Shock
             case "static_shock" -> {
-                var core = dust(120, 190, 255);
-                var edge = dust(40, 80, 180);
+                var core  = dust(120, 190, 255);
+                var edge  = dust(40, 80, 180);
+                var white = dust(240, 240, 255);
+                var cyan  = dust(150, 230, 255);
+
+                double chestY = base.y + 1.0;
+                double feetY  = base.y + 0.04;
 
                 if (moving) {
+
                     if (fastTick) {
-                        double f = 0.6;
-                        double s = 0.45;
-                        double yMid = base.y + 1.1;
+                        int paths = 3;
+                        for (int p = 0; p < paths; p++) {
+                            int segs = 4;
+                            double back = 0.2 + p * 0.25;
+                            double startY = chestY + (p == 0 ? 0.1 : 0.0);
 
-                        Vector3[] corners = new Vector3[]{
-                                new Vector3(base.x + fwd.x * f + right.x * s, yMid, base.z + fwd.z * f + right.z * s),
-                                new Vector3(base.x + fwd.x * f - right.x * s, yMid, base.z + fwd.z * f - right.z * s),
-                                new Vector3(base.x - fwd.x * f - right.x * s, yMid, base.z - fwd.z * f - right.z * s),
-                                new Vector3(base.x - fwd.x * f + right.x * s, yMid, base.z - fwd.z * f + right.z * s)
-                        };
+                            double sx = base.x - fwd.x * back;
+                            double sz = base.z - fwd.z * back;
 
-                        double hs = 0.16;
-                        for (Vector3 c : corners) {
-                            spawn(player, core.at(c.add(-hs, 0, -hs)));
-                            spawn(player, core.at(c.add(hs, 0, -hs)));
-                            spawn(player, core.at(c.add(hs, 0, hs)));
-                            spawn(player, core.at(c.add(-hs, 0, hs)));
+                            double px = sx;
+                            double py = startY;
+                            double pz = sz;
+
+                            for (int i = 0; i < segs; i++) {
+                                double t = i / (double) segs;
+                                double jitterX = (Math.random() - 0.5) * 0.25;
+                                double jitterZ = (Math.random() - 0.5) * 0.25;
+                                double up = (Math.random() * 0.22) + 0.03;
+
+                                double nx = sx - fwd.x * (t * 0.6) + right.x * jitterX;
+                                double nz = sz - fwd.z * (t * 0.6) + right.z * jitterZ;
+                                double ny = startY + up * (i + 1);
+
+                                int steps = 3;
+                                for (int s = 0; s <= steps; s++) {
+                                    double u = s / (double) steps;
+                                    double ix = px + (nx - px) * u;
+                                    double iy = py + (ny - py) * u;
+                                    double iz = pz + (nz - pz) * u;
+                                    var fx = (s % 2 == 0) ? core : cyan;
+                                    spawn(player, fx.at(new Vector3(ix, iy, iz)));
+                                }
+
+                                px = nx;
+                                py = ny;
+                                pz = nz;
+                            }
                         }
 
-                        int segs = 4;
-                        for (int i = 0; i < 4; i++) {
-                            int j = (i + 1) % 4;
-                            Vector3 a = corners[i];
-                            Vector3 b = corners[j];
-                            for (int k = 0; k <= segs; k++) {
-                                double t = k / (double) segs;
-                                double jx = (Math.random() - 0.5) * 0.04;
-                                double jz = (Math.random() - 0.5) * 0.04;
+                        int arcs = 4;
+                        for (int i = 0; i < arcs; i++) {
+                            double offset = (i % 2 == 0 ? 0.35 : -0.35);
+                            double y1 = chestY + (i < 2 ? 0.2 : -0.1);
+                            double y2 = y1 + ((i % 2 == 0) ? 0.18 : -0.18);
+
+                            Vector3 a = new Vector3(base.x + right.x * offset, y1, base.z + right.z * offset);
+                            Vector3 b = new Vector3(base.x - right.x * offset * 0.6, y2, base.z - right.z * offset * 0.6);
+
+                            int segs = 3;
+                            for (int s = 0; s <= segs; s++) {
+                                double t = s / (double) segs;
+                                double jx = (Math.random() - 0.5) * 0.06;
+                                double jz = (Math.random() - 0.5) * 0.06;
                                 double x = a.x + (b.x - a.x) * t + jx;
-                                double y = a.y;
+                                double y = a.y + (b.y - a.y) * t;
                                 double z = a.z + (b.z - a.z) * t + jz;
-                                spawn(player, edge.at(new Vector3(x, y, z)));
+                                var fx = (s % 2 == 0) ? white : core;
+                                spawn(player, fx.at(new Vector3(x, y, z)));
                             }
+                        }
+
+                        double auraR = 0.55;
+                        int pts = 10;
+                        for (int i = 0; i < pts; i++) {
+                            double t = i / (double) pts;
+                            double a = phase * 1.3 + t * TAU;
+                            double jitter = Math.sin(phase * 3.0 + t * 10.0) * 0.08;
+
+                            double x = base.x + Math.cos(a) * (auraR + jitter);
+                            double z = base.z + Math.sin(a) * (auraR + jitter);
+                            double y = chestY + Math.sin(phase * 2.0 + i) * 0.06;
+
+                            var fx = (i % 3 == 0) ? cyan : core;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
+                        }
+
+                        if ((currentTick & 3) == 0) {
+                            double fx = base.x + (Math.random() - 0.5) * 0.4;
+                            double fz = base.z + (Math.random() - 0.5) * 0.4;
+                            spawn(player, white.at(new Vector3(fx, chestY + 0.25, fz)));
                         }
                     }
 
                     if (medTick) {
-                        int segs = 6;
-                        double back = 1.6;
+                        int segs = 5;
+                        double back = 1.5;
                         for (int i = 0; i < segs; i++) {
                             double t = i / (double) (segs - 1);
                             double dist = t * back;
-                            double sway = Math.sin(phase * 1.0 + t * 4.0) * 0.15;
+                            double sway = Math.sin(phase * 2.0 + t * 5.0) * 0.18;
 
                             double x = base.x - fwd.x * dist + right.x * sway;
                             double z = base.z - fwd.z * dist + right.z * sway;
-                            double y = base.y + 0.06;
+                            double y = base.y + 0.09;
 
-                            spawn(player, core.at(new Vector3(x, y, z)));
+                            var fx = (i % 2 == 0) ? edge : core;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
 
-                            if (i % 2 == 0) {
-                                spawn(player, edge.at(new Vector3(x + right.x * 0.15, y, z + right.z * 0.15)));
-                                spawn(player, edge.at(new Vector3(x - right.x * 0.15, y, z - right.z * 0.15)));
+                            Vector3 left = new Vector3(x + right.x * 0.18, y, z + right.z * 0.18);
+                            Vector3 rightV = new Vector3(x - right.x * 0.18, y, z - right.z * 0.18);
+
+                            spawn(player, cyan.at(left));
+                            spawn(player, cyan.at(rightV));
+                        }
+
+                        double footR = 0.32;
+                        int spikes = 4;
+                        for (int i = 0; i < spikes; i++) {
+                            double a = phase * 1.1 + i * (TAU / spikes);
+                            double dx = Math.cos(a) * footR;
+                            double dz = Math.sin(a) * footR;
+
+                            Vector3 start = new Vector3(base.x + dx * 0.4, feetY, base.z + dz * 0.4);
+                            Vector3 end   = new Vector3(base.x + dx, feetY + 0.18, base.z + dz);
+
+                            int steps = 3;
+                            for (int s = 0; s <= steps; s++) {
+                                double t = s / (double) steps;
+                                double x = start.x + (end.x - start.x) * t;
+                                double y = start.y + (end.y - start.y) * t;
+                                double z = start.z + (end.z - start.z) * t;
+                                var fx = (s == steps) ? white : edge;
+                                spawn(player, fx.at(new Vector3(x, y, z)));
                             }
                         }
                     }
 
                 } else {
+
                     if (fastTick) {
-                        double size = 0.85;
-                        double yFeet = base.y + 0.04;
+                        double size = 0.9;
 
                         Vector3[] floor = new Vector3[]{
-                                new Vector3(base.x + fwd.x * size + right.x * size, yFeet, base.z + fwd.z * size + right.z * size),
-                                new Vector3(base.x + fwd.x * size - right.x * size, yFeet, base.z + fwd.z * size - right.z * size),
-                                new Vector3(base.x - fwd.x * size - right.x * size, yFeet, base.z - fwd.z * size - right.z * size),
-                                new Vector3(base.x - fwd.x * size + right.x * size, yFeet, base.z - fwd.z * size + right.z * size)
+                                new Vector3(base.x + fwd.x * size + right.x * size, feetY, base.z + fwd.z * size + right.z * size),
+                                new Vector3(base.x + fwd.x * size - right.x * size, feetY, base.z + fwd.z * size - right.z * size),
+                                new Vector3(base.x - fwd.x * size - right.x * size, feetY, base.z - fwd.z * size - right.z * size),
+                                new Vector3(base.x - fwd.x * size + right.x * size, feetY, base.z - fwd.z * size + right.z * size)
                         };
 
-                        int edgePts = 6;
+                        int edgePts = 7;
                         for (int i = 0; i < 4; i++) {
                             int j = (i + 1) % 4;
                             Vector3 a = floor[i];
                             Vector3 b = floor[j];
                             for (int k = 0; k <= edgePts; k++) {
                                 double t = k / (double) edgePts;
-                                double x = a.x + (b.x - a.x) * t;
-                                double z = a.z + (b.z - a.z) * t;
+                                double jitter = (Math.random() - 0.5) * 0.06;
+                                double x = a.x + (b.x - a.x) * t + jitter;
+                                double z = a.z + (b.z - a.z) * t - jitter;
+                                double y = feetY + Math.sin(phase * 2.0 + t * 6.0) * 0.03;
 
-                                if ((k + i + currentTick) % 2 == 0) {
-                                    spawn(player, core.at(new Vector3(x, yFeet, z)));
-                                } else {
-                                    spawn(player, edge.at(new Vector3(x, yFeet, z)));
-                                }
+                                var fx = ((k + i + currentTick) % 3 == 0) ? white : ((k + i) % 2 == 0 ? core : edge);
+                                spawn(player, fx.at(new Vector3(x, y, z)));
                             }
+                        }
+
+                        int innerPts = 8;
+                        double r = 0.45;
+                        for (int i = 0; i < innerPts; i++) {
+                            double a = phase * 1.1 + i * (TAU / innerPts);
+                            double x = base.x + Math.cos(a) * r;
+                            double z = base.z + Math.sin(a) * r;
+                            var fx = (i % 2 == 0) ? cyan : core;
+                            spawn(player, fx.at(new Vector3(x, feetY + 0.02, z)));
                         }
                     }
 
                     if (medTick) {
                         double yMid = base.y + 1.0;
-                        double size = 0.55;
+                        double size = 0.6;
                         Vector3[] mid = new Vector3[]{
                                 new Vector3(base.x + fwd.x * size + right.x * size, yMid, base.z + fwd.z * size + right.z * size),
                                 new Vector3(base.x + fwd.x * size - right.x * size, yMid, base.z + fwd.z * size - right.z * size),
@@ -493,30 +578,33 @@ public class Particle {
                             Vector3 b = mid[j];
                             for (int k = 0; k <= segs; k++) {
                                 double t = k / (double) segs;
-                                double x = a.x + (b.x - a.x) * t;
-                                double z = a.z + (b.z - a.z) * t;
-                                double y = yMid + Math.sin(phase * 1.3 + t * 4.0 + i) * 0.03;
-                                spawn(player, core.at(new Vector3(x, y, z)));
+                                double jx = (Math.random() - 0.5) * 0.05;
+                                double jz = (Math.random() - 0.5) * 0.05;
+                                double x = a.x + (b.x - a.x) * t + jx;
+                                double z = a.z + (b.z - a.z) * t + jz;
+                                double y = yMid + Math.sin(phase * 1.8 + t * 5.0 + i) * 0.05;
+                                var fx = (k % 2 == 0) ? core : cyan;
+                                spawn(player, fx.at(new Vector3(x, y, z)));
                             }
                         }
                     }
 
                     if (slowTick) {
-                        int spikes = 4;
+                        int spikes = 6;
                         int steps = 3;
-                        double baseR = 0.35;
+                        double baseR = 0.38;
                         for (int i = 0; i < spikes; i++) {
-                            double ang = phase * 0.4 + i * (TAU / spikes);
+                            double ang = phase * 0.7 + i * (TAU / spikes);
                             double dx = Math.cos(ang) * baseR;
                             double dz = Math.sin(ang) * baseR;
 
                             for (int s = 0; s <= steps; s++) {
                                 double t = s / (double) steps;
-                                double y = base.y + 0.2 + t * 0.9;
+                                double y = base.y + 0.25 + t * 0.9;
                                 double x = base.x + dx * (1.0 + 0.1 * t);
                                 double z = base.z + dz * (1.0 + 0.1 * t);
 
-                                var fx = (s == steps) ? core : edge;
+                                var fx = (s == steps) ? white : ((s % 2 == 0) ? core : edge);
                                 spawn(player, fx.at(new Vector3(x, y, z)));
                             }
                         }
