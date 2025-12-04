@@ -323,47 +323,190 @@ public class Particle {
 
             // Void Purple
             case "void_purple" -> {
+
                 var purple = dust(140, 0, 200);
-                PFactory darkSmoke = pos -> new SmokeParticle(pos);
+                var cyan   = dust(80, 190, 255);
+                var voidDark = dust(50, 0, 90);
+                PFactory smoke = pos -> new SmokeParticle(pos);
+
+                Random rng = new Random(seed);
 
                 if (moving) {
-                    if (medTick) {
-                        int segs = 7;
-                        double back = 1.6;
+
+                    if (fastTick) {
+                        int segs = 6;
+                        double back = 1.5;
+
                         for (int i = 0; i < segs; i++) {
-                            double t = i / (double) (segs - 1);
+                            double t = i / (double)(segs - 1);
                             double dist = t * back;
-                            double x = base.x - fwd.x * dist;
-                            double z = base.z - fwd.z * dist;
-                            double y = base.y + 0.05;
+
+                            double sway = Math.sin(phase * 2.0 + t * 5.0) * 0.18;
+
+                            double x = base.x - fwd.x * dist + right.x * sway;
+                            double z = base.z - fwd.z * dist + right.z * sway;
+                            double y = base.y + 0.06;
+
                             spawn(player, purple.at(new Vector3(x, y, z)));
-                            if ((i % 2) == 0) {
-                                spawn(player, darkSmoke.at(new Vector3(x, y + 0.3, z)));
+
+                            if (i % 2 == 0)
+                                spawn(player, cyan.at(new Vector3(x, y + 0.04, z)));
+
+                            if (i == segs - 1)
+                                spawn(player, voidDark.at(new Vector3(x, y + 0.25, z)));
+                        }
+
+                        int shards = 5;
+                        for (int i = 0; i < shards; i++) {
+
+                            double ang = phase * 1.3 + i * 1.9;
+                            double speed = 0.12 + rng.nextDouble() * 0.06;
+
+                            Vector3 origin = base.add(
+                                    Math.cos(ang) * 0.18,
+                                    0.25 + rng.nextDouble() * 0.15,
+                                    Math.sin(ang) * 0.18
+                            );
+
+                            Vector3 dir = new Vector3(
+                                    Math.cos(ang) * speed,
+                                    0.05 + rng.nextDouble() * 0.04,
+                                    Math.sin(ang) * speed
+                            );
+
+                            var fx = (i % 2 == 0) ? cyan : purple;
+                            spawn(player, fx.at(origin.add(dir)));
+                        }
+                    }
+
+                    if (medTick) {
+
+                        int rings = 8;
+                        double r = 0.55;
+                        double y0 = base.y + 0.05;
+
+                        for (int i = 0; i < rings; i++) {
+                            double a = phase * 0.9 + i * (TAU / rings);
+                            double x = base.x + Math.cos(a) * r;
+                            double z = base.z + Math.sin(a) * r;
+                            spawn(player, voidDark.at(new Vector3(x, y0, z)));
+                        }
+
+                        double cx = base.x - fwd.x * 0.5;
+                        double cy = base.y + 0.35 + Math.sin(phase * 3.0) * 0.08;
+                        double cz = base.z - fwd.z * 0.5;
+
+                        spawn(player, cyan.at(new Vector3(cx, cy, cz)));
+                        spawn(player, purple.at(new Vector3(cx, cy + 0.04, cz)));
+                    }
+
+                    if (slowTick) {
+                        spawn(player, voidDark.at(base.add(0, 1.3, 0)));
+                    }
+
+                } else {
+
+                    if (fastTick) {
+
+                        int layers = 3;
+                        for (int L = 0; L < layers; L++) {
+                            int pts = 5 + L * 2;
+                            double r = 0.45 + L * 0.25;
+                            double y = base.y + 0.65 + L * 0.45;
+
+                            for (int i = 0; i < pts; i++) {
+
+                                double t = i / (double) pts;
+                                double ang = phase * (0.7 + L * 0.25) + t * TAU + L * 0.8;
+
+                                double swirl = Math.sin(phase * 2.0 + t * 6.0 + L) * 0.14;
+
+                                double x = base.x + Math.cos(ang) * (r + swirl);
+                                double z = base.z + Math.sin(ang) * (r + swirl);
+
+                                var fx = (i % 3 == 0) ? cyan : purple;
+                                spawn(player, fx.at(new Vector3(x, y, z)));
+
+                                if (L == 1)
+                                    spawn(player, voidDark.at(new Vector3(x, y + 0.08, z)));
                             }
                         }
 
-                        coneBurst(player, darkSmoke, base.add(0, 1.0, 0), fwd, 1.0, 5, seed, 0.5, 1.2);
+                        double cx = base.x + Math.sin(phase * 2.0) * 0.12;
+                        double cy = base.y + 1.25 + Math.sin(phase * 1.7) * 0.12;
+                        double cz = base.z + Math.cos(phase * 2.0) * 0.12;
+
+                        spawn(player, voidDark.at(new Vector3(cx, cy, cz)));
+
+                        if ((currentTick % 18) == 0)
+                            spawn(player, cyan.at(new Vector3(cx, cy + 0.12, cz)));
                     }
-                } else {
-                    if (fastTick) {
-                        double[] heights = {0.7, 1.2, 1.7};
-                        double[] radii = {0.5, 0.7, 0.6};
-                        for (int h = 0; h < heights.length; h++) {
-                            for (int orb = 0; orb < 3; orb++) {
-                                double ang = phase * (0.35 + 0.15 * h) + orb * (TAU / 3.0) + h * 0.7;
-                                double r = radii[h];
-                                double x = base.x + Math.cos(ang) * r;
-                                double z = base.z + Math.sin(ang) * r;
-                                double y = base.y + heights[h];
-                                spawn(player, purple.at(new Vector3(x, y, z)));
-                                if (h == 1) {
-                                    spawn(player, darkSmoke.at(new Vector3(x, y + 0.1, z)));
-                                }
-                            }
+
+                    if (medTick) {
+
+                        double y = base.y + 0.04;
+                        int rings = 12;
+                        double r = 0.8;
+
+                        for (int i = 0; i < rings; i++) {
+                            double a = phase * 0.4 + i * (TAU / rings);
+
+                            double dx = Math.cos(a) * r;
+                            double dz = Math.sin(a) * r;
+
+                            double fx = base.x + dx;
+                            double fz = base.z + dz;
+
+                            var col = ((i + currentTick) % 3 == 0) ? cyan : purple;
+                            spawn(player, col.at(new Vector3(fx, y, fz)));
+                        }
+
+                        int accrete = 5;
+                        for (int i = 0; i < accrete; i++) {
+
+                            double ang = rng.nextDouble() * TAU;
+                            double dist = 0.3 + rng.nextDouble() * 0.5;
+
+                            double ox = base.x + Math.cos(ang) * dist;
+                            double oz = base.z + Math.sin(ang) * dist;
+                            double oy = base.y + 0.25 + rng.nextDouble() * 0.4;
+
+                            double dx = base.x - ox;
+                            double dz = base.z - oz;
+                            double dy = (base.y + 1.0) - oy;
+
+                            Vector3 pos = new Vector3(
+                                    ox + dx * 0.15,
+                                    oy + dy * 0.15,
+                                    oz + dz * 0.15
+                            );
+
+                            var fx = (i % 2 == 0) ? voidDark : purple;
+                            spawn(player, fx.at(pos));
                         }
                     }
-                    if ((currentTick % 12) == 0) {
-                        burstRandom(player, darkSmoke, base.add(0, 1.0, 0), 0.9, 4, seed, 0.5, 1.2);
+
+                    if (slowTick) {
+
+                        int shards = 6;
+                        for (int i = 0; i < shards; i++) {
+
+                            double ang = phase * 1.1 + i * (TAU / shards);
+                            double dist = 0.28 + Math.sin(phase * 3.0 + i) * 0.08;
+
+                            double x = base.x + Math.cos(ang) * dist;
+                            double z = base.z + Math.sin(ang) * dist;
+                            double y = base.y + 0.45;
+
+                            var fx = (i % 2 == 0) ? cyan : purple;
+                            spawn(player, fx.at(new Vector3(x, y, z)));
+
+                            spawn(player, voidDark.at(new Vector3(
+                                    x * 0.97 + base.x * 0.03,
+                                    y + 0.02,
+                                    z * 0.97 + base.z * 0.03
+                            )));
+                        }
                     }
                 }
             }
@@ -1877,39 +2020,37 @@ public class Particle {
                 }
             }
 
-            // ☄️ Comète
+            // ☄️ Comète (version plus compacte)
             case "comet" -> {
-                var core   = dust(255, 250, 245);   // cœur blanc très lumineux
-                var tail1  = dust(210, 190, 255);   // violet clair
-                var tail2  = dust(150, 120, 230);   // violet plus profond
+                var core   = dust(255, 250, 245);
+                var tail1  = dust(210, 190, 255);
+                var tail2  = dust(150, 120, 230);
 
-                Position center = base.add(0, 1.2, 0);
+                Position center = base.add(0, 1.1, 0);
                 Random rng = new Random(seed ^ 0xC0FFEE1L);
 
-                // 1) Orbites principales autour du joueur (toujours actives)
                 if (fastTick) {
                     int cometCount = 3;
-                    double radius = moving ? 1.8 : 1.5;     // rayon plus large
-                    double speed  = moving ? 1.0 : 0.7;     // plus rapide en mouvement
+                    double radius = moving ? 1.1 : 0.9;
+                    double speed  = moving ? 1.0 : 0.7;
 
                     for (int i = 0; i < cometCount; i++) {
                         double baseAngle = phase * speed + i * (TAU / cometCount);
-                        double wobble    = Math.sin(phase * 0.8 + i) * 0.15;
+                        double wobble    = Math.sin(phase * 0.8 + i) * 0.08;
 
                         double cx = base.x + Math.cos(baseAngle) * (radius + wobble);
                         double cz = base.z + Math.sin(baseAngle) * (radius + wobble);
-                        double cy = center.y + Math.sin(phase * 0.9 + i * 1.4) * 0.2;
+                        double cy = center.y + Math.sin(phase * 0.9 + i * 1.4) * 0.10;
 
                         Vector3 head = new Vector3(cx, cy, cz);
-                        spawn(player, core.at(head)); // tête brillante
+                        spawn(player, core.at(head));
 
-                        // Traînée derrière la comète (queue)
-                        int tailSteps = 4;
+                        int tailSteps = 3;
                         for (int t = 1; t <= tailSteps; t++) {
                             double tt = t / (double) (tailSteps + 1);
-                            double tx = cx - (cx - center.x) * tt * 0.65;
-                            double tz = cz - (cz - center.z) * tt * 0.65;
-                            double ty = cy - tt * 0.20;
+                            double tx = cx - (cx - center.x) * tt * 0.6;
+                            double tz = cz - (cz - center.z) * tt * 0.6;
+                            double ty = cy - tt * 0.12;
 
                             var fx = (t % 2 == 0) ? tail1 : tail2;
                             spawn(player, fx.at(new Vector3(tx, ty, tz)));
@@ -1917,60 +2058,53 @@ public class Particle {
                     }
                 }
 
-                // 2) Wake arrière quand le joueur se déplace (traînée au sol)
                 if (moving && medTick) {
-                    int segs = 7;
-                    double back = 2.4;
+                    int segs = 5;
+                    double back = 1.4;
                     for (int i = 0; i < segs; i++) {
                         double t = i / (double) (segs - 1);
                         double dist = t * back;
 
-                        double wave = Math.sin(phase * 0.9 + t * 4.0) * 0.18;
+                        double wave = Math.sin(phase * 0.9 + t * 4.0) * 0.12;
 
                         double x = base.x - fwd.x * dist + right.x * wave;
                         double z = base.z - fwd.z * dist + right.z * wave;
-                        double y = base.y + 0.08 + t * 0.12;
+                        double y = base.y + 0.06 + t * 0.10;
 
                         var fx = (i % 2 == 0) ? tail2 : tail1;
                         spawn(player, fx.at(new Vector3(x, y, z)));
                     }
                 }
 
-                // 3) Idle : colonne spiralée plus large et couronne au-dessus
                 if (!moving && medTick) {
-                    // Spirale verticale, plus grande que ta version précédente
-                    spiral(player, tail1, base.add(0, 0.4, 0), 0.6, 1.7, 14, phase * 0.85);
+                    spiral(player, tail1, base.add(0, 0.4, 0), 0.45, 1.3, 12, phase * 0.9);
 
-                    // Couronne de comètes au-dessus de la tête
-                    double crownY = base.y + 2.0;
-                    int crownPts = 8;
-                    double crownR = 1.2;
+                    double crownY = base.y + 1.8;
+                    int crownPts = 6;
+                    double crownR = 0.8;
                     for (int i = 0; i < crownPts; i++) {
                         double t = i / (double) crownPts;
                         double ang = phase * 0.7 + t * TAU;
                         double x = base.x + Math.cos(ang) * crownR;
                         double z = base.z + Math.sin(ang) * crownR;
-                        double y = crownY + Math.sin(phase * 1.3 + t * 5.0) * 0.07;
+                        double y = crownY + Math.sin(phase * 1.3 + t * 5.0) * 0.05;
 
                         var fx = (i % 2 == 0) ? core : tail1;
                         spawn(player, fx.at(new Vector3(x, y, z)));
                     }
                 }
 
-                // 4) Impact de comète venant de loin (toutes les ~28 ticks)
                 if ((currentTick % 28) == 0) {
-                    // Direction random dans le ciel
                     double ang = rng.nextDouble() * TAU;
-                    double dist = 5.0 + rng.nextDouble() * 2.0;
+                    double dist = 3.0 + rng.nextDouble() * 1.2;
 
                     double startX = center.x + Math.cos(ang) * dist;
                     double startZ = center.z + Math.sin(ang) * dist;
-                    double startY = center.y + 4.0 + rng.nextDouble() * 2.0;
+                    double startY = center.y + 3.0 + rng.nextDouble() * 1.2;
 
                     Vector3 start = new Vector3(startX, startY, startZ);
 
-                    // Ligne jusqu'au joueur
-                    int steps = 7;
+                    int steps = 5;
                     for (int i = 0; i < steps; i++) {
                         double t = i / (double) (steps - 1);
                         double x = start.x + (center.x - start.x) * t;
@@ -1981,34 +2115,32 @@ public class Particle {
                         spawn(player, fx.at(new Vector3(x, y, z)));
                     }
 
-                    // Petit impact autour du joueur
-                    burstRandom(player, core, center, 1.2, 6, seed ^ 0xC0FFEE2L, 0.0, 0.4);
-                    burstRandom(player, tail2, center, 1.6, 8, seed ^ 0xC0FFEE3, 0.2, 0.9);
-                    ring(player, tail1, center, 1.4, 16, phase * 1.2, 0.05);
+                    burstRandom(player, core,  center, 0.8, 4, seed ^ 0xC0FFEE2L, 0.0, 0.3);
+                    burstRandom(player, tail2, center, 1.1, 6, seed ^ 0xC0FFEE3L, 0.1, 0.6);
+                    ring(player, tail1, center, 0.9, 12, phase * 1.2, 0.04);
                 }
 
-                // 5) Mini "meteor shower" périodique (toutes les ~80 ticks)
                 if ((currentTick % 80) == 0) {
-                    int streaks = 5;
-                    double showerRadius = 3.0;
+                    int streaks = 4;
+                    double showerRadius = 1.8;
 
                     for (int s = 0; s < streaks; s++) {
                         double baseAng = rng.nextDouble() * TAU;
-                        double offAng  = baseAng + (Math.PI / 2.0); // traverse “en biais”
+                        double offAng  = baseAng + (Math.PI / 2.0);
 
                         double sx = base.x + Math.cos(baseAng) * showerRadius;
                         double sz = base.z + Math.sin(baseAng) * showerRadius;
-                        double sy = base.y + 2.8 + rng.nextDouble() * 0.8;
+                        double sy = base.y + 2.4 + rng.nextDouble() * 0.6;
 
                         double dx = Math.cos(offAng);
                         double dz = Math.sin(offAng);
 
-                        int segs = 5;
+                        int segs = 4;
                         for (int i = 0; i < segs; i++) {
                             double t = i / (double) (segs - 1);
-                            double x = sx + dx * (t * 2.0 - 1.0);
-                            double z = sz + dz * (t * 2.0 - 1.0);
-                            double y = sy - t * 0.7;
+                            double x = sx + dx * (t * 1.2 - 0.6);
+                            double z = sz + dz * (t * 1.2 - 0.6);
+                            double y = sy - t * 0.6;
 
                             var fx = (i == segs - 1) ? core : tail1;
                             spawn(player, fx.at(new Vector3(x, y, z)));
