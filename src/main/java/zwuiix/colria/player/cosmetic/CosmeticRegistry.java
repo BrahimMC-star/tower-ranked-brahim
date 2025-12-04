@@ -4,10 +4,13 @@ import cn.nukkit.block.BlockHeadPlayer;
 import cn.nukkit.entity.data.property.EntityProperty;
 import cn.nukkit.entity.data.property.EnumEntityProperty;
 import cn.nukkit.item.ItemRecordPigstep;
+import cn.nukkit.item.ItemSpawnEgg;
 import cn.nukkit.registry.Registries;
 import lombok.Getter;
 import zwuiix.colria.Loader;
+import zwuiix.colria.entity.EntityPetPig;
 import zwuiix.colria.entity.EntityPetSlime;
+import zwuiix.colria.entity.EntityPetSnowman;
 import zwuiix.colria.item.*;
 import zwuiix.colria.translator.TranslationKeys;
 
@@ -81,7 +84,9 @@ public class CosmeticRegistry {
     }
 
     public void registerPets() {
-        register(new Pet(EntityPetSlime.class, "none", TranslationKeys.COSMETIC_CAPE_HEART_NAME, TranslationKeys.COSMETIC_CAPE_HEART_NAME, new ItemRecordPigstep(), true, 1000));
+        register(new Pet(EntityPetSlime.class, "slime", TranslationKeys.PET_SLIME_NAME, TranslationKeys.PET_SLIME_LORE, new ItemSpawnEgg(), true, 17500));
+        register(new Pet(EntityPetPig.class, "pig", TranslationKeys.PET_PIG_NAME, TranslationKeys.PET_PIG_LORE, new ItemSpawnEgg(), true, 13000));
+        register(new Pet(EntityPetSnowman.class, "snowman", TranslationKeys.PET_SNOWMAN_NAME, TranslationKeys.PET_SNOWMAN_LORE, new ItemSpawnEgg(), false, 15000));
     }
 
     public void registerCapes() {

@@ -7,6 +7,7 @@ import cn.nukkit.entity.data.EntityMetadata;
 import cn.nukkit.entity.data.FloatEntityData;
 import cn.nukkit.entity.data.Vector3fEntityData;
 import cn.nukkit.entity.passive.EntityWalkingAnimal;
+import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.format.FullChunk;
@@ -243,7 +244,19 @@ abstract public class EntityPetWalking extends EntityWalkingAnimal implements En
     public boolean targetOption(EntityCreature creature, double distance) { return super.targetOption(creature, 5) && creature == this.owner && creature.distance(this) >= 8.0f; }
 
     @Override
-    public boolean attack(EntityDamageEvent ev) { return false; }
+    public boolean attack(EntityDamageEvent ev) {
+        if(ev instanceof EntityDamageByEntityEvent damage) {
+            Entity damager = damage.getDamager();
+            if(damager instanceof Player player) {
+                EnginePlayer p = (EnginePlayer) player;
+                if(this.owner != p) {
+                    p.sendMessage(TranslationKeys.PET_CANT_HURT, this.owner.getName());
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
 
     abstract public float getPetSpeed();
 }
