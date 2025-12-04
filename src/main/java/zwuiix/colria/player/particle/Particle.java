@@ -1194,69 +1194,111 @@ public class Particle {
             // 🌪️ Tempête Miniature
             case "mini_storm" -> {
                 var light = dust(245, 245, 255);
-                var dark  = dust(170, 170, 185);
+                var dark  = dust(180, 180, 195);
+
+                Random rng = new Random(seed ^ 0xC0F57A1L);
+
+                Position feet = base.add(0, 0.10, 0);
 
                 if (fastTick) {
-                    int rings = 5;
-                    int points = 14;
-                    double heightStep = 0.38;
-                    double baseHeight = base.y + 0.15;
+                    int points = 10;
 
-                    for (int r = 0; r < rings; r++) {
-                        double y = baseHeight + r * heightStep;
+                    double radiusFeet = 0.32;
+                    double yFeet = feet.y + 0.02;
+                    for (int i = 0; i < points; i++) {
+                        double t = i / (double) points;
+                        double ang = phase * 0.9 + t * TAU;
 
-                        double radius = 0.42 + r * 0.22;
-
-                        for (int i = 0; i < points; i++) {
-
-                            double t = i / (double) points;
-
-                            double ang = phase * (0.8 + r * 0.1)
-                                    + t * TAU
-                                    + r * 0.55;
-
-                            ang += Math.sin(phase * 0.4 + r * 0.7) * 0.3;
-
-                            double x = base.x + Math.cos(ang) * radius;
-                            double z = base.z + Math.sin(ang) * radius;
-
-                            var fx = ((i + r + currentTick) % 3 == 0) ? light : dark;
-
-                            spawn(player, fx.at(new Vector3(x, y, z)));
-                        }
+                        double x = feet.x + Math.cos(ang) * radiusFeet;
+                        double z = feet.z + Math.sin(ang) * radiusFeet;
+                        var fx = (i % 2 == 0) ? light : dark;
+                        spawn(player, fx.at(new Vector3(x, yFeet, z)));
                     }
 
-                    for (int h = 0; h < 4; h++) {
+                    double radiusKnee = 0.40;
+                    double yKnee = feet.y + 0.45;
+                    for (int i = 0; i < points; i++) {
+                        double t = i / (double) points;
+                        double ang = phase * 1.0 + t * TAU + Math.sin(phase * 0.7 + t * 5.0) * 0.15;
 
-                        double t = h / 3.0;
+                        double x = feet.x + Math.cos(ang) * radiusKnee;
+                        double z = feet.z + Math.sin(ang) * radiusKnee;
+                        var fx = ((i + currentTick) % 3 == 0) ? light : dark;
+                        spawn(player, fx.at(new Vector3(x, yKnee, z)));
+                    }
 
-                        double y = base.y + 0.25 + t * 1.6;
-                        double swirl = Math.sin(phase * 1.2 + t * 4.0) * 0.15;
+                    int columnSteps = 4;
+                    for (int i = 0; i < columnSteps; i++) {
+                        double t = i / (double) (columnSteps - 1);
+                        double y = feet.y + 0.20 + t * 0.70;
+                        double sway = Math.sin(phase * 1.1 + t * 5.0) * 0.07;
 
-                        double x = base.x + swirl * right.x;
-                        double z = base.z + swirl * right.z;
-
+                        double x = feet.x + sway * right.x;
+                        double z = feet.z + sway * right.z;
                         spawn(player, light.at(new Vector3(x, y, z)));
                     }
                 }
 
-                if (!moving && slowTick) {
-                    spawn(player, new SmokeParticle(base.add(0, 1.9, 0)));
+                if (moving && medTick) {
+                    int segs = 4;
+                    double back = 1.0;
 
-                    int p = 8;
-                    double r = 0.45;
-                    double yTop = base.y + 1.85;
+                    for (int i = 0; i < segs; i++) {
+                        double t = i / (double) (segs - 1);
+                        double dist = t * back;
+
+                        double sway = Math.sin(phase * 0.9 + t * 4.0) * 0.10;
+
+                        double x = base.x - fwd.x * dist + right.x * sway;
+                        double z = base.z - fwd.z * dist + right.z * sway;
+                        double y = base.y + 0.06 + t * 0.10;
+
+                        var fx = (i % 2 == 0) ? dark : light;
+                        spawn(player, fx.at(new Vector3(x, y, z)));
+                    }
+                }
+
+                if (!moving && slowTick) {
+                    spawn(player, new SmokeParticle(base.add(0, 1.7, 0)));
+
+                    int p = 6;
+                    double r = 0.55;
+                    double yTop = base.y + 1.5;
 
                     for (int i = 0; i < p; i++) {
-
-                        double ang = phase * 0.9 + i * (TAU / p);
-
+                        double ang = phase * 0.8 + i * (TAU / p);
                         double x = base.x + Math.cos(ang) * r;
                         double z = base.z + Math.sin(ang) * r;
 
                         var fx = (i % 2 == 0) ? light : dark;
                         spawn(player, fx.at(new Vector3(x, yTop, z)));
                     }
+                }
+
+                if ((currentTick % 32) == 0 && moving) {
+                    int sideSign = rng.nextBoolean() ? 1 : -1;
+                    Vector3 sideDir = new Vector3(right.x * sideSign, 0, right.z * sideSign);
+                    Position origin = base.add(sideDir.multiply(0.5)).add(0, 0.6, 0);
+
+                    int gustPts = 5;
+                    for (int i = 0; i < gustPts; i++) {
+                        double t = i / (double) (gustPts - 1);
+
+                        double along = 0.5 + t * 0.6;
+                        double lift  = 0.05 + t * 0.25;
+
+                        double x = origin.x - fwd.x * along + sideDir.x * (0.2 * (1.0 - t));
+                        double z = origin.z - fwd.z * along + sideDir.z * (0.2 * (1.0 - t));
+                        double y = origin.y + lift;
+
+                        var fx = (i == gustPts - 1) ? light : dark;
+                        spawn(player, fx.at(new Vector3(x, y, z)));
+                    }
+                }
+
+                if ((currentTick % 70) == 0) {
+                    ring(player, light, base, 0.55, 10, phase * 1.2, 0.03);
+                    ring(player, dark, base, 0.35, 8, -phase * 0.9, 0.02);
                 }
             }
 
