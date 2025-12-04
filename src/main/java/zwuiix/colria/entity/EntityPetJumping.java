@@ -238,7 +238,7 @@ abstract public class EntityPetJumping extends EntityJumpingMob implements Entit
 
     @Override
     public boolean targetOption(EntityCreature creature, double distance) { return super.targetOption(creature, 5) && creature == this.owner && creature.distance(this) >= 8.0f; }
-    
+
     @Override
     public boolean attack(EntityDamageEvent ev) { return false; }
 
