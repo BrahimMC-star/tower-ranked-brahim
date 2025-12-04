@@ -3,10 +3,7 @@ package zwuiix.colria.player.particle;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
-import cn.nukkit.level.particle.DustParticle;
-import cn.nukkit.level.particle.FlameParticle;
-import cn.nukkit.level.particle.HeartParticle;
-import cn.nukkit.level.particle.SmokeParticle;
+import cn.nukkit.level.particle.*;
 import cn.nukkit.math.Vector3;
 import lombok.Getter;
 import zwuiix.colria.player.EnginePlayer;
@@ -1620,7 +1617,7 @@ public class Particle {
                     double vy = base.y + 1.0 + Math.sin(t * 3) * 0.12;
 
                     spawn(player, cyan.at(new Vector3(vx, vy, vz)));
-                    spawn(player, new EndRodParticle(new Vector3(vx, vy, vz)));
+                    spawn(player, new EnchantmentTableParticle(new Vector3(vx, vy, vz)));
                 }
 
                 if (!moving && medTick) {
@@ -1646,7 +1643,7 @@ public class Particle {
                     double vy = base.y + 1.15 + Math.sin(phase * 2.2) * 0.12;
 
                     spawn(player, darkRift.at(new Vector3(vx, vy, vz)));
-                    spawn(player, new EndRodParticle(new Vector3(vx, vy, vz)));
+                    spawn(player, new EnchantmentTableParticle(new Vector3(vx, vy, vz)));
                 }
             }
 
