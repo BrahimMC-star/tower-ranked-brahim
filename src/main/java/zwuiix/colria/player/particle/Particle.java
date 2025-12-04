@@ -1364,34 +1364,117 @@ public class Particle {
             case "life_essence" -> {
                 var green = dust(60, 220, 80);
                 var gold  = dust(255, 215, 80);
+                var soft  = dust(120, 255, 140);
 
                 Position mid = base.add(0, 1.0, 0);
 
                 if (fastTick) {
-                    int pts = 10;
-                    double r = 0.55;
-                    for (int i = 0; i < pts; i++) {
-                        double t = i / (double) pts;
-                        double a = phase * 0.7 + t * TAU;
-                        double x = mid.x + Math.cos(a) * r;
-                        double z = mid.z + Math.sin(a) * r;
-                        double y = mid.y + 0.06 * Math.sin(phase * 1.1 + t * 5.0);
+                    int pts = 12;
+                    double r = 0.62;
 
-                        var fx = (i % 2 == 0) ? green : gold;
+                    for (int i = 0; i < pts; i++) {
+
+                        double t = i / (double) pts;
+                        double ang = phase * 0.65 + t * TAU;
+
+                        double breathe = 0.07 * Math.sin(phase * 1.0 + t * 8.0);
+
+                        double x = mid.x + Math.cos(ang) * (r + breathe);
+                        double z = mid.z + Math.sin(ang) * (r + breathe);
+                        double y = mid.y + 0.07 * Math.sin(phase * 1.3 + t * 5.0);
+
+                        var fx = (i % 3 == 0) ? gold : green;
                         spawn(player, fx.at(new Vector3(x, y, z)));
                     }
                 }
 
-                // En statique : colonne ascendante douce
-                if (!moving && slowTick) {
+                if (fastTick) {
+                    int rings = 3;
+                    for (int r = 0; r < rings; r++) {
+
+                        double tinyR = 0.20 + r * 0.06;
+                        double y = mid.y + (r - 1) * 0.15;
+
+                        double ang = phase * (0.9 + r * 0.25);
+
+                        double x = mid.x + Math.cos(ang) * tinyR;
+                        double z = mid.z + Math.sin(ang) * tinyR;
+
+                        var fx = (r % 2 == 0) ? soft : gold;
+                        spawn(player, fx.at(new Vector3(x, y, z)));
+                    }
+                }
+
+                if (moving) {
+                    if (fastTick) {
+                        trail(player,
+                                pos -> soft.at(pos),
+                                base.add(0, 0.25, 0),
+                                fwd, 1.3, 7, 0.0);
+                    }
+
+                    if (fastTick) {
+
+                        int bursts = 4;
+                        for (int i = 0; i < bursts; i++) {
+
+                            double ang = (i / (double) bursts) * TAU + phase * 1.2;
+                            double speed = 0.10 + Math.random() * 0.08;
+
+                            Vector3 origin = mid.add(
+                                    Math.cos(ang) * 0.25,
+                                    0.05 + Math.random() * 0.1,
+                                    Math.sin(ang) * 0.25
+                            );
+
+                            Vector3 out = new Vector3(
+                                    Math.cos(ang) * speed,
+                                    0.03 + Math.random() * 0.04,
+                                    Math.sin(ang) * speed
+                            );
+
+                            var fx = (i % 2 == 0) ? soft : green;
+                            spawn(player, fx.at(origin.add(out)));
+                        }
+                    }
+
+                    if (fastTick) {
+                        int stepFx = 3;
+                        double downR = 0.32;
+
+                        for (int i = 0; i < stepFx; i++) {
+                            double ang = (i / 3.0) * TAU + phase * 0.5;
+
+                            double x = base.x + Math.cos(ang) * downR;
+                            double z = base.z + Math.sin(ang) * downR;
+                            double y = base.y + 0.03;
+
+                            spawn(player, green.at(new Vector3(x, y, z)));
+                        }
+                    }
+
+                    return;
+                }
+
+                if (slowTick) {
                     int steps = 5;
                     double h = 1.6;
+
                     for (int i = 0; i < steps; i++) {
                         double t = i / (double) (steps - 1);
                         double y = base.y + 0.4 + t * h;
+
                         var fx = (i % 2 == 0) ? green : gold;
                         spawn(player, fx.at(new Vector3(base.x, y, base.z)));
                     }
+                }
+
+                if (medTick) {
+                    spawn(player, soft.at(new Vector3(
+                            mid.x,
+                            mid.y + Math.sin(phase * 1.6) * 0.08,
+                            mid.z
+                    )));
                 }
             }
 
