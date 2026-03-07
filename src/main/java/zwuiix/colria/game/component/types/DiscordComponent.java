@@ -123,7 +123,6 @@ public class DiscordComponent extends GameComponent {
 
                     applyTeamPermissions(channel, teamA);
                     moveTeamPlayers(teamA, channel);
-
                 });
 
         category.createVoiceChannel(Translator.getInstance().autoProcess(null, teamB.name()))
@@ -230,8 +229,17 @@ public class DiscordComponent extends GameComponent {
     }
 
     public void onGameEnd() {
-        if (category != null) {
-            category.delete().queue();
+        if (category == null) return;
+        teamChannels.values().forEach(channel -> {
+            if (channel != null) {
+                channel.delete().queue();
+            }
+        });
+
+        if (lobbyChannel != null) {
+            lobbyChannel.delete().queue();
         }
+
+        category.delete().queue();
     }
 }
