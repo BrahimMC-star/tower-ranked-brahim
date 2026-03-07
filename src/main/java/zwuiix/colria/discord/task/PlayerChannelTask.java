@@ -3,18 +3,18 @@ package zwuiix.colria.discord.task;
 import cn.nukkit.Server;
 import cn.nukkit.scheduler.Task;
 import zwuiix.colria.discord.DiscordAPI;
-import zwuiix.colria.discord.ServerInfo;
+import zwuiix.colria.discord.DiscordUtil;
 
 public class PlayerChannelTask extends Task {
     @Override
     public void onRun(int i) {
         var jda = DiscordAPI.getInstance().getJda();
-        var guild = jda.getGuildById(ServerInfo.GUILD_ID);
+        var guild = jda.getGuildById(DiscordUtil.GUILD_ID);
 
         if(guild == null)
             return;
 
-        var voiceChannel = guild.getVoiceChannelById(ServerInfo.PLAYERS_CHANNEL_ID);
+        var voiceChannel = guild.getVoiceChannelById(DiscordUtil.PLAYERS_CHANNEL_ID);
         if (voiceChannel == null)
             return;
 

@@ -18,6 +18,11 @@ public class GamePlayer {
     }
 
     public EnginePlayer getNukkitPlayer() {
-        return (EnginePlayer) Server.getInstance().getPlayerExact(getUsername());
+        var player = (EnginePlayer) Server.getInstance().getPlayerExact(getUsername());
+        if (player != null && !player.logged) {
+            return null;
+        }
+
+        return player;
     }
 }

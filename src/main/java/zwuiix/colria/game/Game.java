@@ -11,6 +11,7 @@ import cn.nukkit.network.protocol.DataPacket;
 import lombok.Getter;
 import lombok.Setter;
 import zwuiix.colria.game.component.GameComponent;
+import zwuiix.colria.game.component.types.DiscordComponent;
 import zwuiix.colria.game.gui.GameSettingsGUI;
 import zwuiix.colria.game.impl.lobby.Lobby;
 import zwuiix.colria.game.kit.WaitingKit;
@@ -191,6 +192,10 @@ abstract public class Game {
         var pos = Position.fromObject(getCurrentLevel().getSpawnLocation().floor().add(0.5, 0, 0.5), getCurrentLevel());
         player.teleport(pos);
         player.setPosition(pos);
+
+        if (hasComponent(DiscordComponent.class)) {
+            tryGetComponent(DiscordComponent.class).onPlayerJoin(player.getPlayerDataInfo().getDiscordId());
+        }
     }
 
     public void removeSpectator(EnginePlayer player) {
@@ -205,6 +210,10 @@ abstract public class Game {
 
         if(!player.inAdminMode() && !player.isInLobby()) broadcast(TranslationKeys.PLAYER_GAME_SPECTATOR_LEAVE, player.getName());
         player.setGame(null);
+
+        if (hasComponent(DiscordComponent.class)) {
+            tryGetComponent(DiscordComponent.class).onPlayerQuit(player.getPlayerDataInfo().getDiscordId());
+        }
     }
 
     abstract public void prepare();
@@ -476,6 +485,10 @@ abstract public class Game {
 
     public <T extends GameComponent> void removeComponent(Class<T> clazz) {
         components.remove(clazz);
+    }
+
+    public boolean hasComponent(Class<? extends GameComponent> clazz) {
+        return components.containsKey(clazz);
     }
 
     public <T extends GameComponent> T tryGetComponent(Class<T> clazz) {

@@ -5,11 +5,10 @@ import cn.nukkit.block.BlockCopperBarsExposed;
 import cn.nukkit.item.Item;
 import zwuiix.colria.game.Game;
 import zwuiix.colria.game.GameRegistry;
-import zwuiix.colria.game.gui.sub.ComponentsMenu;
-import zwuiix.colria.game.gui.sub.MapMenu;
-import zwuiix.colria.game.gui.sub.SubMenu;
-import zwuiix.colria.game.gui.sub.TeamMenu;
+import zwuiix.colria.game.component.types.DiscordComponent;
+import zwuiix.colria.game.gui.sub.*;
 import zwuiix.colria.game.impl.team.TeamGame;
+import zwuiix.colria.game.impl.tower.TowerGame;
 import zwuiix.colria.inventory.VirtualInventory;
 import zwuiix.colria.inventory.impl.EntityInventory;
 import zwuiix.colria.player.EnginePlayer;
@@ -36,6 +35,7 @@ public class GameSettingsGUI {
         subMenus.add(new ComponentsMenu(this));
 
         if(game instanceof TeamGame) subMenus.add(new TeamMenu(this));
+        if(game instanceof TowerGame) subMenus.add(new DiscordMenu(this));
 
         syncContents();
     }

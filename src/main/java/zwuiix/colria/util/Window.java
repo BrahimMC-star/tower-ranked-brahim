@@ -123,4 +123,14 @@ public class Window {
         }
         return out;
     }
+
+    public static void fill(VirtualInventory inventory, Item item) {
+        int[] content = computeContentSlots(inventory.getSize(), TOP_RESERVED_ROWS, BOTTOM_RESERVED_ROWS, SIDE_MARGIN);
+        for (int slot : content) {
+            Item current = inventory.getItem(slot);
+            if (current == null || current.isNull() || current.getCount() <= 0) {
+                inventory.setItem(slot, item.clone());
+            }
+        }
+    }
 }

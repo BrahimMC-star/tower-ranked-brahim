@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.Optional;
 
-public class ServerInfo {
+public class DiscordUtil {
     public static final String GUILD_ID = "1445820749473644568";
     public static final String WELCOME_CHANNEL_ID = "1445820750551580908";
     public static final String ANNOUNCEMENT_CHANNEL_ID = "1445820750551580912";

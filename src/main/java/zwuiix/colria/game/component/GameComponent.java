@@ -1,4 +1,11 @@
 package zwuiix.colria.game.component;
 
-public interface GameComponent {
+import zwuiix.colria.game.Game;
+
+public class GameComponent {
+    public Game game;
+
+    public GameComponent(Game game) {
+        this.game = game;
+    }
 }

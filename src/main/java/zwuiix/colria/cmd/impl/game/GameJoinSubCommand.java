@@ -4,6 +4,7 @@ import zwuiix.colria.cmd.ColriaPlayerSubCommand;
 import zwuiix.colria.cmd.arguments.StringArgument;
 import zwuiix.colria.game.Game;
 import zwuiix.colria.game.GameRegistry;
+import zwuiix.colria.game.component.types.DiscordComponent;
 import zwuiix.colria.game.impl.lobby.Lobby;
 import zwuiix.colria.game.impl.team.TeamGame;
 import zwuiix.colria.game.impl.team.TeamGameParameters;
@@ -56,6 +57,14 @@ public class GameJoinSubCommand extends ColriaPlayerSubCommand {
             TeamGameParameters params = (TeamGameParameters) teamGame.getParameters();
             if(teamGame.getSpectators().size() > params.maxPlayers * 2) {
                 player.sendMessage(TranslationKeys.PLAYER_GAME_FULL);
+                return;
+            }
+        }
+
+        if (game.hasComponent(DiscordComponent.class)) {
+            var info = player.getPlayerDataInfo();
+            if (info.getDiscordId().isEmpty()) {
+                player.sendMessage(TranslationKeys.PLAYER_GAME_REQUIRE_DISCORD_LINK);
                 return;
             }
         }
