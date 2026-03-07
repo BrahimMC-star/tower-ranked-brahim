@@ -16,9 +16,11 @@ import cn.nukkit.event.player.*;
 import cn.nukkit.event.server.DataPacketReceiveEvent;
 import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.InventoryHolder;
+import cn.nukkit.level.Sound;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.DataPacket;
 import cn.nukkit.network.protocol.InteractPacket;
+import cn.nukkit.network.protocol.PlayerActionPacket;
 import cn.nukkit.network.protocol.UpdateEquipmentPacket;
 import cn.nukkit.utils.TextFormat;
 import zwuiix.colria.event.PlayerItemUseEvent;
@@ -193,6 +195,16 @@ public class GameListener implements Listener {
         }
 
         if(!game.getState().equals(Game.State.RUNNING)) {
+            var pk = new PlayerActionPacket();
+            pk.action = PlayerActionPacket.ACTION_BUILD_DENIED;
+            pk.face = ev.getFace().getIndex();
+            pk.x = ev.getBlock().getFloorX();
+            pk.y = ev.getBlock().getFloorY();
+            pk.z = ev.getBlock().getFloorZ();
+            p.dataPacket(pk);
+
+            p.addSound(Sound.NOTE_BASS, 0.5f, 1.0f);
+
             ev.setCancelled(true);
             return;
         }
