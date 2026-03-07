@@ -10,7 +10,6 @@ import zwuiix.colria.game.Game;
 import zwuiix.colria.game.GameLevel;
 import zwuiix.colria.game.GameRegistry;
 import zwuiix.colria.game.gui.GameSettingsGUI;
-import zwuiix.colria.game.item.enchant.DummyEnchantment;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.Window;
 
@@ -40,7 +39,7 @@ public class MapMenu extends SubMenu {
                         : name.substring(2, 3).toUpperCase(java.util.Locale.ROOT) + name.substring(3);
 
                 Item item = level.reference.clone().setCustomName(TextFormat.RESET + fixedName);
-                if(g.getGameLevel().getFolderName().equalsIgnoreCase(name)) item.addEnchantment(new EnchantmentDurability());
+                if(g.getGameLevel().getFolderName().equalsIgnoreCase(name)) item.addEnchantment(new EnchantmentDurability().setLevel(1)));
 
                 parent.inventory.setItem(Window.nextSlot(parent.inventory), item)
                         .onClick((click) -> {

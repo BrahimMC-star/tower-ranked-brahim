@@ -11,7 +11,6 @@ import zwuiix.colria.database.DataBase;
 import zwuiix.colria.database.dao.PlayerParticleDao;
 import zwuiix.colria.game.gui.sub.SubMenu;
 import zwuiix.colria.game.impl.lobby.gui.GameShopGUI;
-import zwuiix.colria.game.item.enchant.DummyEnchantment;
 import zwuiix.colria.gui.shop.PurchaseGUI;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.player.particle.Particle;
@@ -113,7 +112,7 @@ public class ParticlesMenu extends SubMenu {
             );
 
             if (currentParticle != null && currentParticle.equals(p)) {
-                reference.addEnchantment(new EnchantmentDurability());
+                reference.addEnchantment(new EnchantmentDurability().setLevel(1)));
                 reference.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
             }
 

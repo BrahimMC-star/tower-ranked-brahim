@@ -7,7 +7,6 @@ import cn.nukkit.entity.data.EntityMetadata;
 import cn.nukkit.entity.data.FloatEntityData;
 import cn.nukkit.entity.data.Vector3fEntityData;
 import cn.nukkit.entity.passive.EntityFlyingAnimal;
-import cn.nukkit.entity.passive.EntityWalkingAnimal;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;

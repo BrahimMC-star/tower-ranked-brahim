@@ -3,12 +3,9 @@ package zwuiix.colria.entity;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockAir;
 import cn.nukkit.entity.mob.EntitySnowGolem;
-import cn.nukkit.entity.passive.EntityPig;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.Vector3;
-import cn.nukkit.math.Vector3f;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.scheduler.Task;
 import cn.nukkit.scheduler.TaskHandler;
 
 import java.util.HashMap;

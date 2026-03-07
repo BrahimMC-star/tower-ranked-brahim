@@ -2,9 +2,7 @@ package zwuiix.colria.entity;
 
 import cn.nukkit.entity.data.IntEntityData;
 import cn.nukkit.entity.passive.EntityParrot;
-import cn.nukkit.entity.passive.EntityPig;
 import cn.nukkit.level.format.FullChunk;
-import cn.nukkit.math.Vector3f;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.Utils;
 

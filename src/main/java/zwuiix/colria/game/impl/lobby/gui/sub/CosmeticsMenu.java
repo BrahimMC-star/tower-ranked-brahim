@@ -11,7 +11,6 @@ import zwuiix.colria.database.DataBase;
 import zwuiix.colria.database.dao.PlayerCosmeticDao;
 import zwuiix.colria.game.gui.sub.SubMenu;
 import zwuiix.colria.game.impl.lobby.gui.GameShopGUI;
-import zwuiix.colria.game.item.enchant.DummyEnchantment;
 import zwuiix.colria.gui.shop.PurchaseGUI;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.player.cosmetic.ArmorCosmetic;
@@ -113,7 +112,7 @@ public class CosmeticsMenu extends SubMenu {
             for (String cosmeticId : player.getPlayerDataInfo().getCosmetics()) {
                 Cosmetic cosmetic = CosmeticRegistry.getInstance().getCosmetic(cosmeticId);
                 if (cosmetic != null && cosmetic.equals(c)) {
-                    reference.addEnchantment(new EnchantmentDurability());
+                    reference.addEnchantment(new EnchantmentDurability().setLevel(1)));
                     reference.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
                 }
             }

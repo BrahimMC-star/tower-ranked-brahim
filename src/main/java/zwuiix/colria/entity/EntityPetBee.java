@@ -1,11 +1,8 @@
 package zwuiix.colria.entity;
 
-import cn.nukkit.entity.data.IntEntityData;
 import cn.nukkit.entity.passive.EntityBee;
-import cn.nukkit.entity.passive.EntityParrot;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.utils.Utils;
 
 public class EntityPetBee extends EntityPetFlying {
     public EntityPetBee(FullChunk chunk, CompoundTag nbt) {

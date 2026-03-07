@@ -1,9 +1,7 @@
 package zwuiix.colria.entity;
 
 import cn.nukkit.entity.mob.EntityWolf;
-import cn.nukkit.entity.passive.EntityFox;
 import cn.nukkit.level.format.FullChunk;
-import cn.nukkit.math.Vector3f;
 import cn.nukkit.nbt.tag.CompoundTag;
 
 public class EntityPetWolf extends EntityPetWalking {

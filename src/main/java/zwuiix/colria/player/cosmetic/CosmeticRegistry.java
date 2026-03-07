@@ -3,8 +3,6 @@ package zwuiix.colria.player.cosmetic;
 import cn.nukkit.block.BlockHeadPlayer;
 import cn.nukkit.entity.data.property.EntityProperty;
 import cn.nukkit.entity.data.property.EnumEntityProperty;
-import cn.nukkit.entity.passive.EntityCat;
-import cn.nukkit.item.ItemRecordPigstep;
 import cn.nukkit.item.ItemSpawnEgg;
 import cn.nukkit.registry.Registries;
 import lombok.Getter;

@@ -1,7 +1,6 @@
 package zwuiix.colria.entity;
 
 import cn.nukkit.entity.passive.EntityCat;
-import cn.nukkit.entity.passive.EntityFox;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.Vector3f;
 import cn.nukkit.nbt.tag.CompoundTag;

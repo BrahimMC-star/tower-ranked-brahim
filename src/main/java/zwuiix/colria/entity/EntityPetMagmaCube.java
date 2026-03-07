@@ -2,7 +2,6 @@ package zwuiix.colria.entity;
 
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.mob.EntityMagmaCube;
-import cn.nukkit.entity.mob.EntitySlime;
 import cn.nukkit.level.Sound;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.Vector3f;
