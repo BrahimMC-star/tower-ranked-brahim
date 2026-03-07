@@ -68,7 +68,7 @@ public class TowerGame extends TeamGame {
                         }
                     }
 
-                    if(player.protocol >= ProtocolInfo.v1_21_120) return; // Minecraft be like.
+                    if(player.protocol == ProtocolInfo.v1_21_120) return; // Minecraft be like.
 
                     ArrayList<String> lines = new ArrayList<>();
                     lines.add(player.processTranslation(TranslationKeys.PLAYER_GAME_TOWER_GENERATOR_TITLE));
@@ -240,9 +240,12 @@ public class TowerGame extends TeamGame {
                         }
                     }
 
+                    shards = Math.max(shards, 2);
+
                     var p = player.getNukkitPlayer();
                     if(p != null) {
                         p.sendMessage(TranslationKeys.PLAYER_GAME_TOWER_SHARDS, shards);
+                        System.out.println("Player " + player.getUsername() + " won " + shards + " shards");
                     }
 
                     info.increaseShards(shards);
