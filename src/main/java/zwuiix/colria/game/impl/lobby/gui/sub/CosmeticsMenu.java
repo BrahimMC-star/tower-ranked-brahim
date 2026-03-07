@@ -4,6 +4,7 @@ import cn.nukkit.Server;
 import cn.nukkit.block.BlockCopperBars;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemDoorDarkOak;
+import cn.nukkit.item.enchantment.EnchantmentDurability;
 import cn.nukkit.level.Sound;
 import zwuiix.colria.EngineInfo;
 import zwuiix.colria.database.DataBase;
@@ -112,7 +113,7 @@ public class CosmeticsMenu extends SubMenu {
             for (String cosmeticId : player.getPlayerDataInfo().getCosmetics()) {
                 Cosmetic cosmetic = CosmeticRegistry.getInstance().getCosmetic(cosmeticId);
                 if (cosmetic != null && cosmetic.equals(c)) {
-                    reference.addEnchantment(new DummyEnchantment());
+                    reference.addEnchantment(new EnchantmentDurability());
                     reference.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
                 }
             }

@@ -4,6 +4,7 @@ import cn.nukkit.Server;
 import cn.nukkit.block.BlockCopperBars;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemDoorDarkOak;
+import cn.nukkit.item.enchantment.EnchantmentDurability;
 import cn.nukkit.level.Sound;
 import zwuiix.colria.EngineInfo;
 import zwuiix.colria.database.DataBase;
@@ -112,7 +113,7 @@ public class ParticlesMenu extends SubMenu {
             );
 
             if (currentParticle != null && currentParticle.equals(p)) {
-                reference.addEnchantment(new DummyEnchantment());
+                reference.addEnchantment(new EnchantmentDurability());
                 reference.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
             }
 

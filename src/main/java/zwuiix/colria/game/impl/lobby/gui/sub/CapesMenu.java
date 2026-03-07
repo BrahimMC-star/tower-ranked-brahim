@@ -4,6 +4,7 @@ import cn.nukkit.Server;
 import cn.nukkit.block.BlockCopperBars;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemDoorDarkOak;
+import cn.nukkit.item.enchantment.EnchantmentDurability;
 import cn.nukkit.level.Sound;
 import zwuiix.colria.EngineInfo;
 import zwuiix.colria.database.DataBase;
@@ -88,7 +89,7 @@ public class CapesMenu extends SubMenu {
 
             var cape = CosmeticRegistry.getInstance().getCape(player.getPlayerDataInfo().getCape());
             if(cape != null && cape.equals(c)) {
-                reference.addEnchantment(new DummyEnchantment());
+                reference.addEnchantment(new EnchantmentDurability());
                 reference.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
             }
 
