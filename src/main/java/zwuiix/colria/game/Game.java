@@ -10,6 +10,7 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.network.protocol.DataPacket;
 import lombok.Getter;
 import lombok.Setter;
+import zwuiix.colria.game.component.GameComponent;
 import zwuiix.colria.game.gui.GameSettingsGUI;
 import zwuiix.colria.game.impl.lobby.Lobby;
 import zwuiix.colria.game.kit.WaitingKit;
@@ -23,6 +24,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 
@@ -53,6 +55,8 @@ abstract public class Game {
     private final ArrayList<String> blacklist = new ArrayList<>();
     @Getter
     private final ArrayList<String> hosts = new ArrayList<>();
+
+    private final Map<Class<? extends GameComponent>, GameComponent> components = new HashMap<>();
 
     @Getter
     @Setter
@@ -464,6 +468,18 @@ abstract public class Game {
             getLobbyKit().apply(player);
             return;
         }
+    }
+
+    public <T extends GameComponent> void addComponent(T component) {
+        components.put(component.getClass(), component);
+    }
+
+    public <T extends GameComponent> void removeComponent(Class<T> clazz) {
+        components.remove(clazz);
+    }
+
+    public <T extends GameComponent> T tryGetComponent(Class<T> clazz) {
+        return clazz.cast(components.get(clazz));
     }
 
     public GameKit getLobbyKit() {

@@ -4,11 +4,9 @@ import zwuiix.colria.cmd.ColriaPlayerSubCommand;
 import zwuiix.colria.cmd.arguments.StringEnumArgument;
 import zwuiix.colria.game.Game;
 import zwuiix.colria.game.GameRegistry;
-import zwuiix.colria.game.gui.GameCreateGUI;
 import zwuiix.colria.game.impl.lobby.Lobby;
 import zwuiix.colria.game.impl.tower.TowerGame;
 import zwuiix.colria.game.impl.tower.TowerGameParameters;
-import zwuiix.colria.inventory.VirtualInventory;
 import zwuiix.colria.permission.Permission;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
@@ -29,7 +27,7 @@ public class GameCreateSubCommand extends ColriaPlayerSubCommand {
             names.add(mode.name().toLowerCase());
         }
 
-        registerArgument(0, new StringEnumArgument("mode", true, names.toArray(String[]::new)));
+        registerArgument(0, new StringEnumArgument("mode", false, names.toArray(String[]::new)));
     }
 
     @Override
@@ -39,18 +37,12 @@ public class GameCreateSubCommand extends ColriaPlayerSubCommand {
             return;
         }
 
-        if(args.containsKey("mode")) {
-            GameRegistry.GameMode mode = GameRegistry.getInstance().getGameMode(args.get("mode").toString());
-            if(mode == null) {
-                throw new IllegalArgumentException("Invalid mode " + args.get("mode"));
-            }
-
-            processCreation(player, mode);
-            return;
+        GameRegistry.GameMode mode = GameRegistry.getInstance().getGameMode(args.get("mode").toString());
+        if(mode == null) {
+            throw new IllegalArgumentException("Invalid mode " + args.get("mode"));
         }
 
-        VirtualInventory gui = GameCreateGUI.create(player);
-        gui.open(player);
+        processCreation(player, mode);
     }
 
     private void processCreation(EnginePlayer player, GameRegistry.GameMode mode) {
