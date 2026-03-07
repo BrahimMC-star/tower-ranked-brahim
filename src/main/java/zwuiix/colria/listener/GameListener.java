@@ -18,10 +18,7 @@ import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.level.Sound;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.network.protocol.DataPacket;
-import cn.nukkit.network.protocol.InteractPacket;
-import cn.nukkit.network.protocol.PlayerActionPacket;
-import cn.nukkit.network.protocol.UpdateEquipmentPacket;
+import cn.nukkit.network.protocol.*;
 import cn.nukkit.utils.TextFormat;
 import zwuiix.colria.event.PlayerItemUseEvent;
 import zwuiix.colria.game.Game;
@@ -195,14 +192,13 @@ public class GameListener implements Listener {
         }
 
         if(!game.getState().equals(Game.State.RUNNING)) {
-            var pk = new PlayerActionPacket();
-            pk.action = PlayerActionPacket.ACTION_BUILD_DENIED;
-            pk.face = ev.getFace().getIndex();
-            pk.x = ev.getBlock().getFloorX();
-            pk.y = ev.getBlock().getFloorY();
-            pk.z = ev.getBlock().getFloorZ();
+            var pk = new LevelEventPacket();
+            pk.evid = LevelEventPacket.EVENT_PARTICLE_BLOCK_FORCE_FIELD;
+            pk.x = ev.getBlock().getFloorX() + 0.5f;
+            pk.y = ev.getBlock().getFloorY() + 0.5f;
+            pk.z = ev.getBlock().getFloorZ() + 0.5f;
+            pk.data = 0;
             p.dataPacket(pk);
-
             p.addSound(Sound.NOTE_BASS, 0.5f, 1.0f);
 
             ev.setCancelled(true);
