@@ -7,6 +7,7 @@ import cn.nukkit.utils.TextFormat;
 import zwuiix.colria.EngineInfo;
 import zwuiix.colria.game.component.types.DiscordComponent;
 import zwuiix.colria.game.gui.GameSettingsGUI;
+import zwuiix.colria.game.impl.team.TeamGame;
 import zwuiix.colria.game.impl.team.TeamGameParameters;
 import zwuiix.colria.game.impl.tower.TowerGameParameters;
 import zwuiix.colria.translator.TranslationKeys;
@@ -69,7 +70,7 @@ public class DiscordMenu extends SubMenu {
                     }
                 }
 
-                game.addComponent(new DiscordComponent(game));
+                game.addComponent(new DiscordComponent((TeamGame) game));
                 parent.syncContents();
             });
             return;
