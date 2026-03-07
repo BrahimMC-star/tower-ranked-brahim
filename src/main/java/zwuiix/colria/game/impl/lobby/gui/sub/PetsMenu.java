@@ -84,7 +84,7 @@ public class PetsMenu extends SubMenu {
 
             var pet = CosmeticRegistry.getInstance().getPet(player.getPlayerDataInfo().getPet());
             if(pet != null && pet.equals(c)) {
-                reference.addEnchantment(new EnchantmentDurability().setLevel(1)));
+                reference.addEnchantment(new EnchantmentDurability().setLevel(1));
                 reference.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
             }
 

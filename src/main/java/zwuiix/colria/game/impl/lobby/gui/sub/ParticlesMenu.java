@@ -112,7 +112,7 @@ public class ParticlesMenu extends SubMenu {
             );
 
             if (currentParticle != null && currentParticle.equals(p)) {
-                reference.addEnchantment(new EnchantmentDurability().setLevel(1)));
+                reference.addEnchantment(new EnchantmentDurability().setLevel(1));
                 reference.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
             }
 

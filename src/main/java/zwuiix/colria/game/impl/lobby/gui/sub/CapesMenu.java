@@ -88,7 +88,7 @@ public class CapesMenu extends SubMenu {
 
             var cape = CosmeticRegistry.getInstance().getCape(player.getPlayerDataInfo().getCape());
             if(cape != null && cape.equals(c)) {
-                reference.addEnchantment(new EnchantmentDurability().setLevel(1)));
+                reference.addEnchantment(new EnchantmentDurability().setLevel(1));
                 reference.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
             }
 
