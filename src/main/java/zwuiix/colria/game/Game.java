@@ -214,9 +214,9 @@ abstract public class Game {
     }
 
     public void stop() {
-        setState(State.FINISHED);
         GameEvent.unsubscribeAll(this);
         disband(!getState().equals(State.LOBBY));
+        setState(State.FINISHED);
     }
 
     public void disband(boolean force) {

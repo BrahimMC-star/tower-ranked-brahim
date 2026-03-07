@@ -10,6 +10,7 @@ import zwuiix.colria.database.DataBase;
 import zwuiix.colria.database.dao.PlayerRankDao;
 import zwuiix.colria.game.gui.sub.SubMenu;
 import zwuiix.colria.game.impl.lobby.gui.GameShopGUI;
+import zwuiix.colria.game.item.enchant.DummyEnchantment;
 import zwuiix.colria.gui.shop.PurchaseGUI;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.rank.Rank;
@@ -94,6 +95,10 @@ public class RanksMenu extends SubMenu {
                     t2,
                     t3
             );
+
+            if (player.getHighestRank().getId() >= rank.getId()) {
+                item.addEnchantment(new DummyEnchantment());
+            }
 
             long finalCost = cost;
             inv.setItem(switch (rank.getId()) {
