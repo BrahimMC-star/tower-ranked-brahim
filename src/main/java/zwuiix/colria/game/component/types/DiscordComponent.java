@@ -50,7 +50,7 @@ public class DiscordComponent extends GameComponent {
     }
 
     private void createLobbyChannel() {
-        category.createVoiceChannel("Attente").queue(channel -> {
+        category.createVoiceChannel("→ Attente").queue(channel -> {
             this.lobbyChannel = channel;
             channel.upsertPermissionOverride(guild.getPublicRole())
                     .deny(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
@@ -80,7 +80,7 @@ public class DiscordComponent extends GameComponent {
                     .queue();
         }
 
-        if (lobbyChannel != null) {
+        if (lobbyChannel != null && member.getVoiceState() != null && member.getVoiceState().inAudioChannel()) {
             guild.moveVoiceMember(member, lobbyChannel).queue();
         }
     }
@@ -99,7 +99,6 @@ public class DiscordComponent extends GameComponent {
 
     public void onGameStart() {
         TeamGame game = (TeamGame) this.game;
-
         if (lobbyChannel == null || category == null) return;
 
         lobbyChannel.getManager()
@@ -268,16 +267,17 @@ public class DiscordComponent extends GameComponent {
 
     public void onGameEnd() {
         if (category == null) return;
-        teamChannels.values().forEach(channel -> {
-            if (channel != null) {
-                channel.delete().queue();
-            }
-        });
 
-        if (lobbyChannel != null) {
-            lobbyChannel.delete().queue();
-        }
+        category.getChannels().forEach(channel ->
+                channel.delete().queue(
+                        success -> {},
+                        error -> {}
+                )
+        );
 
-        category.delete().queue();
+        category.delete().queue(
+                success -> {},
+                error -> {}
+        );
     }
 }
