@@ -112,7 +112,7 @@ public class CosmeticsMenu extends SubMenu {
             for (String cosmeticId : player.getPlayerDataInfo().getCosmetics()) {
                 Cosmetic cosmetic = CosmeticRegistry.getInstance().getCosmetic(cosmeticId);
                 if (cosmetic != null && cosmetic.equals(c)) {
-                    reference.addEnchantment(new EnchantmentDurability().setLevel(1));
+                    //reference.addEnchantment(new EnchantmentDurability().setLevel(1));
                     reference.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
                 }
             }

@@ -97,7 +97,7 @@ public class RanksMenu extends SubMenu {
             );
 
             if (player.getHighestRank().getId() >= rank.getId()) {
-                item.addEnchantment(new EnchantmentDurability().setLevel(1));
+                //item.addEnchantment(new EnchantmentDurability().setLevel(1));
             }
 
             long finalCost = cost;

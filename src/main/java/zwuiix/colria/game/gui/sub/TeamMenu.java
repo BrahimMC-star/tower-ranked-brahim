@@ -77,11 +77,11 @@ public class TeamMenu extends SubMenu {
             Item item = color.reference().clone();
 
             boolean isBlocked = color.equals(current);
-            if(isBlocked) item.addEnchantment(new EnchantmentDurability().setLevel(1));
+            if(isBlocked) //item.addEnchantment(new EnchantmentDurability().setLevel(1));
 
             if(color.equals(blocked)) {
                 item = Item.get("barrier");
-                item.addEnchantment(new EnchantmentDurability().setLevel(1));
+                //item.addEnchantment(new EnchantmentDurability().setLevel(1));
                 isBlocked = true;
             }
 

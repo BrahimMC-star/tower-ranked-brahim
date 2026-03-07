@@ -39,7 +39,7 @@ public class MapMenu extends SubMenu {
                         : name.substring(2, 3).toUpperCase(java.util.Locale.ROOT) + name.substring(3);
 
                 Item item = level.reference.clone().setCustomName(TextFormat.RESET + fixedName);
-                if(g.getGameLevel().getFolderName().equalsIgnoreCase(name)) item.addEnchantment(new EnchantmentDurability().setLevel(1));
+                if(g.getGameLevel().getFolderName().equalsIgnoreCase(name)) //item.addEnchantment(new EnchantmentDurability().setLevel(1));
 
                 parent.inventory.setItem(Window.nextSlot(parent.inventory), item)
                         .onClick((click) -> {

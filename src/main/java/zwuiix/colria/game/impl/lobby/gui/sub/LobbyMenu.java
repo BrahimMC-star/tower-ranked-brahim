@@ -36,7 +36,7 @@ public class LobbyMenu extends SubMenu {
             if (lobby.equals(gui.player.getGame())) {
                 item = new ItemDyeLime();
                 item.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
-                item.addEnchantment(new EnchantmentDurability().setLevel(1));
+                //item.addEnchantment(new EnchantmentDurability().setLevel(1));
             }
 
             item.setCustomName(TextFormat.colorize("&r&3" + lobby.getGameId() + " &8[&7" + lobby.getSpectators().size() + "&8]"));
