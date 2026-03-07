@@ -49,7 +49,6 @@ public class Translator {
 
         if (params != null && params.length > 0) {
             final Locale locale = safeLocale(file);
-            final boolean hasPrintf = containsPrintfSpec(value);
 
             final Object[] formatted = new Object[params.length];
             for (int i = 0; i < params.length; i++) {
@@ -57,7 +56,7 @@ public class Translator {
 
                 if (arg instanceof TextContainer tc) {
                     formatted[i] = tc.getText();
-                } else if (!hasPrintf && arg instanceof Number n) {
+                } else if (arg instanceof Number n) {
                     formatted[i] = formatNumberCompact(n);
                 } else {
                     formatted[i] = arg;
@@ -130,12 +129,5 @@ public class Translator {
             out = out.replaceFirst("%[\\w.#+-]*[a-zA-Z]", Matcher.quoteReplacement(String.valueOf(a)));
         }
         return out;
-    }
-
-    private static boolean containsPrintfSpec(String s) {
-        for (int i = 0; i + 1 < s.length(); i++) {
-            if (s.charAt(i) == '%' && s.charAt(i + 1) != '%') return true;
-        }
-        return false;
     }
 }
