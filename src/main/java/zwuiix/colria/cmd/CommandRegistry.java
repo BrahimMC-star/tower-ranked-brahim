@@ -19,7 +19,6 @@ import zwuiix.colria.cmd.impl.link.LinkCommand;
 import zwuiix.colria.cmd.impl.link.UnLinkCommand;
 import zwuiix.colria.cmd.impl.particle.ParticlesCommand;
 import zwuiix.colria.cmd.impl.rank.RanksCommand;
-import zwuiix.colria.cmd.impl.server.ServerCommand;
 import zwuiix.colria.cmd.impl.shard.ShardCommand;
 import zwuiix.colria.cmd.impl.world.WorldCommand;
 
@@ -34,7 +33,6 @@ public class CommandRegistry {
     private final HashMap<String, ColriaCommand> commands = new HashMap<>();
 
     public CommandRegistry() {
-        register(new ServerCommand());
         register(new StatusCommand());
         register(new DebugCommand());
         register(new WorldCommand());

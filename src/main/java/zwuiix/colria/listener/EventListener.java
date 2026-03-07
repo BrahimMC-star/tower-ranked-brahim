@@ -120,8 +120,6 @@ public class EventListener implements Listener {
         if (ev.getCause().equals(EntityDamageEvent.DamageCause.VOID)) {
             ev.setCancelled(true);
         }
-
-        ev.setAttackCooldown((int) Math.max(1, Math.round(ev.getAttackCooldown() * ((int) Server.getInstance().getMaxTick() / 20.0))));
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
