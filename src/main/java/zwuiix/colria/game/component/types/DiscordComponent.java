@@ -112,22 +112,38 @@ public class DiscordComponent extends GameComponent {
         var emojiA = switch (teamA.dyeColor()) {
             case RED -> "🔴";
             case BLUE -> "🔵";
+            case CYAN -> "\uD83E\uDE75";
+            case LIGHT_BLUE -> "\uD83D\uDC99";
             case GREEN -> "🟢";
+            case LIME -> "\uD83D\uDC9A";
             case YELLOW -> "🟡";
             case PURPLE -> "🟣";
+            case MAGENTA -> "\uD83D\uDC9C";
+            case PINK -> "\uD83E\uDE77";
             case ORANGE -> "🟠";
             case BLACK -> "⚫";
+            case LIGHT_GRAY -> "\uD83E\uDE76";
+            case GRAY -> "\uD83D\uDDA4";
+            case BROWN -> "\uD83E\uDD0E";
             default -> "⚪";
         };
 
         var emojiB = switch (teamB.dyeColor()) {
             case RED -> "🔴";
             case BLUE -> "🔵";
+            case CYAN -> "\uD83E\uDE75";
+            case LIGHT_BLUE -> "\uD83D\uDC99";
             case GREEN -> "🟢";
+            case LIME -> "\uD83D\uDC9A";
             case YELLOW -> "🟡";
             case PURPLE -> "🟣";
+            case MAGENTA -> "\uD83D\uDC9C";
+            case PINK -> "\uD83E\uDE77";
             case ORANGE -> "🟠";
             case BLACK -> "⚫";
+            case LIGHT_GRAY -> "\uD83E\uDE76";
+            case GRAY -> "\uD83D\uDDA4";
+            case BROWN -> "\uD83E\uDD0E";
             default -> "⚪";
         };
 
