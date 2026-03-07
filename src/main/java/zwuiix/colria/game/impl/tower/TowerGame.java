@@ -297,18 +297,17 @@ public class TowerGame extends TeamGame {
         var spawns = getSpawnPoint();
         final Team myTeam = ((TowerPlayer) g).getTeam();
 
-        float yaw;
-        float pitch;
+        float yaw = Float.NaN;
+        float pitch = Rotation.facePitchTowards(from, target);
 
         if(myTeam.equals(getTeamA())) {
             yaw = spawns.fyaw();
-            pitch = 0f;
         } else if(myTeam.equals(getTeamB())) {
             yaw = spawns.syaw();
-            pitch = 0f;
-        } else {
+        }
+
+        if (Float.isNaN(yaw)) {
             yaw = Rotation.faceYawTowards(from, target);
-            pitch = Rotation.facePitchTowards(from, target);
         }
 
         yaw = Rotation.wrapYaw(yaw);
