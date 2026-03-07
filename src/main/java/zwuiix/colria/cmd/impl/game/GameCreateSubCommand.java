@@ -66,6 +66,23 @@ public class GameCreateSubCommand extends ColriaPlayerSubCommand {
             return;
         }
 
+        var cd = player.getCooldown("game_create");
+        if(!cd.isExpired() && !player.inAdminMode()) {
+            var secs = cd.getRemainingTime() / 1000;
+            long minutes = secs / 60;
+            long seconds = secs % 60;
+
+            String format = String.format("%d:%02dm", minutes, seconds);
+            if(minutes == 0) {
+                format = String.format("%02ds", seconds);
+            }
+
+            player.sendMessage(TranslationKeys.PLAYER_GAME_ANNOUNCE_COOLDOWN, format);
+            return;
+        }
+
+        cd.refresh(300); // 5 minutes cooldown
+
         game.join(player);
         GameRegistry.getInstance().addGame(game);
     }

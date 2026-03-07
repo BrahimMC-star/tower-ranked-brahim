@@ -2,6 +2,7 @@ package zwuiix.colria.game.impl.lobby.gui.sub;
 
 import cn.nukkit.block.BlockCopperBars;
 import cn.nukkit.block.BlockTerracotta;
+import cn.nukkit.item.ItemBookAndQuill;
 import cn.nukkit.item.data.DyeColor;
 import cn.nukkit.utils.TextFormat;
 import zwuiix.colria.game.Game;
@@ -9,9 +10,11 @@ import zwuiix.colria.game.GameRegistry;
 import zwuiix.colria.game.gui.sub.SubMenu;
 import zwuiix.colria.game.impl.lobby.gui.GameSelectGUI;
 import zwuiix.colria.game.impl.tower.TowerGame;
+import zwuiix.colria.permission.Permission;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.Window;
 
+import java.security.Permissions;
 import java.util.Comparator;
 import java.util.List;
 
@@ -53,6 +56,17 @@ public class TowerFastMenu extends SubMenu {
             inv.setItem(slot, item).onClick((click) -> {
                 inv.close(player);
                 player.sudo("game join " + g.getGameId().toLowerCase());
+            });
+        }
+
+        if (player.hasPermission(Permission.GAME_HOSTER.toString())) {
+            var item = new ItemBookAndQuill();
+            item.setCustomName(player.processTranslation(TranslationKeys.PLAYER_LOBBY_GAMES_GUI_TOWERFAST_CREATE_NAME));
+            item.setLore(player.processTranslation(TranslationKeys.PLAYER_LOBBY_GAMES_GUI_TOWERFAST_CREATE_LORE));
+            var slot = Window.nextSlot(inv);
+            inv.setItem(slot, item).onClick((click) -> {
+                inv.close(player);
+                player.sudo("game create towerfast");
             });
         }
     }
