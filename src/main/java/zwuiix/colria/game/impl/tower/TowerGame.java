@@ -245,7 +245,6 @@ public class TowerGame extends TeamGame {
                     var p = player.getNukkitPlayer();
                     if(p != null) {
                         p.sendMessage(TranslationKeys.PLAYER_GAME_TOWER_SHARDS, shards);
-                        System.out.println("Player " + player.getUsername() + " won " + shards + " shards");
                     }
 
                     info.increaseShards(shards);

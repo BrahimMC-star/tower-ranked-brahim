@@ -69,6 +69,7 @@ abstract public class GameKit {
 
     public void apply(EnginePlayer player) {
         PlayerInventory inv = player.getInventory();
+        if (inv == null) return;
 
         Item helmet = armors.getOrDefault(0, Item.AIR_ITEM);
         Item chestplate = armors.getOrDefault(1, Item.AIR_ITEM);

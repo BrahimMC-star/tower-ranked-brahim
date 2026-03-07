@@ -14,7 +14,7 @@ public class NukkitShapeText extends DebugShape {
     public long id;
 
     public NukkitShapeText(Vector3f position, Color color, String text, int id) {
-        super(position, color);
+        super(position, color, 0);
         this.text = text;
         this.id = id;
     }
@@ -33,8 +33,7 @@ public class NukkitShapeText extends DebugShape {
     public ScriptDebugShape toNetworkData() {
         return new ScriptDebugShape(
                 id, getType(), position, null,
-                null, null, color,
-                text, null, null,
+                null, null, color, 0L, 0, text, null, null,
                 null, null, null
         );
     }

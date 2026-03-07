@@ -11,11 +11,12 @@ public class Rotation {
     }
 
     public static float facePitchTowards(Vector3 from, Vector3 to) {
-        double dx = from.x - to.x;
-        double dy = from.y - to.y;
-        double dz = from.z - to.z;
+        double dx = to.x - from.x;
+        double dy = to.y - from.y;
+        double dz = to.z - from.z;
+
         double horiz = Math.sqrt(dx * dx + dz * dz);
-        return (float) Math.toDegrees(Math.atan2(dy, horiz)); // MC: up = -, down = +
+        return (float) -Math.toDegrees(Math.atan2(dy, horiz));
     }
 
     public static float wrapYaw(float yaw) {
