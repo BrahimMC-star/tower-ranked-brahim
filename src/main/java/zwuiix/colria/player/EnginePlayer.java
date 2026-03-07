@@ -317,7 +317,10 @@ public class EnginePlayer extends Player {
 
     public void syncRanks() {
         if(isInLobby()) {
-            setNameTag(getHighestRank().getColoredName() + " " + getName());
+            var rank = getHighestRank();
+            if (rank.isDefault()) {
+                setNameTag(rank.getColor() + getName());
+            } else setNameTag(rank.getColoredName() + " " + getName());
         }
 
         getEffectivePermissions().clear();
