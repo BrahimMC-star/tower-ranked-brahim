@@ -49,10 +49,11 @@ public class GameAnnounceSubCommand extends ColriaPlayerSubCommand {
             long minutes = secs / 60;
             long seconds = secs % 60;
 
-            String format = String.format("%d:%02dm", minutes, seconds);
+            String format = String.format("%dm%02d", minutes, seconds);
             if(minutes == 0) {
-                format = String.format("%02ds", seconds);
+                format = String.format("%02ds", secs);
             }
+
 
             player.sendMessage(TranslationKeys.PLAYER_GAME_ANNOUNCE_COOLDOWN, format);
             return;
