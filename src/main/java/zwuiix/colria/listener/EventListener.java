@@ -196,7 +196,11 @@ public class EventListener implements Listener {
         var server = Server.getInstance();
         var onlines = server.getOnlinePlayers().size();
 
-        ev.setServerName(EngineInfo.NAME + " " + EngineInfo.VERSION);
+        var motd = EngineInfo.NAME + " " + EngineInfo.VERSION;
+        server.getNetwork().setName(motd);
+        server.getNetwork().setSubName("@Zwuiix");
+        ev.setServerName(motd);
+
         ev.setPlayerCount(onlines);
         ev.setMaxPlayerCount(onlines + 1);
         ev.setListPlugins(true);
