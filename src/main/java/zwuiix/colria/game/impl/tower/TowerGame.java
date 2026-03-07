@@ -22,13 +22,12 @@ import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.DB;
 import zwuiix.colria.util.Fade;
 import zwuiix.colria.util.Glyph;
+import zwuiix.colria.util.Rotation;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.concurrent.ThreadLocalRandom;
-
-import static zwuiix.colria.util.Rotation.facePitchTowards;
 
 public class TowerGame extends TeamGame {
     @Getter
@@ -293,23 +292,27 @@ public class TowerGame extends TeamGame {
         var gamePlayer = (TowerPlayer) g;
 
         Vector3 from = new Vector3(Math.floor(position.x) + 0.5, position.y, Math.floor(position.z) + 0.5);
-        Vector3 target3D = getCurrentLevel().getSafeSpawn();
-
-        float yaw = 90.0f;
+        Vector3 target = getCurrentLevel().getSafeSpawn();
 
         var spawns = getSpawnPoint();
-        final Team teamA = getTeamA(), teamB = getTeamB();
-        final Team myTeam = gamePlayer.getTeam();
+        final Team myTeam = ((TowerPlayer) g).getTeam();
 
-        Float pitch = null;
-        if (myTeam.equals(teamA)) {
-            pitch = spawns.fpitch();
-        } else if (myTeam.equals(teamB)) {
-            pitch = spawns.spitch();
+        float yaw;
+        float pitch;
+
+        if(myTeam.equals(getTeamA())) {
+            yaw = spawns.fyaw();
+            pitch = 0f;
+        } else if(myTeam.equals(getTeamB())) {
+            yaw = spawns.syaw();
+            pitch = 0f;
+        } else {
+            yaw = Rotation.faceYawTowards(from, target);
+            pitch = Rotation.facePitchTowards(from, target);
         }
-        if (pitch == null) {
-            pitch = facePitchTowards(from, target3D);
-        }
+
+        yaw = Rotation.wrapYaw(yaw);
+        pitch = Math.max(-90, Math.min(90, pitch));
 
         p.teleport(new Location(from.x, from.y, from.z, yaw, pitch, getCurrentLevel()));
         p.sendPosition(from, yaw, pitch, MovePlayerPacket.MODE_TELEPORT);
