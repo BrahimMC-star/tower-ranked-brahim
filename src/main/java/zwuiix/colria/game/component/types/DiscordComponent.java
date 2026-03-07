@@ -36,7 +36,7 @@ public class DiscordComponent extends GameComponent {
 
         this.guild = DiscordUtil.getGuild().orElseThrow();
 
-        guild.createCategory(game.getGameId()).queue(createdCategory -> {
+        guild.createCategory("→ " + game.getGameId()).queue(createdCategory -> {
             this.category = createdCategory;
 
             createdCategory.upsertPermissionOverride(guild.getPublicRole())
@@ -103,13 +103,35 @@ public class DiscordComponent extends GameComponent {
         if (lobbyChannel == null || category == null) return;
 
         lobbyChannel.getManager()
-                .setName("Spectateurs")
+                .setName("\uD83C\uDF10┃Spectateurs")
                 .queue(success -> spectatorChannel = lobbyChannel);
 
         Team teamA = game.getTeamA();
         Team teamB = game.getTeamB();
 
-        category.createVoiceChannel(Translator.getInstance().autoProcess(null, teamA.name()))
+        var emojiA = switch (teamA.dyeColor()) {
+            case RED -> "🔴";
+            case BLUE -> "🔵";
+            case GREEN -> "🟢";
+            case YELLOW -> "🟡";
+            case PURPLE -> "🟣";
+            case ORANGE -> "🟠";
+            case BLACK -> "⚫";
+            default -> "⚪";
+        };
+
+        var emojiB = switch (teamB.dyeColor()) {
+            case RED -> "🔴";
+            case BLUE -> "🔵";
+            case GREEN -> "🟢";
+            case YELLOW -> "🟡";
+            case PURPLE -> "🟣";
+            case ORANGE -> "🟠";
+            case BLACK -> "⚫";
+            default -> "⚪";
+        };
+
+        category.createVoiceChannel(emojiA + "┃" + Translator.getInstance().autoProcess(null, teamA.name()))
                 .queue(channel -> {
                     channel.upsertPermissionOverride(guild.getPublicRole())
                             .deny(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
@@ -125,7 +147,7 @@ public class DiscordComponent extends GameComponent {
                     moveTeamPlayers(teamA, channel);
                 });
 
-        category.createVoiceChannel(Translator.getInstance().autoProcess(null, teamB.name()))
+        category.createVoiceChannel(emojiB + "┃" + Translator.getInstance().autoProcess(null, teamB.name()))
                 .queue(channel -> {
                     channel.upsertPermissionOverride(guild.getPublicRole())
                             .deny(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
