@@ -8,6 +8,7 @@ import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.event.server.DataPacketReceiveEvent;
 import cn.nukkit.event.server.DataPacketSendEvent;
+import cn.nukkit.event.server.QueryRegenerateEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
 import cn.nukkit.network.protocol.*;
@@ -188,5 +189,16 @@ public class EventListener implements Listener {
                 if(p.isInLobby()) p.getGame().join(p);
             });
         }
+    }
+
+    @EventHandler
+    public void onQuery(QueryRegenerateEvent ev) {
+        var server = Server.getInstance();
+        var onlines = server.getOnlinePlayers().size();
+
+        ev.setServerName(EngineInfo.NAME + " " + EngineInfo.VERSION);
+        ev.setPlayerCount(onlines);
+        ev.setMaxPlayerCount(onlines + 1);
+        ev.setListPlugins(true);
     }
 }

@@ -12,5 +12,5 @@ public class EngineInfo {
 
     public static String VBAR_DEFAULT = Glyph.vbar(EngineInfo.COLOR, 1) + " ";
 
-    public static String VERSION = "v1.0.2";
+    public static String VERSION = "v1.0.3";
 }
