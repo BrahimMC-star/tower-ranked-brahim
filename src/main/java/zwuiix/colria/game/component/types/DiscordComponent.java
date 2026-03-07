@@ -39,6 +39,10 @@ public class DiscordComponent extends GameComponent {
         guild.createCategory(game.getGameId()).queue(createdCategory -> {
             this.category = createdCategory;
 
+            createdCategory.upsertPermissionOverride(guild.getPublicRole())
+                    .deny(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
+                    .queue();
+
             createdCategory.getManager()
                     .setPosition(guild.getCategories().size() - 1)
                     .queue(success -> createLobbyChannel());
@@ -47,8 +51,10 @@ public class DiscordComponent extends GameComponent {
 
     private void createLobbyChannel() {
         category.createVoiceChannel("Attente").queue(channel -> {
-
             this.lobbyChannel = channel;
+            channel.upsertPermissionOverride(guild.getPublicRole())
+                    .deny(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
+                    .queue();
 
             channel.getManager()
                     .setUserLimit(99)
@@ -92,7 +98,6 @@ public class DiscordComponent extends GameComponent {
     }
 
     public void onGameStart() {
-
         TeamGame game = (TeamGame) this.game;
 
         if (lobbyChannel == null || category == null) return;
@@ -106,6 +111,9 @@ public class DiscordComponent extends GameComponent {
 
         category.createVoiceChannel(Translator.getInstance().autoProcess(null, teamA.name()))
                 .queue(channel -> {
+                    channel.upsertPermissionOverride(guild.getPublicRole())
+                            .deny(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
+                            .queue();
 
                     teamChannels.put(teamA, channel);
 
@@ -120,6 +128,9 @@ public class DiscordComponent extends GameComponent {
 
         category.createVoiceChannel(Translator.getInstance().autoProcess(null, teamB.name()))
                 .queue(channel -> {
+                    channel.upsertPermissionOverride(guild.getPublicRole())
+                            .deny(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
+                            .queue();
 
                     teamChannels.put(teamB, channel);
 
@@ -136,7 +147,6 @@ public class DiscordComponent extends GameComponent {
     }
 
     private void applyTeamPermissions(VoiceChannel channel, Team team) {
-
         TeamGame game = (TeamGame) this.game;
 
         game.getTeams().forEach((nukkitPlayer, playerTeam) -> {

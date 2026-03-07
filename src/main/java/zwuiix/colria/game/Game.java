@@ -224,12 +224,20 @@ abstract public class Game {
 
         broadcast(TranslationKeys.PLAYER_GAME_START_BROADCAST);
         this.global((player) -> player.addSound("game.start", 1.0f, 1.0f));
+
+        if (hasComponent(DiscordComponent.class)) {
+            tryGetComponent(DiscordComponent.class).onGameStart();
+        }
     }
 
     public void stop() {
         GameEvent.unsubscribeAll(this);
         disband(!getState().equals(State.LOBBY));
         setState(State.FINISHED);
+
+        if (hasComponent(DiscordComponent.class)) {
+            tryGetComponent(DiscordComponent.class).onGameEnd();
+        }
     }
 
     public void disband(boolean force) {
