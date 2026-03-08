@@ -24,6 +24,7 @@ public class SpawnCommand extends ColriaPlayerCommand {
         }
 
         game.addSpectator(player);
+        game.getLobbyKit().apply(player);
         player.sendMessage(TranslationKeys.PLAYER_COMMAND_SPAWN_SUCCESS);
     }
 }

@@ -37,7 +37,9 @@ public class HubCommand extends ColriaPlayerCommand {
                 player.sendMessage(TranslationKeys.PLAYER_COMMAND_HUB_LOBBY_NOEXIST, lobbyId);
                 return;
             }
-        } else if (player.isInLobby()) {
+        }
+
+        if (player.isInLobby() || game == lobby) {
             player.sendMessage(TranslationKeys.PLAYER_COMMAND_HUB_ALREADY, game.getIdentifier());
             return;
         }
