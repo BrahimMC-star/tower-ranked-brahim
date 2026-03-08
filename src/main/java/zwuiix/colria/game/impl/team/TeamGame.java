@@ -1,5 +1,6 @@
 package zwuiix.colria.game.impl.team;
 
+import cn.nukkit.Server;
 import cn.nukkit.utils.TextFormat;
 import lombok.Setter;
 import zwuiix.colria.game.*;
@@ -64,8 +65,7 @@ abstract public class TeamGame extends Game {
     public void editGameWorld(Runnable runnable) {
         runnable.run();
     }
-
-                                        @Override
+    @Override
     public void prepare() {
         GameRegistry.GameMode gameMode = GameRegistry.getInstance().getGameMode(getName());
         TeamSpawnPoint spawnPoint = null;
@@ -75,7 +75,7 @@ abstract public class TeamGame extends Game {
             }
         }
 
-        if(spawnPoint == null) {
+        if (spawnPoint == null) {
             stop();
             return;
         }
@@ -85,28 +85,30 @@ abstract public class TeamGame extends Game {
         setGameLevel(new GameLevelGenerator(getGameLevel().getFolderName()).create(getIdentifier()));
 
         broadcast(TranslationKeys.PLAYER_GAME_START_PREPARE);
-        editGameWorld(() -> {
-            start();
-            for (Map.Entry<EnginePlayer, Team> entry : getTeams().entrySet()) {
-                EnginePlayer player = entry.getKey();
-                Team team = entry.getValue();
+        Server.getInstance().getScheduler().scheduleRepeatingTask(() -> {
+            editGameWorld(() -> {
+                start();
+                for (Map.Entry<EnginePlayer, Team> entry : getTeams().entrySet()) {
+                    EnginePlayer player = entry.getKey();
+                    Team team = entry.getValue();
 
-                createPlayer(player, team);
-                removeSpectator(player);
-                getStartedPlayers().put(player.getName(), getPlayer(player.getName()));
+                    createPlayer(player, team);
+                    removeSpectator(player);
+                    getStartedPlayers().put(player.getName(), getPlayer(player.getName()));
 
-                cleanup(player);
-                preparePlayer(player);
-                getKit().apply(player);
-                player.setNameTag(team.color() + player.getName());
-            }
+                    cleanup(player);
+                    preparePlayer(player);
+                    getKit().apply(player);
+                    player.setNameTag(team.color() + player.getName());
+                }
 
-            for(EnginePlayer player : getSpectators().values()) {
-                cleanup(player, 3);
-                player.teleport(getGameLevel().getSpawnLocation());
-                player.setNameTag(TextFormat.GRAY + player.getName());
-            }
-        });
+                for(EnginePlayer player : getSpectators().values()) {
+                    cleanup(player, 3);
+                    player.teleport(getGameLevel().getSpawnLocation());
+                    player.setNameTag(TextFormat.GRAY + player.getName());
+                }
+            });
+        }, 20);
     }
 
     abstract public void preparePlayer(EnginePlayer player);

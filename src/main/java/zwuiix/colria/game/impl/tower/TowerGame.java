@@ -349,7 +349,6 @@ public class TowerGame extends TeamGame {
 
     @Override
     public void editGameWorld(Runnable runnable) {
-
         var teamA = getTeamA();
         var teamB = getTeamB();
 
