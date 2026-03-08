@@ -47,7 +47,7 @@ public class DiscordMenu extends SubMenu {
         if (!game.hasComponent(DiscordComponent.class)) {
             Window.fill(parent.inventory, new BlockCopperBars().toItem().setCustomName("§r"));
 
-            var center = 18;
+            var center = 31;
             var item = new ItemBannerPattern().setCustomName(t(TranslationKeys.PLAYER_GAME_CONFIGURATIONS_GUI_DISCORD_CLICK_FOR_ENABLE));
 
             parent.inventory.setItem(center, item).onClick(click -> {
@@ -77,7 +77,7 @@ public class DiscordMenu extends SubMenu {
         }
 
         var discord = game.tryGetComponent(DiscordComponent.class);
-
+        
     }
 
     private String t(TranslationKeys k) { return parent.player.processTranslation(k); }
