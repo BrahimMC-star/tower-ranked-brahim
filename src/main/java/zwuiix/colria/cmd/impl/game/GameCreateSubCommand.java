@@ -46,18 +46,6 @@ public class GameCreateSubCommand extends ColriaPlayerSubCommand {
     }
 
     private void processCreation(EnginePlayer player, GameRegistry.GameMode mode) {
-        Class<? extends Game> gameClass = mode.gameClass();
-
-        Game game = null;
-        if(gameClass.equals(TowerGame.class)) {
-            game = new TowerGame(mode.name(), player.getName(), new TowerGameParameters());
-        }
-
-        if(game == null) {
-            player.sendMessage(TranslationKeys.PLAYER_GAME_CREATE_ERROR);
-            return;
-        }
-
         var cd = player.getCooldown("game_create");
         if(!cd.isExpired() && !player.inAdminMode()) {
             var secs = cd.getRemainingTime() / 1000;
@@ -74,6 +62,17 @@ public class GameCreateSubCommand extends ColriaPlayerSubCommand {
         }
 
         cd.refresh(300); // 5 minutes cooldown
+        Class<? extends Game> gameClass = mode.gameClass();
+
+        Game game = null;
+        if(gameClass.equals(TowerGame.class)) {
+            game = new TowerGame(mode.name(), player.getName(), new TowerGameParameters());
+        }
+
+        if(game == null) {
+            player.sendMessage(TranslationKeys.PLAYER_GAME_CREATE_ERROR);
+            return;
+        }
 
         game.join(player);
         GameRegistry.getInstance().addGame(game);

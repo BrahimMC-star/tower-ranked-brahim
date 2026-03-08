@@ -54,20 +54,28 @@ public class TowerMapProcessor {
             for (int z = -halfSize; z < halfSize; z++) {
                 Vector3 posA = spawnA.add(x, 0, z);
                 Block currentA = level.getBlock(posA);
-                if (teamABlockMap.containsKey(currentA)) {
-                    BlockChange bc = new BlockChange();
-                    bc.position = new Vector3f((float) posA.x, (float) posA.y, (float) posA.z);
-                    bc.newBlock = teamABlockMap.get(currentA);
-                    changes.add(bc);
+
+                for (Map.Entry<Block, Block> entry : teamABlockMap.entrySet()) {
+                    Block key = entry.getKey();
+                    if (currentA.getId() == key.getId() && currentA.getDamage() == key.getDamage()) {
+                        BlockChange bc = new BlockChange();
+                        bc.position = new Vector3f((float) posA.x, (float) posA.y, (float) posA.z);
+                        bc.newBlock = entry.getValue();
+                        changes.add(bc);
+                    }
                 }
 
                 Vector3 posB = spawnB.add(x, 0, z);
                 Block currentB = level.getBlock(posB);
-                if (teamBBlockMap.containsKey(currentB)) {
-                    BlockChange bc = new BlockChange();
-                    bc.position = new Vector3f((float) posB.x, (float) posB.y, (float) posB.z);
-                    bc.newBlock = teamBBlockMap.get(currentB);
-                    changes.add(bc);
+
+                for (Map.Entry<Block, Block> entry : teamBBlockMap.entrySet()) {
+                    Block key = entry.getKey();
+                    if (currentB.getId() == key.getId() && currentB.getDamage() == key.getDamage()) {
+                        BlockChange bc = new BlockChange();
+                        bc.position = new Vector3f((float) posB.x, (float) posB.y, (float) posB.z);
+                        bc.newBlock = entry.getValue();
+                        changes.add(bc);
+                    }
                 }
             }
         }
