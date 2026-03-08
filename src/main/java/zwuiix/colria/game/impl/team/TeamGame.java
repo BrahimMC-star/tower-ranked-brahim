@@ -1,6 +1,5 @@
 package zwuiix.colria.game.impl.team;
 
-import cn.nukkit.Server;
 import cn.nukkit.utils.TextFormat;
 import lombok.Setter;
 import zwuiix.colria.game.*;
@@ -62,7 +61,11 @@ abstract public class TeamGame extends Game {
         addPlayer(player.getName(), new TeamPlayer(player.getName(), this, team));
     }
 
-    @Override
+    public void editGameWorld(Runnable runnable) {
+        runnable.run();
+    }
+
+                                        @Override
     public void prepare() {
         GameRegistry.GameMode gameMode = GameRegistry.getInstance().getGameMode(getName());
         TeamSpawnPoint spawnPoint = null;
@@ -80,10 +83,9 @@ abstract public class TeamGame extends Game {
         setSpawnPoint(spawnPoint);
 
         setGameLevel(new GameLevelGenerator(getGameLevel().getFolderName()).create(getIdentifier()));
-        // proccess block replacement
 
         broadcast(TranslationKeys.PLAYER_GAME_START_PREPARE);
-        Server.getInstance().getScheduler().scheduleDelayedTask(() -> {
+        editGameWorld(() -> {
             start();
             for (Map.Entry<EnginePlayer, Team> entry : getTeams().entrySet()) {
                 EnginePlayer player = entry.getKey();
@@ -104,7 +106,7 @@ abstract public class TeamGame extends Game {
                 player.teleport(getGameLevel().getSpawnLocation());
                 player.setNameTag(TextFormat.GRAY + player.getName());
             }
-        }, 20);
+        });
     }
 
     abstract public void preparePlayer(EnginePlayer player);

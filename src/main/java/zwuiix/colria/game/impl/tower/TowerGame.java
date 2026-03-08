@@ -1,5 +1,8 @@
 package zwuiix.colria.game.impl.tower;
 
+import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockConcrete;
+import cn.nukkit.block.BlockGlassStained;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemAppleGold;
 import cn.nukkit.level.Location;
@@ -27,7 +30,9 @@ import zwuiix.colria.util.Rotation;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TowerGame extends TeamGame {
     @Getter
@@ -340,5 +345,35 @@ public class TowerGame extends TeamGame {
         }
 
         info.setStats(stats);
+    }
+
+    @Override
+    public void editGameWorld(Runnable runnable) {
+
+        var teamA = getTeamA();
+        var teamB = getTeamB();
+
+        var metaA = teamA.reference().getBlock().getDamage();
+        var metaB = teamB.reference().getBlock().getDamage();
+
+        Map<Block, Block> teamABlocks = Map.of(
+                new BlockConcrete(3), new BlockConcrete(metaA),
+                new BlockGlassStained(3), new BlockGlassStained(metaA)
+        );
+
+        Map<Block, Block> teamBBlocks = Map.of(
+                new BlockConcrete(14), new BlockConcrete(metaB),
+                new BlockGlassStained(14), new BlockGlassStained(metaB)
+        );
+
+        var spawnA = getSpawnPoint().first();
+        var spawnB = getSpawnPoint().second();
+        var processor = new TowerMapProcessor(
+                512, getCurrentLevel(), spawnA, spawnB,
+                teamABlocks, teamBBlocks,
+                percent -> broadcast(TranslationKeys.PLAYER_GAME_TOWER_MAP_PROCESSING, percent),
+                runnable
+        );
+        processor.run();
     }
 }

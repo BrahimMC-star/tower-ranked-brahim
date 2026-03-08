@@ -29,6 +29,7 @@ public class InventoryHooker implements Listener {
         instance.registerEvent();
     }
 
+    @Getter
     private Plugin plugin;
 
     public InventoryHooker() {

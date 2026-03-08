@@ -21,6 +21,7 @@ public class LobbyKit extends GameKit {
         super.apply(player);
 
         PlayerInventory inv = player.getInventory();
+        if (inv == null) return;
 
         Item games = new ItemGames();
         games.setCustomName(player.processTranslation(TranslationKeys.PLAYER_LOBBY_GAMES));
