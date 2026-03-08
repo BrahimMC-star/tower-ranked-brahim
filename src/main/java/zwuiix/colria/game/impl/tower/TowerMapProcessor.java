@@ -45,6 +45,7 @@ public class TowerMapProcessor {
     }
 
     public void run() {
+        System.out.println("[TowerMapProcessor] Starting scan phase...");
         int halfSize = size / 2;
         int maxHeight = 80;
 
@@ -65,6 +66,7 @@ public class TowerMapProcessor {
                         y = 0;
                         x++;
                         if (x >= halfSize) {
+                            System.out.println("[TowerMapProcessor] Scan complete. Total blocks to replace: " + changes.size());
                             runReplacement(changes, plugin);
                             cancel();
                             return;
@@ -109,12 +111,13 @@ public class TowerMapProcessor {
 
                 int percent = Math.min(50, (int) ((scanProgress.get() / (float) (size * size * maxHeight)) * 50));
                 updatePercentage.execute(percent);
+                System.out.println("[TowerMapProcessor] Scan progress: " + percent + "%");
             }
         }, 1);
-
     }
 
     private void runReplacement(List<BlockChange> changes, Plugin plugin) {
+        System.out.println("[TowerMapProcessor] Starting replacement phase...");
         AtomicInteger processed = new AtomicInteger(0);
         int chunkSize = 16;
 
@@ -132,8 +135,10 @@ public class TowerMapProcessor {
 
                 int percent = 50 + (int) ((processed.get() / (float) changes.size()) * 50);
                 updatePercentage.execute(percent);
+                System.out.println("[TowerMapProcessor] Replacement progress: " + percent + "%");
 
                 if (index >= changes.size()) {
+                    System.out.println("[TowerMapProcessor] Replacement complete. Tower map is ready!");
                     finish.run();
                     cancel();
                 }

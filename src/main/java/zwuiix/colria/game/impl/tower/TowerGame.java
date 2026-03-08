@@ -366,10 +366,16 @@ public class TowerGame extends TeamGame {
 
         var spawnA = getSpawnPoint().first();
         var spawnB = getSpawnPoint().second();
+        AtomicInteger perc = new AtomicInteger();
         var processor = new TowerMapProcessor(
                 512, getCurrentLevel(), spawnA, spawnB,
                 teamABlocks, teamBBlocks,
-                percent -> broadcast(TranslationKeys.PLAYER_GAME_TOWER_MAP_PROCESSING, percent),
+                percent -> {
+                    if(percent > perc.get() && percent % 10 == 0) {
+                        perc.set(percent);
+                        broadcast(TranslationKeys.PLAYER_GAME_TOWER_MAP_PROCESSING, percent);
+                    }
+                },
                 runnable
         );
         processor.run();
