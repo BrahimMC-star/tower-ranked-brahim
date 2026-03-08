@@ -37,6 +37,8 @@ public class SettingsGUI {
         String on = t(TranslationKeys.COMMON_ON);
         String off = t(TranslationKeys.COMMON_OFF);
 
+        for (int i = 0; i < inventory.getSize(); i++) inventory.setItem(i, Item.AIR_ITEM, false);
+
         Window.fillVerticalLine(0, inventory, new BlockCopperBars().toItem().setCustomName("§r"));
         Window.fillHorizontalLine(0, inventory, new BlockCopperBars().toItem().setCustomName("§r"));
         Window.fillVerticalLine(8, inventory, new BlockCopperBars().toItem().setCustomName("§r"));
@@ -58,6 +60,7 @@ public class SettingsGUI {
         addToggle(privateMessage, () -> (Boolean) playerData.getSettings().getOrDefault("private_message", "enabled", true), v -> {
             settings.set("private_message", "enabled", v);
             playerData.setSettings(settings);
+            syncContents();
         });
     }
 
@@ -115,7 +118,7 @@ public class SettingsGUI {
     private <T extends Comparable<? super T>> void addCycler(
             Item item, List<T> choices, Supplier<T> getter, Consumer<T> setter
     ) {
-        inventory.setItem(Window.nextSlot(inventory), item).onClick(click -> {
+        inventory.setItem(Window.nextSlot1(inventory), item).onClick(click -> {
             setter.accept(nextOf(choices, getter.get()));
             syncContents();
         });
@@ -125,7 +128,7 @@ public class SettingsGUI {
                            Supplier<Boolean> getter,
                            Consumer<Boolean> setter) {
         inventory.setItem(
-                Window.nextSlot(inventory),
+                Window.nextSlot1(inventory),
                 icon
         ).onClick(click -> {
             setter.accept(!getter.get());
