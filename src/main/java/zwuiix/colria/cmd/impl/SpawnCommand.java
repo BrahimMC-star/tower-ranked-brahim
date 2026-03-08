@@ -23,7 +23,7 @@ public class SpawnCommand extends ColriaPlayerCommand {
             return;
         }
 
-        game.join(player);
+        game.addSpectator(player);
         player.sendMessage(TranslationKeys.PLAYER_COMMAND_SPAWN_SUCCESS);
     }
 }

@@ -32,7 +32,7 @@ public class HubCommand extends ColriaPlayerCommand {
 
         if (args.containsKey("lobby")) {
             String lobbyId = args.get("lobby").toString().toLowerCase();
-            lobby = GameRegistry.getInstance().getLobby(lobbyId);
+            lobby = GameRegistry.getInstance().getLobby("Lobby#" + lobbyId);
             if (lobby == null) {
                 player.sendMessage(TranslationKeys.PLAYER_COMMAND_HUB_LOBBY_NOEXIST, lobbyId);
                 return;
