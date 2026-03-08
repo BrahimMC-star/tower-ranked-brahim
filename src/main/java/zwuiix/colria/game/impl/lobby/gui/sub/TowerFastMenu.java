@@ -62,7 +62,6 @@ public class TowerFastMenu extends SubMenu {
         if (player.hasPermission(Permission.GAME_HOSTER.toString())) {
             var item = new ItemBookAndQuill();
             item.setCustomName(player.processTranslation(TranslationKeys.PLAYER_LOBBY_GAMES_GUI_TOWERFAST_CREATE_NAME));
-            item.setLore(player.processTranslation(TranslationKeys.PLAYER_LOBBY_GAMES_GUI_TOWERFAST_CREATE_LORE));
             var slot = Window.nextSlot(inv);
             inv.setItem(slot, item).onClick((click) -> {
                 inv.close(player);

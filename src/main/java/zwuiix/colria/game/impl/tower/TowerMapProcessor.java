@@ -58,8 +58,6 @@ public class TowerMapProcessor {
     }
 
     public void run() {
-        System.out.println("[TowerMapProcessor] Start scanning");
-
         int half = size / 2;
         int spawnAX = spawnA.getFloorX();
         int spawnAZ = spawnA.getFloorZ();
@@ -84,7 +82,6 @@ public class TowerMapProcessor {
 
                 while (processed < blocksPerTick) {
                     if (x >= half) {
-                        System.out.println("[TowerMapProcessor] Scan finished. Found " + changes.size() + " blocks");
                         runReplacement(changes, plugin);
                         cancel();
                         return;
@@ -126,8 +123,6 @@ public class TowerMapProcessor {
     }
 
     private void runReplacement(List<BlockChange> changes, Plugin plugin) {
-        System.out.println("[TowerMapProcessor] Start replacement");
-
         int total = changes.size();
         int replaceTicks = 100;
         int perTick = Math.max(50, total / replaceTicks);

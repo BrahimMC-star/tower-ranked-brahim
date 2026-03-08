@@ -3,6 +3,7 @@ package zwuiix.colria.game.impl.tower;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockConcrete;
 import cn.nukkit.block.BlockGlassStained;
+import cn.nukkit.block.BlockWool;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemAppleGold;
 import cn.nukkit.level.Location;
@@ -359,10 +360,12 @@ public class TowerGame extends TeamGame {
         Map<TowerMapProcessor.BlockKey, Block> teamABlocks = new HashMap<>();
         teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockConcrete(3)), new BlockConcrete(metaA));
         teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockGlassStained(3)), new BlockGlassStained(metaA));
+        teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockWool(3)), new BlockWool(metaA));
 
         Map<TowerMapProcessor.BlockKey, Block> teamBBlocks = new HashMap<>();
         teamBBlocks.put(TowerMapProcessor.BlockKey.of(new BlockConcrete(14)), new BlockConcrete(metaB));
         teamBBlocks.put(TowerMapProcessor.BlockKey.of(new BlockGlassStained(14)), new BlockGlassStained(metaB));
+        teamBBlocks.put(TowerMapProcessor.BlockKey.of(new BlockWool(14)), new BlockWool(metaB));
 
         var spawnA = getSpawnPoint().first();
         var spawnB = getSpawnPoint().second();
