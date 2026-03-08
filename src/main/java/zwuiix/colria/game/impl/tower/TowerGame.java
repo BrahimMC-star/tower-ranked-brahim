@@ -30,6 +30,7 @@ import zwuiix.colria.util.Rotation;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -355,15 +356,13 @@ public class TowerGame extends TeamGame {
         var metaA = teamA.reference().getBlock().getDamage();
         var metaB = teamB.reference().getBlock().getDamage();
 
-        Map<Block, Block> teamABlocks = Map.of(
-                new BlockConcrete(3), new BlockConcrete(metaA),
-                new BlockGlassStained(3), new BlockGlassStained(metaA)
-        );
+        Map<Block, Block> teamABlocks = new HashMap<>();
+        teamABlocks.put(new BlockConcrete(3), new BlockConcrete(metaA));
+        teamABlocks.put(new BlockGlassStained(3), new BlockGlassStained(metaA));
 
-        Map<Block, Block> teamBBlocks = Map.of(
-                new BlockConcrete(14), new BlockConcrete(metaB),
-                new BlockGlassStained(14), new BlockGlassStained(metaB)
-        );
+        Map<Block, Block> teamBBlocks = new HashMap<>();
+        teamBBlocks.put(new BlockConcrete(14), new BlockConcrete(metaB));
+        teamBBlocks.put(new BlockGlassStained(14), new BlockGlassStained(metaB));
 
         var spawnA = getSpawnPoint().first();
         var spawnB = getSpawnPoint().second();
