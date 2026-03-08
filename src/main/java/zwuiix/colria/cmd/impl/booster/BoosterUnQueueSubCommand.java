@@ -32,7 +32,7 @@ public class BoosterUnQueueSubCommand extends ColriaPlayerSubCommand {
             return;
         }
 
-        manager.setCurrent(new Booster.Current(current.booster(), current.start(), current.end()));
+        manager.setCurrent(new Booster.Current(current.booster(), current.start(), System.currentTimeMillis()));
         player.sendMessage(TranslationKeys.BOOSTER_QUEUE_UNQUEUE, current.booster().type(), current.booster().owner());
     }
 }
