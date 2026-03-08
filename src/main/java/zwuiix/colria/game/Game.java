@@ -478,7 +478,11 @@ abstract public class Game {
                 getName().equalsIgnoreCase("lobby") &&
                 player.getHighestRank().getId() != 0)
         {
-            broadcast(TranslationKeys.PLAYER_LOBBY_BROADCAST_JOIN, player.getHighestRank().getColoredName() + " " + player.getName());
+            var cd = player.getCooldown("lobby_broadcast");
+            if (cd.isExpired()) {
+                broadcast(TranslationKeys.PLAYER_LOBBY_BROADCAST_JOIN, player.getHighestRank().getColoredName() + " " + player.getName());
+                cd.refresh(60);
+            }
         }
 
         if(getState().equals(State.LOBBY)) {
