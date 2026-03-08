@@ -1,14 +1,23 @@
-package zwuiix.colria.gui.shop;
+package zwuiix.colria.gui.settings;
 
 import cn.nukkit.block.BlockCopperBars;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemDyeLightGray;
-import cn.nukkit.item.ItemDyeLime;
+import cn.nukkit.item.ItemPaper;
+import cn.nukkit.utils.TextFormat;
+import zwuiix.colria.EngineInfo;
 import zwuiix.colria.inventory.VirtualInventory;
 import zwuiix.colria.inventory.impl.EntityInventory;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
+import zwuiix.colria.util.Glyph;
 import zwuiix.colria.util.Window;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class SettingsGUI {
     private final EnginePlayer player;
@@ -25,11 +34,102 @@ public class SettingsGUI {
     }
 
     public void syncContents() {
+        String on = t(TranslationKeys.COMMON_ON);
+        String off = t(TranslationKeys.COMMON_OFF);
+
         Window.fillVerticalLine(0, inventory, new BlockCopperBars().toItem().setCustomName("§r"));
         Window.fillHorizontalLine(0, inventory, new BlockCopperBars().toItem().setCustomName("§r"));
         Window.fillVerticalLine(8, inventory, new BlockCopperBars().toItem().setCustomName("§r"));
         Window.fillHorizontalLine(27, inventory, new BlockCopperBars().toItem().setCustomName("§r"));
 
+        var playerData = player.getPlayerDataInfo();
+        var settings = playerData.getSettings();
 
+        var privateMessage = new ItemPaper()
+                .setCustomName(t(TranslationKeys.PLAYER_SETTINGS_GUI_PRIVATE_MESSAGES_NAME))
+                .setLore(
+                        t(TranslationKeys.PLAYER_SETTINGS_GUI_PRIVATE_MESSAGES_LORE),
+                        Glyph.hbarThick(EngineInfo.COLOR, 1),
+                        makeLore((Boolean) settings.getOrDefault("private_message", "enabled", true), on, off),
+                        Glyph.hbarThick(EngineInfo.COLOR, 1),
+                        t(TranslationKeys.PLAYER_GAME_CONFIGURATIONS_GUI_SELECT)
+                );
+
+        addToggle(privateMessage, () -> (Boolean) playerData.getSettings().getOrDefault("private_message", "enabled", true), v -> {
+            settings.set("private_message", "enabled", v);
+            playerData.setSettings(settings);
+        });
+    }
+
+    private String t(TranslationKeys k) { return player.processTranslation(k); }
+
+    private <E extends Enum<E>> String makeLoreEnum(List<E> choices, Map<E, TranslationKeys> dict, E current) {
+        StringBuilder sb = new StringBuilder("&r&7\n");
+        for (E choice : choices) {
+            sb.append("&7&8")
+                    .append(Glyph.vbar(TextFormat.DARK_GRAY, 1))
+                    .append(" ")
+                    .append((choice == current) ? "&a&l" : "&c")
+                    .append(t(dict.get(choice)))
+                    .append("&r&7\n");
+        }
+        return TextFormat.colorize(sb.toString());
+    }
+
+    private static <T> String makeLore(List<T> choices, T current) {
+        StringBuilder sb = new StringBuilder("&r&7\n");
+        for (T c : choices) {
+            boolean sel = c.equals(current);
+            sb.append("&7&8")
+                    .append(Glyph.vbar(TextFormat.DARK_GRAY, 1))
+                    .append(" ")
+                    .append(sel ? "&a" : "&c")
+                    .append(c)
+                    .append(sel ? "&r&7\n" : "&7\n");
+        }
+        return TextFormat.colorize(sb.toString());
+    }
+
+    public static String makeLore(Boolean current, String enabled, String disabled) {
+        StringBuilder sb = new StringBuilder("&r&7\n");
+        if (current) {
+            sb.append("&7&8&l").append(Glyph.vbar(TextFormat.DARK_GRAY, 1)).append(" &a").append(enabled).append("&r&7\n");
+            sb.append("&7&8").append(Glyph.vbar(TextFormat.DARK_GRAY, 1)).append(" &c").append(disabled).append("&r&7\n");
+        } else {
+            sb.append("&7&8").append(Glyph.vbar(TextFormat.DARK_GRAY, 1)).append(" &c").append(enabled).append("&r&7\n");
+            sb.append("&7&8&l").append(Glyph.vbar(TextFormat.DARK_GRAY, 1)).append(" &a").append(disabled).append("&r&7\n");
+        }
+        return TextFormat.colorize(sb.toString());
+    }
+
+    private static <E extends Enum<E>> List<E> choicesOf(Class<E> enumType) {
+        return Arrays.asList(enumType.getEnumConstants());
+    }
+
+    private static <T extends Comparable<? super T>> T nextOf(List<T> choices, T current) {
+        int i = Collections.binarySearch(choices, current);
+        int next = (i >= 0 ? i + 1 : -i - 1) % choices.size();
+        return choices.get(next);
+    }
+
+    private <T extends Comparable<? super T>> void addCycler(
+            Item item, List<T> choices, Supplier<T> getter, Consumer<T> setter
+    ) {
+        inventory.setItem(Window.nextSlot(inventory), item).onClick(click -> {
+            setter.accept(nextOf(choices, getter.get()));
+            syncContents();
+        });
+    }
+
+    private void addToggle(Item icon,
+                           Supplier<Boolean> getter,
+                           Consumer<Boolean> setter) {
+        inventory.setItem(
+                Window.nextSlot(inventory),
+                icon
+        ).onClick(click -> {
+            setter.accept(!getter.get());
+            syncContents();
+        });
     }
 }

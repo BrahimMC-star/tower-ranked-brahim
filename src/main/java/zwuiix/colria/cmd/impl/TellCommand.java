@@ -43,7 +43,7 @@ public class TellCommand extends ColriaCommand {
 
         if (!sender.hasPermission(Permission.TELL_ANYWAY.toString())) {
             var settings = target.getPlayerDataInfo().getSettings();
-            if (!(boolean) settings.getOrDefault("private_message", true)) {
+            if (!(boolean) settings.getOrDefault("private_message", "enabled", true)) {
                 sender.sendMessage(Translator.getInstance().autoProcess(sender, TranslationKeys.TELL_PLAYER_DISABLE_TELL, target.getName()));
                 return;
             }

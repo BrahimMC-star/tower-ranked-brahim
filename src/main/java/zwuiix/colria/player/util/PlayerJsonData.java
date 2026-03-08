@@ -15,20 +15,6 @@ public class PlayerJsonData {
         return json;
     }
 
-    public JsonObject get(String key) {
-        return json.getOrDefault(key.toLowerCase(), new JsonObject());
-    }
-
-    public Object getOrDefault(String key, Object defaultValue) {
-        JsonObject stat = json.getOrDefault(key.toLowerCase(), new JsonObject());
-        return switch (defaultValue) {
-            case Number number -> stat.getAsNumber();
-            case Boolean b -> stat.getAsBoolean();
-            case String s -> stat.getAsString();
-            case null, default -> stat;
-        };
-    }
-
     public Object getOrDefault(String key, String field, Object defaultValue) {
         JsonObject stat = json.getOrDefault(key.toLowerCase(), new JsonObject());
         if (!stat.has(field)) return defaultValue;
@@ -39,8 +25,6 @@ public class PlayerJsonData {
             case null, default -> stat.get(field);
         };
     }
-
-    public void set(String key, JsonObject value) { json.put(key.toLowerCase(), value); }
 
     public void set(String key, String field, Object value) {
         JsonObject stat = json.getOrDefault(key.toLowerCase(), new JsonObject());
