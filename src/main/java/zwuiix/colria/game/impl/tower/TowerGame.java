@@ -368,7 +368,7 @@ public class TowerGame extends TeamGame {
         var spawnB = getSpawnPoint().second();
         AtomicInteger perc = new AtomicInteger();
         var processor = new TowerMapProcessor(
-                256, getCurrentLevel(), spawnA, spawnB,
+                256, getGameLevel(), spawnA, spawnB,
                 teamABlocks, teamBBlocks,
                 percent -> {
                     if(percent > perc.get() && percent % 10 == 0) {

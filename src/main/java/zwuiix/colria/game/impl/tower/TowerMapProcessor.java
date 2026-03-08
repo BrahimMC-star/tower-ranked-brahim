@@ -48,7 +48,6 @@ public class TowerMapProcessor {
         this.updatePercentage = updatePercentage;
         this.finish = finish;
 
-        // Conversion Map<Block,Block> → Map<int,Block> (lookup ultra rapide)
         this.teamABlocks = convert(teamABlockMap);
         this.teamBBlocks = convert(teamBBlockMap);
     }
@@ -66,7 +65,6 @@ public class TowerMapProcessor {
     }
 
     public void run() {
-
         System.out.println("[TowerMapProcessor] Start scanning");
 
         int half = size / 2;
@@ -110,12 +108,13 @@ public class TowerMapProcessor {
                     int ay = spawnAY + y;
                     int az = spawnAZ + z;
 
-                    Block blockA = level.getBlock(ax, ay, az);
+                    Block blockA = level.getBlock(ax, ay, az, true);
                     int keyA = (blockA.getId() << 8) | blockA.getDamage();
+
+                    System.out.println("[TowerMapProcessor] Scanning block at (" + ax + ", " + ay + ", " + az + ") - ID: " + blockA.getId() + ", Damage: " + blockA.getDamage());
 
                     Block replaceA = teamABlocks.get(keyA);
                     if (replaceA != null) {
-
                         BlockChange bc = new BlockChange();
                         bc.x = ax;
                         bc.y = ay;
@@ -129,12 +128,13 @@ public class TowerMapProcessor {
                     int by = spawnBY + y;
                     int bz = spawnBZ + z;
 
-                    Block blockB = level.getBlock(bx, by, bz);
+                    Block blockB = level.getBlock(bx, by, bz, true);
                     int keyB = (blockB.getId() << 8) | blockB.getDamage();
+
+                    System.out.println("[TowerMapProcessor] Scanning block at (" + bx + ", " + by + ", " + bz + ") - ID: " + blockB.getId() + ", Damage: " + blockB.getDamage());
 
                     Block replaceB = teamBBlocks.get(keyB);
                     if (replaceB != null) {
-
                         BlockChange bc = new BlockChange();
                         bc.x = bx;
                         bc.y = by;
