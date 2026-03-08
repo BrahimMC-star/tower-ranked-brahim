@@ -51,30 +51,32 @@ public class TowerMapProcessor {
         List<BlockChange> changes = new ArrayList<>();
 
         for (int x = -halfSize; x < halfSize; x++) {
-            for (int z = -halfSize; z < halfSize; z++) {
-                Vector3 posA = spawnA.add(x, 0, z);
-                Block currentA = level.getBlock(posA);
+            for (int y = 0; y < 80; y++) {
+                for (int z = -halfSize; z < halfSize; z++) {
+                    Vector3 posA = spawnA.add(x, y, z);
+                    Block currentA = level.getBlock(posA, true);
 
-                for (Map.Entry<Block, Block> entry : teamABlockMap.entrySet()) {
-                    Block key = entry.getKey();
-                    if (currentA.getId() == key.getId() && currentA.getDamage() == key.getDamage()) {
-                        BlockChange bc = new BlockChange();
-                        bc.position = new Vector3f((float) posA.x, (float) posA.y, (float) posA.z);
-                        bc.newBlock = entry.getValue();
-                        changes.add(bc);
+                    for (Map.Entry<Block, Block> entry : teamABlockMap.entrySet()) {
+                        Block key = entry.getKey();
+                        if (currentA.getId() == key.getId() && currentA.getDamage() == key.getDamage()) {
+                            BlockChange bc = new BlockChange();
+                            bc.position = new Vector3f((float) posA.x, (float) posA.y, (float) posA.z);
+                            bc.newBlock = entry.getValue();
+                            changes.add(bc);
+                        }
                     }
-                }
 
-                Vector3 posB = spawnB.add(x, 0, z);
-                Block currentB = level.getBlock(posB);
+                    Vector3 posB = spawnB.add(x, y, z);
+                    Block currentB = level.getBlock(posB, true);
 
-                for (Map.Entry<Block, Block> entry : teamBBlockMap.entrySet()) {
-                    Block key = entry.getKey();
-                    if (currentB.getId() == key.getId() && currentB.getDamage() == key.getDamage()) {
-                        BlockChange bc = new BlockChange();
-                        bc.position = new Vector3f((float) posB.x, (float) posB.y, (float) posB.z);
-                        bc.newBlock = entry.getValue();
-                        changes.add(bc);
+                    for (Map.Entry<Block, Block> entry : teamBBlockMap.entrySet()) {
+                        Block key = entry.getKey();
+                        if (currentB.getId() == key.getId() && currentB.getDamage() == key.getDamage()) {
+                            BlockChange bc = new BlockChange();
+                            bc.position = new Vector3f((float) posB.x, (float) posB.y, (float) posB.z);
+                            bc.newBlock = entry.getValue();
+                            changes.add(bc);
+                        }
                     }
                 }
             }

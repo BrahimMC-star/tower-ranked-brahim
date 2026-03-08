@@ -85,7 +85,7 @@ abstract public class TeamGame extends Game {
         setGameLevel(new GameLevelGenerator(getGameLevel().getFolderName()).create(getIdentifier()));
 
         broadcast(TranslationKeys.PLAYER_GAME_START_PREPARE);
-        Server.getInstance().getScheduler().scheduleRepeatingTask(() -> {
+        Server.getInstance().getScheduler().scheduleDelayedTask(() -> {
             editGameWorld(() -> {
                 start();
                 for (Map.Entry<EnginePlayer, Team> entry : getTeams().entrySet()) {
