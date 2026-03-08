@@ -28,7 +28,7 @@ public class BoosterCommand extends ColriaPlayerCommand {
     public void execute(EnginePlayer player, Map<String, Object> args) {
         var manager = BoosterManager.getInstance();
         var current = manager.getCurrent();
-        var queues = manager.getQueue();
+        var queues = manager.getQueues();
 
         if(current == null && !queues.isEmpty()) {
             var next = queues.getFirst();
@@ -37,12 +37,12 @@ public class BoosterCommand extends ColriaPlayerCommand {
         }
 
         if(current == null) {
-            player.sendMessage(TranslationKeys.BOOSTER_QUEUE_EMPTY_CURRENT);
+            player.sendMessage(TranslationKeys.BOOSTER_QUEUE_EMPTY);
             return;
         }
 
         if(queues.isEmpty()) {
-            player.sendMessage(TranslationKeys.BOOSTER_QUEUE_EMPTY, current.booster().type(), current.booster().owner());
+            player.sendMessage(TranslationKeys.BOOSTER_QUEUE_EMPTY_CURRENT, current.booster().type(), current.booster().owner());
             return;
         }
 
@@ -62,7 +62,7 @@ public class BoosterCommand extends ColriaPlayerCommand {
         player.sendMessage(TranslationKeys.BOOSTER_QUEUE,
                 current.booster().type(),
                 current.booster().owner(),
-                manager.getQueue().size(),
+                manager.getQueues().size(),
                 String.join("&r&7, ", ownerList)
         );
     }

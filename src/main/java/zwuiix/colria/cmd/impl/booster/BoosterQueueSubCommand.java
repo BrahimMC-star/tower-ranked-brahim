@@ -32,7 +32,7 @@ public class BoosterQueueSubCommand extends ColriaPlayerSubCommand {
         if(current != null)
             delay += manager.getRemaining();
 
-        var queues = manager.getQueue();
+        var queues = manager.getQueues();
         if(!queues.isEmpty())
             delay += queues.size() * BoosterManager.START_TIME;
 

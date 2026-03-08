@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class BoosterShowSubCommand extends ColriaPlayerSubCommand {
     public BoosterShowSubCommand() {
-        super("add");
+        super("show");
     }
 
     @Override

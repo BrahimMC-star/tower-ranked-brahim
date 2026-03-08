@@ -7,6 +7,8 @@ import cn.nukkit.level.Sound;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.scheduler.Task;
 import com.google.gson.*;
+import lombok.Getter;
+import lombok.Setter;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.BossBar;
@@ -34,8 +36,11 @@ public class BoosterManager {
 
     private long lastReminder = 0L;
     private Long nextStartTime = null;
+    @Getter
+    @Setter
     private Booster.Current current = null;
     private final List<Booster> queue = new ArrayList<>();
+    @Getter
     private BossBar bossBar = null;
 
     public BoosterManager(Plugin plugin) {
@@ -206,11 +211,7 @@ public class BoosterManager {
         this.queue.add(booster);
     }
 
-    public Booster.Current getCurrent() {
-        return this.current;
-    }
-
-    public List<Booster> getQueue() {
+    public List<Booster> getQueues() {
         return Collections.unmodifiableList(this.queue);
     }
 
@@ -224,10 +225,6 @@ public class BoosterManager {
 
     public float getMultiplier() {
         return this.current != null ? this.current.booster().multiplier() : 1.0f;
-    }
-
-    public BossBar getBossBar() {
-        return this.bossBar;
     }
 
     public boolean hasBossBar() {
