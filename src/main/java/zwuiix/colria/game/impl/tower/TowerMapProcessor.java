@@ -118,6 +118,8 @@ public class TowerMapProcessor {
                                 int meta = chunk.getBlockData(x, y, z);
                                 int key = (id << 8) | meta;
 
+                                System.out.println("-> (" + chunkX + ", " + chunkZ + ") pos (" + x + ", " + y + ", " + z + ") id: " + id + " meta: " + meta);
+
                                 int worldX = (chunkX << 4) + x;
                                 int worldZ = (chunkZ << 4) + z;
 
