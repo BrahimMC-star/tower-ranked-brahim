@@ -3,6 +3,7 @@ package zwuiix.colria.cmd.impl.link;
 import zwuiix.colria.cmd.ColriaPlayerCommand;
 import zwuiix.colria.cmd.arguments.IntegerArgument;
 import zwuiix.colria.discord.DiscordAPI;
+import zwuiix.colria.discord.DiscordUtil;
 import zwuiix.colria.link.LinkManager;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
@@ -44,8 +45,11 @@ public class LinkCommand extends ColriaPlayerCommand {
             player.getPlayerDataInfo().setDiscordId(info.discordId());
             manager.remove(code);
 
+            var guild = DiscordUtil.getGuild().orElse(null);
+            guild.addRoleToMember(user, guild.getRoleById(DiscordUtil.LINKED_ROLE_ID)).queue();
+
             info.hook().editOriginal("Votre compte a été lié avec succès au compte minecraft : " + player.getUsername()).queue();
-            user.openPrivateChannel().queue(channel -> channel.sendMessage("Votre compte a été lié avec succès au compte xbox : " + player.getUsername()).queue());
+            user.openPrivateChannel().queue(channel -> channel.sendMessage("Votre compte a été lié avec succès au compte xbox : **__" + player.getUsername() + "__**").queue());
         }, throwable -> {
             player.sendMessage(TranslationKeys.PLAYER_COMMAND_LINK_NOTFOUND);
         });

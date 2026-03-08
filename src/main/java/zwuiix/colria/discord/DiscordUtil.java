@@ -21,6 +21,8 @@ public class DiscordUtil {
     public static String INFO = "<:gray_right_arrow:1443279024951394335> ";
     public static String NOTICE = "<:blue_right_arrow:1443279020040130691> ";
 
+    public static String LINKED_ROLE_ID = "1480188185685266554 ";
+
     public static Optional<Guild> getGuild() {
         return Optional.ofNullable(DiscordAPI.getInstance().getJda().getGuildById(GUILD_ID));
     }
