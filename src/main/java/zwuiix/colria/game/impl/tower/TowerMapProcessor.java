@@ -13,13 +13,12 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TowerMapProcessor {
-
     private final int size;
     private final Level level;
     private final Vector3 spawnA, spawnB;
 
-    private final Map<String, Block> teamABlocks;
-    private final Map<String, Block> teamBBlocks;
+    private final Map<BlockKey, Block> teamABlocks;
+    private final Map<BlockKey, Block> teamBBlocks;
 
     private final Closure<Integer> updatePercentage;
     private final Runnable finish;
@@ -31,13 +30,19 @@ public class TowerMapProcessor {
         Block block;
     }
 
+    public record BlockKey(int id, int meta, Class<? extends Block> type) {
+        public static BlockKey of(Block block) {
+            return new BlockKey(block.getId(), block.getDamage(), block.getClass());
+        }
+    }
+
     public TowerMapProcessor(
             int size,
             Level level,
             Vector3 spawnA,
             Vector3 spawnB,
-            Map<Block, Block> teamABlockMap,
-            Map<Block, Block> teamBBlockMap,
+            Map<BlockKey, Block> teamABlocks,
+            Map<BlockKey, Block> teamBBlocks,
             Closure<Integer> updatePercentage,
             Runnable finish
     ) {
@@ -45,22 +50,10 @@ public class TowerMapProcessor {
         this.level = level;
         this.spawnA = spawnA;
         this.spawnB = spawnB;
+        this.teamABlocks = teamABlocks;
+        this.teamBBlocks = teamBBlocks;
         this.updatePercentage = updatePercentage;
         this.finish = finish;
-
-        this.teamABlocks = convert(teamABlockMap);
-        this.teamBBlocks = convert(teamBBlockMap);
-    }
-
-    // --- Conversion : on utilise className + ID + meta pour éviter les collisions ---
-    private Map<String, Block> convert(Map<Block, Block> map) {
-        Map<String, Block> result = new HashMap<>();
-        for (Map.Entry<Block, Block> entry : map.entrySet()) {
-            Block key = entry.getKey();
-            String mapKey = key.getClass().getSimpleName() + ":" + key.getId() + ":" + key.getDamage();
-            result.put(mapKey, entry.getValue());
-        }
-        return result;
     }
 
     public void run() {
@@ -98,13 +91,11 @@ public class TowerMapProcessor {
                         return;
                     }
 
-                    // --- Team A ---
                     int ax = spawnAX + x;
                     int ay = spawnAY + y;
                     int az = spawnAZ + z;
                     Block blockA = level.getBlock(ax, ay, az, true);
-                    String keyA = blockA.getClass().getSimpleName() + ":" + blockA.getId() + ":" + blockA.getDamage();
-                    Block replacementA = teamABlocks.get(keyA);
+                    Block replacementA = teamABlocks.get(BlockKey.of(blockA));
                     if (replacementA != null) {
                         BlockChange bc = new BlockChange();
                         bc.x = ax; bc.y = ay; bc.z = az; bc.block = replacementA;
@@ -112,13 +103,11 @@ public class TowerMapProcessor {
                         System.out.println("[TowerMapProcessor] Found TeamA block at " + ax + "," + ay + "," + az + " ID=" + blockA.getId() + " Meta=" + blockA.getDamage());
                     }
 
-                    // --- Team B ---
                     int bx = spawnBX + x;
                     int by = spawnBY + y;
                     int bz = spawnBZ + z;
                     Block blockB = level.getBlock(bx, by, bz, true);
-                    String keyB = blockB.getClass().getSimpleName() + ":" + blockB.getId() + ":" + blockB.getDamage();
-                    Block replacementB = teamBBlocks.get(keyB);
+                    Block replacementB = teamBBlocks.get(BlockKey.of(blockB));
                     if (replacementB != null) {
                         BlockChange bc = new BlockChange();
                         bc.x = bx; bc.y = by; bc.z = bz; bc.block = replacementB;
@@ -129,7 +118,6 @@ public class TowerMapProcessor {
                     processed++;
                     scanned.incrementAndGet();
 
-                    // --- coord management ---
                     z++;
                     if (z >= half) { z = -half; y++; }
                     if (y >= HEIGHT) { y = 0; x++; }
@@ -141,7 +129,6 @@ public class TowerMapProcessor {
         }, 1);
     }
 
-    // --- Remplacement séparé ---
     private void runReplacement(List<BlockChange> changes, Plugin plugin) {
         System.out.println("[TowerMapProcessor] Start replacement");
 

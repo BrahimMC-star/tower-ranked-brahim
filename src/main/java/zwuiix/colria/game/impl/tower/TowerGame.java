@@ -356,13 +356,13 @@ public class TowerGame extends TeamGame {
         var metaA = teamA.reference().getBlock().getDamage();
         var metaB = teamB.reference().getBlock().getDamage();
 
-        Map<Block, Block> teamABlocks = new HashMap<>();
-        teamABlocks.put(new BlockConcrete(3), new BlockConcrete(metaA));
-        //teamABlocks.put(new BlockGlassStained(3), new BlockGlassStained(metaA));
+        Map<TowerMapProcessor.BlockKey, Block> teamABlocks = new HashMap<>();
+        teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockConcrete(3)), new BlockConcrete(metaA));
+        teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockGlassStained(3)), new BlockGlassStained(metaA));
 
-        Map<Block, Block> teamBBlocks = new HashMap<>();
-        teamBBlocks.put(new BlockConcrete(14), new BlockConcrete(metaB));
-        //teamBBlocks.put(new BlockGlassStained(14), new BlockGlassStained(metaB));
+        Map<TowerMapProcessor.BlockKey, Block> teamBBlocks = new HashMap<>();
+        teamBBlocks.put(TowerMapProcessor.BlockKey.of(new BlockConcrete(14)), new BlockConcrete(metaB));
+        teamBBlocks.put(TowerMapProcessor.BlockKey.of(new BlockGlassStained(14)), new BlockGlassStained(metaB));
 
         var spawnA = getSpawnPoint().first();
         var spawnB = getSpawnPoint().second();
