@@ -155,11 +155,11 @@ abstract public class Game {
     }
 
     public void rejoin(GamePlayer player) {
-        players.put(name, player);
+        players.put(player.getUsername(), player);
         EnginePlayer p = player.getNukkitPlayer();
         if(p != null) cleanup(p);
 
-        broadcast(TranslationKeys.PLAYER_GAME_RUNNING_JOIN, name);
+        broadcast(TranslationKeys.PLAYER_GAME_RUNNING_JOIN, player.getUsername());
     }
 
     public void addPlayer(String name, GamePlayer player) {

@@ -3,6 +3,7 @@ package zwuiix.colria.cmd.impl;
 import cn.nukkit.command.CommandSender;
 import zwuiix.colria.cmd.ColriaPlayerCommand;
 import zwuiix.colria.cmd.arguments.MessageArgument;
+import zwuiix.colria.permission.Permission;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.translator.Translator;
@@ -39,7 +40,17 @@ public class ReplyCommand extends ColriaPlayerCommand {
             return;
         }
 
-        if(target instanceof EnginePlayer p) p.reply = player;
+        if(target instanceof EnginePlayer p) {
+            if (!player.hasPermission(Permission.TELL_ANYWAY.toString())) {
+                var settings = p.getPlayerDataInfo().getSettings();
+                if ((boolean) settings.getOrDefault("ignores", player.getName().toLowerCase(), false)) {
+                    player.sendMessage(Translator.getInstance().autoProcess(player, TranslationKeys.TELL_PLAYER_IGNORING, p.getName()));
+                    return;
+                }
+            }
+
+            p.reply = player;
+        }
 
         String message = Chat.clean(args.get("message").toString());
         player.sendMessage(TranslationKeys.TELL_TO, target.getName(), message);

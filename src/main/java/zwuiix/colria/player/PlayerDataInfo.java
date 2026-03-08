@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import lombok.Getter;
 import zwuiix.colria.database.DataBase;
 import zwuiix.colria.database.dao.PlayerDataDao;
-import zwuiix.colria.player.stats.StatsInfo;
+import zwuiix.colria.player.util.PlayerJsonData;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -205,17 +205,31 @@ public class PlayerDataInfo {
         this.setJson(json);
     }
 
-    public StatsInfo getStats() {
+    public PlayerJsonData getStats() {
         JsonObject json = this.getJson();
         if(json.has("stats")) {
-            return gson.fromJson(json.getAsJsonObject("stats"), StatsInfo.class);
+            return gson.fromJson(json.getAsJsonObject("stats"), PlayerJsonData.class);
         }
-        return new StatsInfo(new LinkedHashMap<>());
+        return new PlayerJsonData(new LinkedHashMap<>());
     }
 
-    public void setStats(StatsInfo stats) {
+    public void setStats(PlayerJsonData stats) {
         JsonObject json = this.getJson();
         json.add("stats", gson.toJsonTree(stats));
+        this.setJson(json);
+    }
+
+    public PlayerJsonData getSettings() {
+        JsonObject json = this.getJson();
+        if (json.has("settings")) {
+            return gson.fromJson(json.getAsJsonObject("settings"), PlayerJsonData.class);
+        }
+        return new PlayerJsonData(new LinkedHashMap<>());
+    }
+
+    public void setSettings(PlayerJsonData settings) {
+        JsonObject json = this.getJson();
+        json.add("settings", gson.toJsonTree(settings));
         this.setJson(json);
     }
     

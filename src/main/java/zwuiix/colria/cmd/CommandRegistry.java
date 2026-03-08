@@ -4,10 +4,7 @@ import cn.nukkit.Server;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.SimpleCommandMap;
 import lombok.Getter;
-import zwuiix.colria.cmd.impl.LatencyCommand;
-import zwuiix.colria.cmd.impl.ReplyCommand;
-import zwuiix.colria.cmd.impl.StatusCommand;
-import zwuiix.colria.cmd.impl.TellCommand;
+import zwuiix.colria.cmd.impl.*;
 import zwuiix.colria.cmd.impl.booster.BoosterCommand;
 import zwuiix.colria.cmd.impl.booster.ThanksCommand;
 import zwuiix.colria.cmd.impl.capes.CapesCommand;
@@ -38,7 +35,12 @@ public class CommandRegistry {
         register(new WorldCommand());
         register(new TellCommand());
         register(new ReplyCommand());
+        register(new IgnoreCommand());
+        register(new UnIgnoreCommand());
         register(new LatencyCommand());
+
+        register(new HubCommand());
+        register(new SpawnCommand());
 
         register(new RanksCommand());
         register(new ShardCommand());

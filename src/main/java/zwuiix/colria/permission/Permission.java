@@ -3,8 +3,6 @@ package zwuiix.colria.permission;
 import java.util.Locale;
 
 public enum Permission {
-    SERVER_MANAGE,
-
     WORLD_MANAGE,
     RANK_MANAGE,
     SHARD_MANAGE,
@@ -16,6 +14,8 @@ public enum Permission {
 
     GAME_HOSTER,
     GAME_ADMIN,
+
+    TELL_ANYWAY,
 
     LOBBY_JOIN_SAYINGS,
     SUPPORTER,
