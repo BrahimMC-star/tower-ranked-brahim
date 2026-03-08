@@ -41,6 +41,7 @@ public class CommandRegistry {
 
         register(new HubCommand());
         register(new SpawnCommand());
+        register(new SettingsCommand());
 
         register(new RanksCommand());
         register(new ShardCommand());
