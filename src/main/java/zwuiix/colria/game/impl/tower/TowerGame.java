@@ -380,10 +380,4 @@ public class TowerGame extends TeamGame {
         );
         processor.run();
     }
-
-    public record BlockKey(int id, int meta) {
-        public static BlockKey of(Block block) {
-            return new BlockKey(block.getId(), block.getDamage());
-        }
-    }
 }
