@@ -2,8 +2,6 @@ package zwuiix.colria.game.impl.tower;
 
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
-import cn.nukkit.block.BlockConcrete;
-import cn.nukkit.block.BlockGlassStained;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.plugin.Plugin;
@@ -54,12 +52,13 @@ public class TowerMapProcessor {
         this.teamBBlocks = convert(teamBBlockMap);
     }
 
+    // --- Conversion : on utilise className + ID + meta pour éviter les collisions ---
     private Map<String, Block> convert(Map<Block, Block> map) {
         Map<String, Block> result = new HashMap<>();
         for (Map.Entry<Block, Block> entry : map.entrySet()) {
             Block key = entry.getKey();
-            String k = key.getId() + ":" + key.getDamage();
-            result.put(k, entry.getValue());
+            String mapKey = key.getClass().getSimpleName() + ":" + key.getId() + ":" + key.getDamage();
+            result.put(mapKey, entry.getValue());
         }
         return result;
     }
@@ -99,12 +98,12 @@ public class TowerMapProcessor {
                         return;
                     }
 
-                    // Team A
+                    // --- Team A ---
                     int ax = spawnAX + x;
                     int ay = spawnAY + y;
                     int az = spawnAZ + z;
                     Block blockA = level.getBlock(ax, ay, az, true);
-                    String keyA = blockA.getId() + ":" + blockA.getDamage();
+                    String keyA = blockA.getClass().getSimpleName() + ":" + blockA.getId() + ":" + blockA.getDamage();
                     Block replacementA = teamABlocks.get(keyA);
                     if (replacementA != null) {
                         BlockChange bc = new BlockChange();
@@ -113,13 +112,13 @@ public class TowerMapProcessor {
                         System.out.println("[TowerMapProcessor] Found TeamA block at " + ax + "," + ay + "," + az + " ID=" + blockA.getId() + " Meta=" + blockA.getDamage());
                     }
 
-                    // Team B
+                    // --- Team B ---
                     int bx = spawnBX + x;
                     int by = spawnBY + y;
                     int bz = spawnBZ + z;
                     Block blockB = level.getBlock(bx, by, bz, true);
-                    String keyB = blockB.getId() + ":" + blockB.getDamage();
-                    Block replacementB = teamBBlocks.get(keyB); // <-- correction ici
+                    String keyB = blockB.getClass().getSimpleName() + ":" + blockB.getId() + ":" + blockB.getDamage();
+                    Block replacementB = teamBBlocks.get(keyB);
                     if (replacementB != null) {
                         BlockChange bc = new BlockChange();
                         bc.x = bx; bc.y = by; bc.z = bz; bc.block = replacementB;
@@ -130,6 +129,7 @@ public class TowerMapProcessor {
                     processed++;
                     scanned.incrementAndGet();
 
+                    // --- coord management ---
                     z++;
                     if (z >= half) { z = -half; y++; }
                     if (y >= HEIGHT) { y = 0; x++; }
