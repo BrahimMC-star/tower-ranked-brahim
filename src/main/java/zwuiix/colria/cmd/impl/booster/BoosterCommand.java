@@ -22,6 +22,7 @@ public class BoosterCommand extends ColriaPlayerCommand {
         registerSubCommand(new BoosterAddSubCommand());
         registerSubCommand(new BoosterRemoveSubCommand());
         registerSubCommand(new BoosterSetSubCommand());
+        registerSubCommand(new BoosterUnQueueSubCommand());
     }
 
     @Override
