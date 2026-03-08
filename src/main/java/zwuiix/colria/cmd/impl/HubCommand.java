@@ -57,6 +57,6 @@ public class HubCommand extends ColriaPlayerCommand {
         }
 
         lobby.join(player);
-        player.sendMessage(TranslationKeys.PLAYER_COMMAND_HUB_SUCCESS, lobby.getIdentifier());
+        player.sendMessage(TranslationKeys.PLAYER_COMMAND_HUB_SUCCESS, "#" + lobby.getIdentifier());
     }
 }
