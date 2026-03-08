@@ -5,6 +5,7 @@ import cn.nukkit.block.Block;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.math.Vector3f;
+import cn.nukkit.plugin.Plugin;
 import cn.nukkit.scheduler.Task;
 import org.apache.commons.collections4.Closure;
 import zwuiix.colria.inventory.InventoryHooker;
@@ -15,14 +16,11 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TowerMapProcessor {
+
     private final int size;
     private final Level level;
-    private final Vector3 spawnA;
-    private final Vector3 spawnB;
-
-    private final Map<Block, Block> teamABlockMap;
-    private final Map<Block, Block> teamBBlockMap;
-
+    private final Vector3 spawnA, spawnB;
+    private final Map<Block, Block> teamABlockMap, teamBBlockMap;
     private final Closure<Integer> updatePercentage;
     private final Runnable finish;
 
@@ -34,7 +32,8 @@ public class TowerMapProcessor {
     public TowerMapProcessor(int size, Level level, Vector3 spawnA, Vector3 spawnB,
                              Map<Block, Block> teamABlockMap,
                              Map<Block, Block> teamBBlockMap,
-                             Closure<Integer> updatePercentage, Runnable finish) {
+                             Closure<Integer> updatePercentage,
+                             Runnable finish) {
         this.size = size;
         this.level = level;
         this.spawnA = spawnA;
@@ -47,50 +46,83 @@ public class TowerMapProcessor {
 
     public void run() {
         int halfSize = size / 2;
+        int maxHeight = 80;
 
         List<BlockChange> changes = new ArrayList<>();
+        AtomicInteger scanProgress = new AtomicInteger(0);
 
-        for (int x = -halfSize; x < halfSize; x++) {
-            for (int y = 0; y < 80; y++) {
-                for (int z = -halfSize; z < halfSize; z++) {
-                    Vector3 posA = spawnA.add(x, y, z);
-                    Block currentA = level.getBlock(posA, true);
+        var plugin = InventoryHooker.getInstance().getPlugin();
+        Server.getInstance().getScheduler().scheduleRepeatingTask(plugin, new Task() {
+            int x = -halfSize, y = 0, z = -halfSize;
 
-                    for (Map.Entry<Block, Block> entry : teamABlockMap.entrySet()) {
-                        Block key = entry.getKey();
-                        if (currentA.getId() == key.getId() && currentA.getDamage() == key.getDamage()) {
-                            BlockChange bc = new BlockChange();
-                            bc.position = new Vector3f((float) posA.x, (float) posA.y, (float) posA.z);
-                            bc.newBlock = entry.getValue();
-                            changes.add(bc);
+            @Override
+            public void onRun(int tick) {
+                int chunk = 16;
+                int processed = 0;
+
+                while (processed < chunk) {
+                    if (y >= maxHeight) {
+                        y = 0;
+                        x++;
+                        if (x >= halfSize) {
+                            runReplacement(changes, plugin);
+                            cancel();
+                            return;
                         }
                     }
 
-                    Vector3 posB = spawnB.add(x, y, z);
-                    Block currentB = level.getBlock(posB, true);
-
-                    for (Map.Entry<Block, Block> entry : teamBBlockMap.entrySet()) {
-                        Block key = entry.getKey();
-                        if (currentB.getId() == key.getId() && currentB.getDamage() == key.getDamage()) {
-                            BlockChange bc = new BlockChange();
-                            bc.position = new Vector3f((float) posB.x, (float) posB.y, (float) posB.z);
-                            bc.newBlock = entry.getValue();
-                            changes.add(bc);
+                    while (z < halfSize && processed < chunk) {
+                        Vector3 posA = spawnA.add(x, y, z);
+                        Block currentA = level.getBlock(posA, true);
+                        for (Map.Entry<Block, Block> entry : teamABlockMap.entrySet()) {
+                            Block key = entry.getKey();
+                            if (currentA.getId() == key.getId() && currentA.getDamage() == key.getDamage()) {
+                                BlockChange bc = new BlockChange();
+                                bc.position = new Vector3f((float) posA.x, (float) posA.y, (float) posA.z);
+                                bc.newBlock = entry.getValue();
+                                changes.add(bc);
+                            }
                         }
+
+                        Vector3 posB = spawnB.add(x, y, z);
+                        Block currentB = level.getBlock(posB, true);
+                        for (Map.Entry<Block, Block> entry : teamBBlockMap.entrySet()) {
+                            Block key = entry.getKey();
+                            if (currentB.getId() == key.getId() && currentB.getDamage() == key.getDamage()) {
+                                BlockChange bc = new BlockChange();
+                                bc.position = new Vector3f((float) posB.x, (float) posB.y, (float) posB.z);
+                                bc.newBlock = entry.getValue();
+                                changes.add(bc);
+                            }
+                        }
+
+                        z++;
+                        processed++;
+                        scanProgress.incrementAndGet();
+                    }
+
+                    if (z >= halfSize) {
+                        z = -halfSize;
+                        y++;
                     }
                 }
-            }
-        }
 
-        int chunkSize = 16;
+                int percent = Math.min(50, (int) ((scanProgress.get() / (float) (size * size * maxHeight)) * 50));
+                updatePercentage.execute(percent);
+            }
+        }, 1);
+
+    }
+
+    private void runReplacement(List<BlockChange> changes, Plugin plugin) {
         AtomicInteger processed = new AtomicInteger(0);
-        var plugin = InventoryHooker.getInstance().getPlugin();
+        int chunkSize = 16;
 
         Server.getInstance().getScheduler().scheduleRepeatingTask(plugin, new Task() {
             int index = 0;
 
             @Override
-            public void onRun(int currentTick) {
+            public void onRun(int tick) {
                 for (int i = 0; i < chunkSize && index < changes.size(); i++, index++) {
                     BlockChange bc = changes.get(index);
                     Vector3 pos = new Vector3(bc.position.x, bc.position.y, bc.position.z);
@@ -98,7 +130,7 @@ public class TowerMapProcessor {
                     processed.incrementAndGet();
                 }
 
-                int percent = (int) ((processed.get() / (float) changes.size()) * 100);
+                int percent = 50 + (int) ((processed.get() / (float) changes.size()) * 50);
                 updatePercentage.execute(percent);
 
                 if (index >= changes.size()) {
