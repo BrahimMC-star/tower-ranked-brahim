@@ -74,6 +74,8 @@ public class TowerMapProcessor {
                     }
 
                     while (z < halfSize && processed < chunk) {
+                        System.out.println("[TowerMapProcessor] Scanning block at offset (" + x + ", " + y + ", " + z + ")...");
+
                         Vector3 posA = spawnA.add(x, y, z);
                         Block currentA = level.getBlock(posA, true);
                         for (Map.Entry<Block, Block> entry : teamABlockMap.entrySet()) {
@@ -111,7 +113,7 @@ public class TowerMapProcessor {
 
                 int percent = Math.min(50, (int) ((scanProgress.get() / (float) (size * size * maxHeight)) * 50));
                 updatePercentage.execute(percent);
-                System.out.println("[TowerMapProcessor] Scan progress: " + percent + "%");
+                if(percent != 0) System.out.println("[TowerMapProcessor] Scan progress: " + percent + "%");
             }
         }, 1);
     }
