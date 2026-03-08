@@ -58,7 +58,7 @@ public class TowerMapProcessor {
 
             @Override
             public void onRun(int tick) {
-                int chunk = 16;
+                int chunk = 128; // Number of blocks to process per tick
                 int processed = 0;
 
                 while (processed < chunk) {
@@ -74,8 +74,7 @@ public class TowerMapProcessor {
                     }
 
                     while (z < halfSize && processed < chunk) {
-                        System.out.println("[TowerMapProcessor] Scanning block at offset (" + x + ", " + y + ", " + z + ")...");
-
+            
                         Vector3 posA = spawnA.add(x, y, z);
                         Block currentA = level.getBlock(posA, true);
                         for (Map.Entry<Block, Block> entry : teamABlockMap.entrySet()) {
@@ -121,7 +120,7 @@ public class TowerMapProcessor {
     private void runReplacement(List<BlockChange> changes, Plugin plugin) {
         System.out.println("[TowerMapProcessor] Starting replacement phase...");
         AtomicInteger processed = new AtomicInteger(0);
-        int chunkSize = 16;
+        int chunkSize = 128;
 
         Server.getInstance().getScheduler().scheduleRepeatingTask(plugin, new Task() {
             int index = 0;
