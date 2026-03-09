@@ -138,7 +138,7 @@ public class EventListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent ev) {
         var damager = ev.getDamager();
         if(damager instanceof EnginePlayer p) {
