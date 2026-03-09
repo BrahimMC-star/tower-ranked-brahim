@@ -4,6 +4,7 @@ import cn.nukkit.Server;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
+import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.event.server.DataPacketReceiveEvent;
@@ -138,6 +139,15 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent ev) {
+        var damager = ev.getDamager();
+        if(damager instanceof EnginePlayer p) {
+            p.addClick();
+            p.needDisplayTitleInfo();
+        }
+    }
+
+    @EventHandler
     public void onReceive(DataPacketReceiveEvent ev) {
         EnginePlayer p = (EnginePlayer) ev.getPlayer();
         DataPacket pk = ev.getPacket();
@@ -168,12 +178,18 @@ public class EventListener implements Listener {
 
             p.keys = keys;
 
-            if (inputPacket.getInputData().contains(AuthInputAction.JUMP_PRESSED_RAW)) {
+            var inputData = inputPacket.getInputData();
+            if (inputData.contains(AuthInputAction.JUMP_PRESSED_RAW)) {
                 p.sinceLastDoubleJump = (p.sinceLastJump > 8)
                         ? p.sinceLastDoubleJump + 1
                         : 0;
 
                 p.sinceLastJump = 0;
+                return;
+            }
+            if (inputData.contains(AuthInputAction.MISSED_SWING)) {
+                p.addClick();
+                p.needDisplayTitleInfo();
                 return;
             }
 

@@ -79,8 +79,8 @@ public class EnginePlayer extends Player {
 
     private int tickSinceSendTitle = 0;
 
-    public int cps = 0;
     public int fps = 0;
+    private final List<Double> clicks = new ArrayList<>();
 
     public EnginePlayer(SourceInterface interfaz, Long clientID, InetSocketAddress socketAddress) {
         super(interfaz, clientID, socketAddress);
@@ -538,6 +538,23 @@ public class EnginePlayer extends Player {
 
     private record Ticker(int interval, Consumer<Integer> ticker) {}
 
+    public void addClick() {
+        clicks.add(System.nanoTime() / 1_000_000_000.0);
+    }
+
+    public double getClick() {
+        double now = System.nanoTime() / 1_000_000_000.0;
+        int count = 0;
+
+        for (double t : clicks) {
+            if ((now - t) <= 1.0) {
+                count++;
+            }
+        }
+
+        return Math.round((count) * 10.0) / 10.0;
+    }
+
     public void needDisplayTitleInfo()
     {
         if (!logged) return;
@@ -548,12 +565,12 @@ public class EnginePlayer extends Player {
 
         var settings = getPlayerDataInfo().getSettings();
         boolean needFPS = (boolean) settings.getOrDefault("fps", "enabled", true) && fps > 0;
-        boolean needCPS = (boolean) settings.getOrDefault("cps", "enabled", false);
-        boolean needPing = (boolean) settings.getOrDefault("ping", "enabled", false);
+        boolean needCPS = (boolean) settings.getOrDefault("cps", "enabled", true);
+        boolean needPing = (boolean) settings.getOrDefault("ping", "enabled", true);
 
-        if (needFPS) title.append(fps);
-        if (needCPS) subtitle.append(cps).append('\n');
-        if (needPing) subtitle.append(getPing()).append('\n');
+        if (needFPS) title.append(processTranslation(TranslationKeys.PLAYER_SETTINGS_FPS, fps));
+        if (needCPS) subtitle.append(processTranslation(TranslationKeys.PLAYER_SETTINGS_CPS, getClick())).append('\n');
+        if (needPing) subtitle.append(processTranslation(TranslationKeys.PLAYER_SETTINGS_PING, getPing())).append('\n');
 
         if (title.isEmpty() && subtitle.isEmpty()) return;
         System.out.println("[" + title + "]" + "-" + subtitle);
