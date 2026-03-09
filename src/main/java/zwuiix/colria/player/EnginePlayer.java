@@ -77,7 +77,6 @@ public class EnginePlayer extends Player {
     @Setter
     private boolean inAdminMode = false;
 
-    private boolean needDisplayTitleInfo = false;
     private int tickSinceSendTitle = 0;
 
     public int cps = 0;
@@ -555,6 +554,8 @@ public class EnginePlayer extends Player {
         if (needFPS) title.append(fps);
         if (needCPS) subtitle.append(cps).append('\n');
         if (needPing) subtitle.append(getPing()).append('\n');
+
+        System.out.println(title);
 
         if (title.isEmpty() && subtitle.isEmpty()) return;
         super.sendTitle("[" + title + "]", subtitle.toString(), 0, 0, 0);
