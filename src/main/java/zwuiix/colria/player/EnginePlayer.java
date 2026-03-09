@@ -457,6 +457,8 @@ public class EnginePlayer extends Player {
                 }
             }
 
+            sendPopup("[TPS: " + getServer().getTicksPerSecond() + "]");
+
             if ((currentTick % 6_000) == 0) {
                 resync();
             }
