@@ -63,7 +63,7 @@ public class EventListener implements Listener {
             player.sendTitle(
                     player.processTranslation(TranslationKeys.PLAYER_WELCOME_TITLE_SUPPORTER),
                     player.processTranslation(TranslationKeys.PLAYER_WELCOME_SUBTITLE_SUPPORTER),
-                    10, 70, 20
+                    10, 125, 20
             );
         }
 
@@ -144,6 +144,12 @@ public class EventListener implements Listener {
 
         if (pk instanceof EmotePacket || pk instanceof LevelSoundEventPacket) {
             ev.setCancelled();
+            return;
+        }
+
+        if (pk instanceof ServerboundDiagnosticsPacket diagnosticsPacket) {
+            p.fps = (int) diagnosticsPacket.avgFps;
+            p.needDisplayTitleInfo();
             return;
         }
 

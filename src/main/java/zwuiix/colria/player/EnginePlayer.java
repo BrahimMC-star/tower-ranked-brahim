@@ -77,6 +77,12 @@ public class EnginePlayer extends Player {
     @Setter
     private boolean inAdminMode = false;
 
+    private boolean needDisplayTitleInfo = false;
+    private int tickSinceSendTitle = 0;
+
+    public int cps = 0;
+    public int fps = 0;
+
     public EnginePlayer(SourceInterface interfaz, Long clientID, InetSocketAddress socketAddress) {
         super(interfaz, clientID, socketAddress);
     }
@@ -447,6 +453,7 @@ public class EnginePlayer extends Player {
     public boolean onUpdate(int currentTick) {
         boolean updated = super.onUpdate(currentTick);
 
+        tickSinceSendTitle--;
         if (playerDataInfo != null && updated) {
             if (!tickers.isEmpty()) {
                 var snapshot = new java.util.ArrayList<>(tickers.values());
@@ -456,14 +463,6 @@ public class EnginePlayer extends Player {
                     }
                 }
             }
-
-            if (currentTick % 10 == 0) {
-                sendTitle("que du love");
-            } else if (currentTick % 10 == 5) {
-                sendTitle("§s§e§t§t§i§n§g§s§r[TPS: " + getServer().getTicksPerSecond() + "]", "[CPS: 20]");
-            }
-
-            //sendTitle("[TPS: " + getServer().getTicksPerSecond() + "]");
 
             if ((currentTick % 6_000) == 0) {
                 resync();
@@ -539,4 +538,31 @@ public class EnginePlayer extends Player {
     }
 
     private record Ticker(int interval, Consumer<Integer> ticker) {}
+
+    public void needDisplayTitleInfo()
+    {
+        if (!logged) return;
+        if (tickSinceSendTitle > 0) return;
+
+        StringBuilder title = new StringBuilder();
+        StringBuilder subtitle = new StringBuilder();
+
+        var settings = getPlayerDataInfo().getSettings();
+        boolean needFPS = (boolean) settings.getOrDefault("fps", "enabled", true) && fps > 0;
+        boolean needCPS = (boolean) settings.getOrDefault("cps", "enabled", false);
+        boolean needPing = (boolean) settings.getOrDefault("ping", "enabled", false);
+
+        if (needFPS) title.append(fps);
+        if (needCPS) subtitle.append(cps).append('\n');
+        if (needPing) subtitle.append(getPing()).append('\n');
+
+        if (title.isEmpty() && subtitle.isEmpty()) return;
+        super.sendTitle("[" + title + "]", subtitle.toString(), 0, 0, 0);
+    }
+
+    @Override
+    public void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+        super.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
+        tickSinceSendTitle = (fadeIn + stay + fadeOut) + 20;
+    }
 }
