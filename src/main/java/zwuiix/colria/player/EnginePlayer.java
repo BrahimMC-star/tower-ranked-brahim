@@ -457,7 +457,13 @@ public class EnginePlayer extends Player {
                 }
             }
 
-            sendTitle("§s§e§t§t§i§n§g§s§r[TPS: " + getServer().getTicksPerSecond() + "]");
+            if (currentTick % 10 == 0) {
+                sendTitle("que du love");
+            } else if (currentTick % 10 == 5) {
+                sendTitle("§s§e§t§t§i§n§g§s§r[TPS: " + getServer().getTicksPerSecond() + "]");
+            }
+
+            //sendTitle("[TPS: " + getServer().getTicksPerSecond() + "]");
 
             if ((currentTick % 6_000) == 0) {
                 resync();
