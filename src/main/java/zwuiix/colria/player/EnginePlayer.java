@@ -460,7 +460,7 @@ public class EnginePlayer extends Player {
             if (currentTick % 10 == 0) {
                 sendTitle("que du love");
             } else if (currentTick % 10 == 5) {
-                sendTitle("§s§e§t§t§i§n§g§s§r[TPS: " + getServer().getTicksPerSecond() + "]");
+                sendTitle("§s§e§t§t§i§n§g§s§r[TPS: " + getServer().getTicksPerSecond() + "]", "[CPS: 20]");
             }
 
             //sendTitle("[TPS: " + getServer().getTicksPerSecond() + "]");
