@@ -555,10 +555,9 @@ public class EnginePlayer extends Player {
         if (needCPS) subtitle.append(cps).append('\n');
         if (needPing) subtitle.append(getPing()).append('\n');
 
-        System.out.println(title);
-
         if (title.isEmpty() && subtitle.isEmpty()) return;
-        super.sendTitle("[" + title + "]", subtitle.toString(), 0, 0, 0);
+        System.out.println("[" + title + "]" + "-" + subtitle);
+        super.sendTitle("§s§e§t§t§i§n§g§s§r[" + title + "]", subtitle.toString(), 0, 0, 0);
     }
 
     @Override
