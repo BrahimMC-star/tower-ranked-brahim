@@ -557,7 +557,7 @@ public class EnginePlayer extends Player {
 
         if (title.isEmpty() && subtitle.isEmpty()) return;
         System.out.println("[" + title + "]" + "-" + subtitle);
-        super.sendTitle("§s§e§t§t§i§n§g§s§r[" + title + "]", subtitle.toString(), 0, 0, 0);
+        super.sendTitle("§s§e§t§t§i§n§g§s§r[" + title + "]", subtitle.toString(), 0, 40, 0);
     }
 
     @Override
