@@ -355,9 +355,13 @@ public class EnginePlayer extends Player {
     protected void doFirstSpawn() {
         super.doFirstSpawn();
         scoreboard = new PlayerScoreboard(this);
-        scoreboard.addViewer(this, DisplaySlot.SIDEBAR);
+        if ((Boolean) playerDataInfo.getSettings().getOrDefault("scoreboard", "enabled", true)) {
+            scoreboard.addViewer(this, DisplaySlot.SIDEBAR);
+        }
 
         addTicker("scoreboard", i -> {
+            if(!logged) return;
+            if(!(Boolean) playerDataInfo.getSettings().getOrDefault("scoreboard", "enabled", true)) return;
             if(!isInLobby()) return; // Only update scoreboard in lobby
             if(i % 20 != 0) return; // Update every second
 

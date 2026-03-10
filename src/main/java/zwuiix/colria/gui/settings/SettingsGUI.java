@@ -2,16 +2,17 @@ package zwuiix.colria.gui.settings;
 
 import cn.nukkit.block.BlockBeacon;
 import cn.nukkit.block.BlockCopperBars;
-import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemPaper;
-import cn.nukkit.item.ItemRail;
-import cn.nukkit.item.ItemSwordDiamond;
+import cn.nukkit.block.BlockHangingSign;
+import cn.nukkit.block.BlockOakHangingSign;
+import cn.nukkit.item.*;
+import cn.nukkit.network.protocol.types.DisplaySlot;
 import cn.nukkit.utils.TextFormat;
 import zwuiix.colria.EngineInfo;
 import zwuiix.colria.inventory.VirtualInventory;
 import zwuiix.colria.inventory.impl.EntityInventory;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
+import zwuiix.colria.util.BossBar;
 import zwuiix.colria.util.Glyph;
 import zwuiix.colria.util.Window;
 
@@ -28,7 +29,11 @@ public class SettingsGUI {
 
     public SettingsGUI(EnginePlayer player) {
         this.player = player;
-        this.inventory = new EntityInventory(9 * 4, player.processTranslation(TranslationKeys.PLAYER_SETTINGS_GUI_TITLE));
+        this.inventory = new EntityInventory(9 * 3, player.processTranslation(TranslationKeys.PLAYER_SETTINGS_GUI_TITLE));
+
+        // Scoreboard
+        //Boss bar
+        //Enable Join/Quit Messages
     }
 
     public void send() {
@@ -90,6 +95,26 @@ public class SettingsGUI {
                         t(TranslationKeys.PLAYER_GAME_CONFIGURATIONS_GUI_SELECT)
                 );
 
+        var scoreboard = new ItemArmorStand()
+                .setCustomName(t(TranslationKeys.PLAYER_SETTINGS_GUI_SCOREBOARD_NAME))
+                .setLore(
+                        t(TranslationKeys.PLAYER_SETTINGS_GUI_SCOREBOARD_LORE),
+                        Glyph.hbarThick(EngineInfo.COLOR, 1),
+                        makeLore((Boolean) settings.getOrDefault("scoreboard", "enabled", true), on, off),
+                        Glyph.hbarThick(EngineInfo.COLOR, 1),
+                        t(TranslationKeys.PLAYER_GAME_CONFIGURATIONS_GUI_SELECT)
+                );
+
+        var bossBar = new BlockOakHangingSign().toItem()
+                .setCustomName(t(TranslationKeys.PLAYER_SETTINGS_GUI_BOSS_BAR_NAME))
+                .setLore(
+                        t(TranslationKeys.PLAYER_SETTINGS_GUI_BOSS_BAR_LORE),
+                        Glyph.hbarThick(EngineInfo.COLOR, 1),
+                        makeLore((Boolean) settings.getOrDefault("boss_bar", "enabled", true), on, off),
+                        Glyph.hbarThick(EngineInfo.COLOR, 1),
+                        t(TranslationKeys.PLAYER_GAME_CONFIGURATIONS_GUI_SELECT)
+                );
+
         addToggle(fps, () -> (Boolean) playerData.getSettings().getOrDefault("fps", "enabled", false), v -> {
             settings.set("fps", "enabled", v);
             playerData.setSettings(settings);
@@ -107,6 +132,20 @@ public class SettingsGUI {
         });
         addToggle(privateMessage, () -> (Boolean) playerData.getSettings().getOrDefault("private_message", "enabled", true), v -> {
             settings.set("private_message", "enabled", v);
+            playerData.setSettings(settings);
+            syncContents();
+        });
+        addToggle(scoreboard, () -> (Boolean) playerData.getSettings().getOrDefault("scoreboard", "enabled", true), v -> {
+            settings.set("scoreboard", "enabled", v);
+            playerData.setSettings(settings);
+            syncContents();
+
+            if (v) {
+                player.scoreboard.addViewer(player, DisplaySlot.SIDEBAR);
+            } else player.scoreboard.removeViewer(player, DisplaySlot.SIDEBAR);
+        });
+        addToggle(bossBar, () -> (Boolean) playerData.getSettings().getOrDefault("boss_bar", "enabled", true), v -> {
+            settings.set("boss_bar", "enabled", v);
             playerData.setSettings(settings);
             syncContents();
         });

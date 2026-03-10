@@ -197,7 +197,6 @@ public class BoosterManager {
             for (Player p : Server.getInstance().getOnlinePlayers().values()) {
                 EnginePlayer player = (EnginePlayer) p;
                 player.sendMessage(TranslationKeys.BOOSTER_START, next.owner(), next.type());
-
                 player.addSound(Sound.MOB_ENDERDRAGON_DEATH, 0.5f, 1.0f);
                 this.bossBar.addViewer(player);
             }

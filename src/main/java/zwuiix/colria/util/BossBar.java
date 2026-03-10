@@ -47,8 +47,19 @@ public class BossBar {
     }
 
     public void addViewer(EnginePlayer player) {
+        addViewer(player, false);
+    }
+
+    public void addViewer(EnginePlayer player, boolean force) {
         if(viewers.containsKey(player.getUniqueId()))
             return;
+
+        if (!force) {
+            var settings = player.getPlayerDataInfo().getSettings();
+            if (!(Boolean) settings.getOrDefault("boss_bar", "enabled", true)) {
+                return;
+            }
+        }
 
         viewers.put(player.getUniqueId(), player);
         show(player);
