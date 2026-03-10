@@ -2,7 +2,12 @@ package zwuiix.colria.util;
 
 import cn.nukkit.bossbar.BossBarColor;
 import cn.nukkit.entity.Attribute;
+import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.data.EntityMetadata;
+import cn.nukkit.network.protocol.AddEntityPacket;
 import cn.nukkit.network.protocol.BossEventPacket;
+import cn.nukkit.network.protocol.RemoveEntityPacket;
+import cn.nukkit.network.protocol.types.EntityLink;
 import lombok.Getter;
 import zwuiix.colria.player.EnginePlayer;
 
@@ -18,11 +23,14 @@ public class BossBar {
     private BossBarColor color;
     private final Attribute attribute = Attribute.getAttribute(Attribute.MAX_HEALTH);
 
+    private long eId;
+
     public BossBar() {
         this.text = "";
         this.color = BossBarColor.PURPLE;
         this.attribute.setMaxValue(100.0f);
         this.attribute.setValue(100.0f);
+        this.eId = Entity.entityCount++;
     }
 
     public BossBar updateColor(BossBarColor color) {
@@ -76,6 +84,13 @@ public class BossBar {
         syncText(player, this.text);
     }
 
+    public void removeViewers() {
+        for (EnginePlayer player : viewers.values()) {
+            hide(player);
+        }
+        viewers.clear();
+    }
+
     public void removeViewer(EnginePlayer player) {
         if(!viewers.containsKey(player.getUniqueId()))
             return;
@@ -92,7 +107,7 @@ public class BossBar {
 
     public void syncPercentage(EnginePlayer player, float perc) {
         BossEventPacket pk = new BossEventPacket();
-        pk.bossEid = player.getId();
+        pk.bossEid = eId;
         pk.type = BossEventPacket.TYPE_HEALTH_PERCENT;
         pk.healthPercent = perc;
         player.dataPacket(pk);
@@ -100,7 +115,7 @@ public class BossBar {
 
     public void syncText(EnginePlayer player, String text) {
         BossEventPacket pk = new BossEventPacket();
-        pk.bossEid = player.getId();
+        pk.bossEid = eId;
         pk.type = BossEventPacket.TYPE_TITLE;
         pk.title = text;
         pk.filteredTitle = text;
@@ -115,7 +130,7 @@ public class BossBar {
 
     public void syncColor(EnginePlayer player, BossBarColor color) {
         BossEventPacket pk = new BossEventPacket();
-        pk.bossEid = player.getId();
+        pk.bossEid = eId;
         pk.type = BossEventPacket.TYPE_TEXTURE;
         pk.color = color.ordinal();
         player.dataPacket(pk);
@@ -128,8 +143,32 @@ public class BossBar {
     }
 
     public void show(EnginePlayer player) {
+        EntityMetadata metadata = new EntityMetadata();
+        metadata.putBoolean(Entity.DATA_FLAG_INVISIBLE, true);
+        metadata.putFloat(Entity.DATA_BOUNDING_BOX_WIDTH, 0.0f);
+        metadata.putFloat(Entity.DATA_BOUNDING_BOX_HEIGHT, 0.0f);
+        metadata.putFloat(Entity.DATA_SCALE, 0.0f);
+
+        var addEntityPacket = new AddEntityPacket();
+        addEntityPacket.entityUniqueId = eId;
+        addEntityPacket.entityRuntimeId = eId;
+        addEntityPacket.id = "minecraft:chicken";
+        addEntityPacket.x = (float) player.x;
+        addEntityPacket.y = (float) player.y;
+        addEntityPacket.z = (float) player.z;
+        addEntityPacket.speedX = 0;
+        addEntityPacket.speedY = 0;
+        addEntityPacket.speedZ = 0;
+        addEntityPacket.yaw = 0;
+        addEntityPacket.pitch = 0;
+        addEntityPacket.headYaw = 0;
+        addEntityPacket.bodyYaw = 0;
+        addEntityPacket.metadata = metadata;
+        addEntityPacket.links = new EntityLink[]{new EntityLink(player.getId(), eId, EntityLink.TYPE_RIDER, true, true, 0)};
+        player.dataPacket(addEntityPacket);
+
         BossEventPacket pk = new BossEventPacket();
-        pk.bossEid = player.getId();
+        pk.bossEid = eId;
         pk.type = BossEventPacket.TYPE_SHOW;
         pk.title = this.text;
         pk.healthPercent = this.getPercentage();
@@ -147,8 +186,12 @@ public class BossBar {
 
     public void hide(EnginePlayer player) {
         BossEventPacket pk = new BossEventPacket();
-        pk.bossEid = player.getId();
+        pk.bossEid = eId;
         pk.type = BossEventPacket.TYPE_HIDE;
         player.dataPacket(pk);
+
+        var removeEntityPacket = new RemoveEntityPacket();
+        removeEntityPacket.eid = eId;
+        player.dataPacket(removeEntityPacket);
     }
 }

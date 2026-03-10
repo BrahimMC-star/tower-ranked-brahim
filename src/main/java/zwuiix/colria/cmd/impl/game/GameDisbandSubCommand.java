@@ -37,6 +37,7 @@ public class GameDisbandSubCommand extends ColriaPlayerSubCommand {
             return;
         }
 
+        player.getCooldown("game_create").clear();
         game.stop();
     }
 }

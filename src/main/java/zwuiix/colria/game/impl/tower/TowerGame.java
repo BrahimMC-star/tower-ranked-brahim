@@ -1,9 +1,6 @@
 package zwuiix.colria.game.impl.tower;
 
-import cn.nukkit.block.Block;
-import cn.nukkit.block.BlockConcrete;
-import cn.nukkit.block.BlockGlassStained;
-import cn.nukkit.block.BlockWool;
+import cn.nukkit.block.*;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemAppleGold;
 import cn.nukkit.level.Location;
@@ -23,10 +20,7 @@ import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.player.PlayerDataInfo;
 import zwuiix.colria.shape.Renderer;
 import zwuiix.colria.translator.TranslationKeys;
-import zwuiix.colria.util.DB;
-import zwuiix.colria.util.Fade;
-import zwuiix.colria.util.Glyph;
-import zwuiix.colria.util.Rotation;
+import zwuiix.colria.util.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -34,6 +28,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TowerGame extends TeamGame {
@@ -361,25 +356,41 @@ public class TowerGame extends TeamGame {
         teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockConcrete(3)), new BlockConcrete(metaA));
         teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockGlassStained(3)), new BlockGlassStained(metaA));
         teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockWool(3)), new BlockWool(metaA));
+        teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockTerracotta(3)), new BlockTerracotta(metaA));
 
         Map<TowerMapProcessor.BlockKey, Block> teamBBlocks = new HashMap<>();
         teamBBlocks.put(TowerMapProcessor.BlockKey.of(new BlockConcrete(14)), new BlockConcrete(metaB));
         teamBBlocks.put(TowerMapProcessor.BlockKey.of(new BlockGlassStained(14)), new BlockGlassStained(metaB));
         teamBBlocks.put(TowerMapProcessor.BlockKey.of(new BlockWool(14)), new BlockWool(metaB));
+        teamBBlocks.put(TowerMapProcessor.BlockKey.of(new BlockTerracotta(14)), new BlockTerracotta(metaB));
 
         var spawnA = getSpawnPoint().first();
         var spawnB = getSpawnPoint().second();
+
         AtomicInteger perc = new AtomicInteger();
+
+        var bossBar = new BossBar();
+        bossBar.setPercentage(0.f);
+
+        for (EnginePlayer player : getSpectators().values()) {
+            bossBar.addViewer(player);
+            bossBar.syncText(player, player.processTranslation(TranslationKeys.PLAYER_GAME_TOWER_MAP_PROCESSING));
+        }
+
         var processor = new TowerMapProcessor(
                 256, getGameLevel(), spawnA, spawnB,
                 teamABlocks, teamBBlocks,
                 percent -> {
-                    if(percent > perc.get() && percent % 10 == 0) {
-                        perc.set(percent);
-                        broadcast(TranslationKeys.PLAYER_GAME_TOWER_MAP_PROCESSING, percent);
-                    }
+                    boolean valid = percent > perc.get();
+                    if (!valid) return;
+
+                    perc.set(percent);
+                    bossBar.setPercentage(percent / 100.f);
                 },
-                runnable
+                () -> {
+                    bossBar.removeViewers();
+                    runnable.run();
+                }
         );
         processor.run();
     }

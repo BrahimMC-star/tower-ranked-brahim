@@ -76,7 +76,6 @@ public class BoosterManager {
                 if (current.end() > now) {
                     this.current = current;
                     this.bossBar = new BossBar();
-                    this.bossBar.updateColor(BossBarColor.BLUE);
                 }
             }
 
@@ -140,9 +139,6 @@ public class BoosterManager {
                 for (EnginePlayer viewer : this.bossBar.getViewers().values()) {
                     this.bossBar.show(viewer);
                     this.bossBar.syncText(viewer, viewer.processTranslation(TranslationKeys.BOOSTER_TITLE, owner, (long)multiplier, timeStr));
-                    BossBarColor[] colors = BossBarColor.values();
-                    BossBarColor randomColor = colors[(int) (Math.random() * colors.length)];
-                    this.bossBar.updateColor(randomColor);
                 }
                 this.bossBar.setPercentage((float) percent);
             } else {
@@ -193,7 +189,6 @@ public class BoosterManager {
             this.current = new Booster.Current(next, now, end);
 
             this.bossBar = new BossBar();
-            this.bossBar.updateColor(BossBarColor.BLUE);
             for (Player p : Server.getInstance().getOnlinePlayers().values()) {
                 EnginePlayer player = (EnginePlayer) p;
                 player.sendMessage(TranslationKeys.BOOSTER_START, next.owner(), next.type());

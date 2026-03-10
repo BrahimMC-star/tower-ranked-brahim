@@ -471,25 +471,15 @@ public class EnginePlayer extends Player {
                 }
             }
 
-            for (PlayerBossBar bossBar : bossBars) {
+            Iterator<PlayerBossBar> it = bossBars.iterator();
+            while (it.hasNext()) {
+                PlayerBossBar bossBar = it.next();
+
                 bossBar.tick();
                 if (bossBar.getRemainingTime() <= 0) {
-                    bossBars.remove(bossBar);
+                    bossBar.removeViewer(this);
+                    it.remove();
                 }
-            }
-
-            if ((currentTick % 600) == 0) {
-                playBossBar("§bN'oubliez pas de rejoindre le discord", 20 * 5).onTick((bossBar) -> {
-                    BossBarColor[] colors = BossBarColor.values();
-                    BossBarColor randomColor = colors[(int) (Math.random() * colors.length)];
-                    bossBar.updateColor(randomColor);
-                });
-            }
-
-            if ((currentTick % 1200) == 0) {
-                playBossBar("§7Rejoignez-nous sur les réseaux sociaux !", 20 * 8).onTick((bossBar) -> {
-                    bossBar.updateColor(BossBarColor.WHITE);
-                });
             }
 
             if ((currentTick % 6_000) == 0) {
@@ -612,6 +602,9 @@ public class EnginePlayer extends Player {
     }
 
     public PlayerBossBar playBossBar(String title, int duration) {
+        if (title.isEmpty()) throw new IllegalArgumentException();
+        if (duration <= 0) throw new IllegalArgumentException();
+
         PlayerBossBar bossBar = new PlayerBossBar(duration);
         bossBar.updateText(title);
         bossBar.addViewer(this);

@@ -23,6 +23,7 @@ import zwuiix.colria.permission.PermissionRegistry;
 import zwuiix.colria.player.cosmetic.CosmeticRegistry;
 import zwuiix.colria.player.particle.ParticleRegistry;
 import zwuiix.colria.rank.RankRegistry;
+import zwuiix.colria.task.BroadcastTask;
 import zwuiix.colria.translator.LanguageRegistry;
 import zwuiix.colria.util.Fs;
 
@@ -50,7 +51,6 @@ public class Loader extends PluginBase {
         BlockRegistry blockRegistry = BlockRegistry.getInstance();
         blockRegistry.invoke(this);
         getLogger().info(TextFormat.colorize("&bLoaded " + blockRegistry.getBlocks().size() + " custom blocks."));
-
     }
 
     @Override
@@ -112,6 +112,8 @@ public class Loader extends PluginBase {
         getServer().getPluginManager().registerEvents(new EventListener(), this);
         getServer().getPluginManager().registerEvents(new WorldListener(), this);
         getServer().getPluginManager().registerEvents(new GameListener(), this);
+
+        getServer().getScheduler().scheduleRepeatingTask(new BroadcastTask(), 20 * 60);
 
         DiscordAPI discordAPI = new DiscordAPI(DiscordToken.TOKEN);
         discordAPI.connect();
