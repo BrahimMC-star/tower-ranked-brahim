@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class BossBar {
     @Getter
-    private final String text;
+    private String text;
     private final HashMap<UUID, EnginePlayer> viewers = new HashMap<>();
     @Getter
     private BossBarColor color;
@@ -28,6 +28,13 @@ public class BossBar {
     public void updateColor(BossBarColor color) {
         this.color = color;
         syncColor();
+    }
+
+    public void updateText(String text) {
+        this.text = text;
+        for (EnginePlayer player : viewers.values()) {
+            syncText(player, text);
+        }
     }
 
     public void setPercentage(float percentage) {

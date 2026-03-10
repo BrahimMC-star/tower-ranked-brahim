@@ -2,6 +2,7 @@ package zwuiix.colria.player;
 
 import cn.nukkit.AdventureSettings;
 import cn.nukkit.Player;
+import cn.nukkit.bossbar.BossBarColor;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.level.Sound;
@@ -35,6 +36,7 @@ import zwuiix.colria.rank.RankRegistry;
 import zwuiix.colria.translator.Language;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.translator.Translator;
+import zwuiix.colria.util.BossBar;
 import zwuiix.colria.util.KeyInput;
 
 import javax.annotation.Nullable;
@@ -66,6 +68,8 @@ public class EnginePlayer extends Player {
     private final ArrayList<Pet> pets = new ArrayList<>();
     @Getter
     private final LinkedHashMap<String, Cooldown> cooldowns = new LinkedHashMap<>();
+
+    private final ArrayList<PlayerBossBar> bossBars = new ArrayList<>();
 
     @Setter
     @Getter
@@ -467,6 +471,21 @@ public class EnginePlayer extends Player {
                 }
             }
 
+            for (PlayerBossBar bossBar : bossBars) {
+                bossBar.tick();
+                if (bossBar.getRemainingTime() <= 0) {
+                    bossBars.remove(bossBar);
+                }
+            }
+
+            if ((currentTick % 600) == 0) {
+                playBossBar("§bN'oubliez pas de rejoindre le discord", 20 * 5).onTick((bossBar) -> {
+                    BossBarColor[] colors = BossBarColor.values();
+                    BossBarColor randomColor = colors[(int) (Math.random() * colors.length)];
+                    bossBar.updateColor(randomColor);
+                });
+            }
+
             if ((currentTick % 6_000) == 0) {
                 resync();
             }
@@ -584,5 +603,13 @@ public class EnginePlayer extends Player {
     public void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
         super.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
         tickSinceSendTitle = (fadeIn + stay + fadeOut) + 20;
+    }
+
+    public PlayerBossBar playBossBar(String title, int duration) {
+        PlayerBossBar bossBar = new PlayerBossBar(duration);
+        bossBar.updateText(title);
+        bossBar.addViewer(this);
+        bossBars.add(bossBar);
+        return bossBar;
     }
 }
