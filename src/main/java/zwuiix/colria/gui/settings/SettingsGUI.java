@@ -1,8 +1,11 @@
 package zwuiix.colria.gui.settings;
 
+import cn.nukkit.block.BlockBeacon;
 import cn.nukkit.block.BlockCopperBars;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemPaper;
+import cn.nukkit.item.ItemRail;
+import cn.nukkit.item.ItemSwordDiamond;
 import cn.nukkit.utils.TextFormat;
 import zwuiix.colria.EngineInfo;
 import zwuiix.colria.inventory.VirtualInventory;
@@ -47,6 +50,36 @@ public class SettingsGUI {
         var playerData = player.getPlayerDataInfo();
         var settings = playerData.getSettings();
 
+        var fps = new BlockBeacon().toItem()
+                .setCustomName(t(TranslationKeys.PLAYER_SETTINGS_GUI_FPS_NAME))
+                .setLore(
+                        t(TranslationKeys.PLAYER_SETTINGS_GUI_FPS_LORE),
+                        Glyph.hbarThick(EngineInfo.COLOR, 1),
+                        makeLore((Boolean) settings.getOrDefault("fps", "enabled", false), on, off),
+                        Glyph.hbarThick(EngineInfo.COLOR, 1),
+                        t(TranslationKeys.PLAYER_GAME_CONFIGURATIONS_GUI_SELECT)
+                );
+
+        var cps = new ItemSwordDiamond()
+                .setCustomName(t(TranslationKeys.PLAYER_SETTINGS_GUI_CPS_NAME))
+                .setLore(
+                        t(TranslationKeys.PLAYER_SETTINGS_GUI_CPS_LORE),
+                        Glyph.hbarThick(EngineInfo.COLOR, 1),
+                        makeLore((Boolean) settings.getOrDefault("cps", "enabled", false), on, off),
+                        Glyph.hbarThick(EngineInfo.COLOR, 1),
+                        t(TranslationKeys.PLAYER_GAME_CONFIGURATIONS_GUI_SELECT)
+                );
+
+        var ping = new ItemRail()
+                .setCustomName(t(TranslationKeys.PLAYER_SETTINGS_GUI_PING_NAME))
+                .setLore(
+                        t(TranslationKeys.PLAYER_SETTINGS_GUI_PING_LORE),
+                        Glyph.hbarThick(EngineInfo.COLOR, 1),
+                        makeLore((Boolean) settings.getOrDefault("ping", "enabled", false), on, off),
+                        Glyph.hbarThick(EngineInfo.COLOR, 1),
+                        t(TranslationKeys.PLAYER_GAME_CONFIGURATIONS_GUI_SELECT)
+                );
+
         var privateMessage = new ItemPaper()
                 .setCustomName(t(TranslationKeys.PLAYER_SETTINGS_GUI_PRIVATE_MESSAGES_NAME))
                 .setLore(
@@ -57,6 +90,21 @@ public class SettingsGUI {
                         t(TranslationKeys.PLAYER_GAME_CONFIGURATIONS_GUI_SELECT)
                 );
 
+        addToggle(fps, () -> (Boolean) playerData.getSettings().getOrDefault("fps", "enabled", false), v -> {
+            settings.set("fps", "enabled", v);
+            playerData.setSettings(settings);
+            syncContents();
+        });
+        addToggle(cps, () -> (Boolean) playerData.getSettings().getOrDefault("cps", "enabled", false), v -> {
+            settings.set("cps", "enabled", v);
+            playerData.setSettings(settings);
+            syncContents();
+        });
+        addToggle(ping, () -> (Boolean) playerData.getSettings().getOrDefault("ping", "enabled", false), v -> {
+            settings.set("ping", "enabled", v);
+            playerData.setSettings(settings);
+            syncContents();
+        });
         addToggle(privateMessage, () -> (Boolean) playerData.getSettings().getOrDefault("private_message", "enabled", true), v -> {
             settings.set("private_message", "enabled", v);
             playerData.setSettings(settings);

@@ -564,9 +564,9 @@ public class EnginePlayer extends Player {
         StringBuilder subtitle = new StringBuilder();
 
         var settings = getPlayerDataInfo().getSettings();
-        boolean needFPS = (boolean) settings.getOrDefault("fps", "enabled", true) && fps > 0;
-        boolean needCPS = (boolean) settings.getOrDefault("cps", "enabled", true);
-        boolean needPing = (boolean) settings.getOrDefault("ping", "enabled", true);
+        boolean needFPS = (boolean) settings.getOrDefault("fps", "enabled", false) && fps > 0;
+        boolean needCPS = (boolean) settings.getOrDefault("cps", "enabled", false);
+        boolean needPing = (boolean) settings.getOrDefault("ping", "enabled", false);
 
         if (needFPS) title.append(processTranslation(TranslationKeys.PLAYER_SETTINGS_FPS, fps));
         if (needCPS) subtitle.append(processTranslation(TranslationKeys.PLAYER_SETTINGS_CPS, getClick())).append('\n');
