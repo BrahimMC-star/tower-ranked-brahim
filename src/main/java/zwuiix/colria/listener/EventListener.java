@@ -48,6 +48,7 @@ public class EventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent ev) {
         EnginePlayer player = (EnginePlayer) ev.getPlayer();
 
+        for (int i = 0; i < 512; i++) player.sendMessage("colria:clearchat");
         player.sendMessage(
                 Glyph.hbarThick(EngineInfo.COLOR, 1) + "\n" +
                 player.processTranslation(TranslationKeys.PLAYER_WELCOME,
