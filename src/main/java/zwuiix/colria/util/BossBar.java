@@ -25,9 +25,10 @@ public class BossBar {
         this.attribute.setValue(100.0f);
     }
 
-    public void updateColor(BossBarColor color) {
+    public BossBar updateColor(BossBarColor color) {
         this.color = color;
         syncColor();
+        return this;
     }
 
     public void updateText(String text) {

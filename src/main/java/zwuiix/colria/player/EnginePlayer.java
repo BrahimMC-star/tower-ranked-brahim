@@ -486,6 +486,12 @@ public class EnginePlayer extends Player {
                 });
             }
 
+            if ((currentTick % 1200) == 0) {
+                playBossBar("§7Rejoignez-nous sur les réseaux sociaux !", 20 * 8).onTick((bossBar) -> {
+                    bossBar.updateColor(BossBarColor.WHITE);
+                });
+            }
+
             if ((currentTick % 6_000) == 0) {
                 resync();
             }
