@@ -225,9 +225,11 @@ public class TowerGame extends TeamGame {
                 TowerPlayer player = (TowerPlayer) value;
                 DB.getPlayerDataInfo(player.getUsername()).then(info -> {
                     long shards = player.getShardsReward();
+                    boolean win = player.getTeam().equals(winner);
+
                     if(equality) {
                         shards = (long) (shards * 0.8f);
-                    } else if(player.getTeam().equals(winner)) {
+                    } else if(win) {
                         shards = (long) (shards * 1.2f);
                     }
 
@@ -242,14 +244,14 @@ public class TowerGame extends TeamGame {
                     }
 
                     shards = Math.max(shards, 2);
+                    info.increaseShards(shards);
 
                     var p = player.getNukkitPlayer();
                     if(p != null) {
                         p.sendMessage(TranslationKeys.PLAYER_GAME_TOWER_SHARDS, shards);
                     }
 
-                    info.increaseShards(shards);
-                    syncStats(info, player);
+                    syncStats(info, player, win);
                 });
             }
 
@@ -319,9 +321,13 @@ public class TowerGame extends TeamGame {
         p.sendPosition(from, yaw, pitch, MovePlayerPacket.MODE_TELEPORT);
     }
 
-    private void syncStats(PlayerDataInfo info, TowerPlayer player) {
+    private void syncStats(PlayerDataInfo info, TowerPlayer player, boolean win) {
         var stats = info.getStats();
         var prefix = getName().toLowerCase() + (isRanked() ? "_ranked" : "");
+
+        stats.increment(prefix, "plays", 1);
+        if (win) stats.increment(prefix, "wins", 1);
+
         stats.increment(prefix, "kills", player.kills);
         stats.increment(prefix, "deaths", player.deaths);
         stats.increment(prefix, "assists", player.assists);
@@ -336,7 +342,7 @@ public class TowerGame extends TeamGame {
         stats.increment(prefix, "damage_received", player.receivedDamages);
         stats.increment(prefix, "points", player.points);
 
-        int bestStreaks = (int) stats.getOrDefault(getName().toLowerCase(), "best_kill_streaks", 0);
+        int bestStreaks = (int) stats.getOrDefault(prefix, "best_kill_streaks", 0);
         if(player.bestKillStreaks > bestStreaks) {
             stats.set(prefix, "best_kill_streaks", player.bestKillStreaks);
         }

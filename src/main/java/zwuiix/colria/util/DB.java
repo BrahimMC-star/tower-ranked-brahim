@@ -1,7 +1,9 @@
 package zwuiix.colria.util;
 
+import cn.nukkit.Server;
 import zwuiix.colria.database.DataBase;
 import zwuiix.colria.database.dao.PlayerDataDao;
+import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.player.PlayerDataInfo;
 
 public class DB {
@@ -26,6 +28,12 @@ public class DB {
 
     public static Promise<PlayerDataInfo> getPlayerDataInfo(String name) {
         var promise = new Promise<PlayerDataInfo>();
+
+        EnginePlayer onlineTarget = (EnginePlayer) Server.getInstance().getPlayerExact(name);
+        if(onlineTarget != null) {
+            promise.resolve(onlineTarget.getPlayerDataInfo());
+            return promise;
+        }
 
         DataBase.getInstance()
                 .query(PlayerDataDao.class, dao -> dao.get(name))

@@ -47,7 +47,7 @@ public class GameCreateSubCommand extends ColriaPlayerSubCommand {
 
     private void processCreation(EnginePlayer player, GameRegistry.GameMode mode) {
         var cd = player.getCooldown("game_create");
-        if(!cd.isExpired() && !player.inAdminMode()) {
+        if(!cd.isExpired() && !player.inAdminMode() && !player.hasPermission(Permission.GAME_BYPASS_COOLDOWN.toString())) {
             var secs = cd.getRemainingTime() / 1000;
             long minutes = secs / 60;
             long seconds = secs % 60;

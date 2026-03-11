@@ -1,8 +1,7 @@
-package zwuiix.colria.gui.settings;
+package zwuiix.colria.gui;
 
 import cn.nukkit.block.BlockBeacon;
 import cn.nukkit.block.BlockCopperBars;
-import cn.nukkit.block.BlockHangingSign;
 import cn.nukkit.block.BlockOakHangingSign;
 import cn.nukkit.item.*;
 import cn.nukkit.network.protocol.types.DisplaySlot;
@@ -12,7 +11,6 @@ import zwuiix.colria.inventory.VirtualInventory;
 import zwuiix.colria.inventory.impl.EntityInventory;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
-import zwuiix.colria.util.BossBar;
 import zwuiix.colria.util.Glyph;
 import zwuiix.colria.util.Window;
 

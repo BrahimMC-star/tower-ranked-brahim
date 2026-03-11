@@ -1,4 +1,4 @@
-package zwuiix.colria.gui.shop;
+package zwuiix.colria.gui;
 
 import cn.nukkit.block.BlockCopperBars;
 import cn.nukkit.item.Item;

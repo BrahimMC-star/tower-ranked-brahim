@@ -4,6 +4,7 @@ import cn.nukkit.utils.TextFormat;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Rank {
     private static final char COLOR = '§';
@@ -12,12 +13,12 @@ public class Rank {
     protected int id;
     protected String name;
     @Getter
-    protected ArrayList<String> permissions;
+    protected List<String> permissions;
     @Getter
     protected boolean visual;
     protected boolean _default;
 
-    Rank(int id, String name, ArrayList<String> permissions, boolean visual, boolean _default) {
+    Rank(int id, String name, List<String> permissions, boolean visual, boolean _default) {
         this.id = id;
 
         this.name = name;
@@ -26,7 +27,7 @@ public class Rank {
         this._default = _default;
     }
 
-    Rank(int id, String name, ArrayList<String> permissions, boolean visual) {
+    Rank(int id, String name, List<String> permissions, boolean visual) {
         this(id, name, permissions, visual, false);
     }
 

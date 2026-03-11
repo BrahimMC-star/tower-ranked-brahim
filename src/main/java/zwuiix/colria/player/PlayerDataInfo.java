@@ -207,29 +207,47 @@ public class PlayerDataInfo {
 
     public PlayerJsonData getStats() {
         JsonObject json = this.getJson();
-        if(json.has("stats")) {
-            return gson.fromJson(json.getAsJsonObject("stats"), PlayerJsonData.class);
+
+        if (json.has("stats") && json.get("stats").isJsonObject()) {
+            JsonObject statsObj = json.getAsJsonObject("stats");
+            LinkedHashMap<String, JsonObject> map = new LinkedHashMap<>();
+            for (String key : statsObj.keySet()) {
+                map.put(key, statsObj.getAsJsonObject(key));
+            }
+            return new PlayerJsonData(map);
         }
+
         return new PlayerJsonData(new LinkedHashMap<>());
     }
 
     public void setStats(PlayerJsonData stats) {
         JsonObject json = this.getJson();
-        json.add("stats", gson.toJsonTree(stats));
+        JsonObject statsObj = new JsonObject();
+        stats.getJson().forEach(statsObj::add);
+        json.add("stats", statsObj);
         this.setJson(json);
     }
 
     public PlayerJsonData getSettings() {
         JsonObject json = this.getJson();
-        if (json.has("settings")) {
-            return gson.fromJson(json.getAsJsonObject("settings"), PlayerJsonData.class);
+
+        if (json.has("settings") && json.get("settings").isJsonObject()) {
+            JsonObject settingsObj = json.getAsJsonObject("settings");
+            LinkedHashMap<String, JsonObject> map = new LinkedHashMap<>();
+            for (String key : settingsObj.keySet()) {
+                map.put(key, settingsObj.getAsJsonObject(key));
+            }
+            return new PlayerJsonData(map);
         }
+
         return new PlayerJsonData(new LinkedHashMap<>());
     }
 
     public void setSettings(PlayerJsonData settings) {
         JsonObject json = this.getJson();
-        json.add("settings", gson.toJsonTree(settings));
+        JsonObject settingsObj = new JsonObject();
+        settings.getJson().forEach(settingsObj::add);
+        json.add("settings", settingsObj);
         this.setJson(json);
     }
     

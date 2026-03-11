@@ -13,6 +13,7 @@ public enum Permission {
     LINK_MANAGE,
 
     GAME_HOSTER,
+    GAME_BYPASS_COOLDOWN,
     GAME_ADMIN,
 
     TELL_ANYWAY,

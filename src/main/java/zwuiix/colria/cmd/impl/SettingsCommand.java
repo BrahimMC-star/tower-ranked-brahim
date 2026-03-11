@@ -1,8 +1,7 @@
 package zwuiix.colria.cmd.impl;
 
-import cn.nukkit.Server;
 import zwuiix.colria.cmd.ColriaPlayerCommand;
-import zwuiix.colria.gui.settings.SettingsGUI;
+import zwuiix.colria.gui.SettingsGUI;
 import zwuiix.colria.player.EnginePlayer;
 
 import java.util.Map;

@@ -29,6 +29,12 @@ public class Cooldown{
         this.expiresAt = expiresAt;
     }
 
+    public Cooldown(int expiresAt) {
+        this.xuid = "";
+        this.action = "";
+        this.expiresAt = expiresAt;
+    }
+
     public long getRemainingTime() {
         long remaining = expiresAt - System.currentTimeMillis();
         return Math.max(0, remaining);
