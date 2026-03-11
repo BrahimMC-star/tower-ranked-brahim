@@ -4,6 +4,7 @@ import cn.nukkit.inventory.PlayerInventory;
 import cn.nukkit.item.Item;
 import zwuiix.colria.game.GameKit;
 import zwuiix.colria.game.impl.lobby.item.ItemGames;
+import zwuiix.colria.game.impl.lobby.item.ItemSettings;
 import zwuiix.colria.game.impl.lobby.item.ItemShop;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
@@ -32,5 +33,10 @@ public class LobbyKit extends GameKit {
         shards.setCustomName(player.processTranslation(TranslationKeys.PLAYER_LOBBY_SHOP));
         shards.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
         inv.setItem(1, shards);
+
+        Item settings = new ItemSettings();
+        settings.setCustomName(player.processTranslation(TranslationKeys.PLAYER_LOBBY_SETTINGS));
+        settings.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
+        inv.setItem(8, settings);
     }
 }

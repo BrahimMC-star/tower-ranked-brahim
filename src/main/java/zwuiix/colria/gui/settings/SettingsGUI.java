@@ -31,8 +31,6 @@ public class SettingsGUI {
         this.player = player;
         this.inventory = new EntityInventory(9 * 3, player.processTranslation(TranslationKeys.PLAYER_SETTINGS_GUI_TITLE));
 
-        // Scoreboard
-        //Boss bar
         //Enable Join/Quit Messages
     }
 
@@ -50,7 +48,7 @@ public class SettingsGUI {
         Window.fillVerticalLine(0, inventory, new BlockCopperBars().toItem().setCustomName("§r"));
         Window.fillHorizontalLine(0, inventory, new BlockCopperBars().toItem().setCustomName("§r"));
         Window.fillVerticalLine(8, inventory, new BlockCopperBars().toItem().setCustomName("§r"));
-        Window.fillHorizontalLine(27, inventory, new BlockCopperBars().toItem().setCustomName("§r"));
+        Window.fillHorizontalLine(inventory.getSize() - 9, inventory, new BlockCopperBars().toItem().setCustomName("§r"));
 
         var playerData = player.getPlayerDataInfo();
         var settings = playerData.getSettings();
@@ -118,16 +116,19 @@ public class SettingsGUI {
         addToggle(fps, () -> (Boolean) playerData.getSettings().getOrDefault("fps", "enabled", false), v -> {
             settings.set("fps", "enabled", v);
             playerData.setSettings(settings);
+            player.sendTitle("");
             syncContents();
         });
         addToggle(cps, () -> (Boolean) playerData.getSettings().getOrDefault("cps", "enabled", false), v -> {
             settings.set("cps", "enabled", v);
             playerData.setSettings(settings);
+            player.sendTitle("");
             syncContents();
         });
         addToggle(ping, () -> (Boolean) playerData.getSettings().getOrDefault("ping", "enabled", false), v -> {
             settings.set("ping", "enabled", v);
             playerData.setSettings(settings);
+            player.sendTitle("");
             syncContents();
         });
         addToggle(privateMessage, () -> (Boolean) playerData.getSettings().getOrDefault("private_message", "enabled", true), v -> {

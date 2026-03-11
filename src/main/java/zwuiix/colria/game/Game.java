@@ -231,9 +231,7 @@ abstract public class Game {
     }
 
     public void stop() {
-        if (getState().equals(State.FINISHED)) {
-            return;
-        }
+        if (getState().equals(State.FINISHED)) return;
 
         GameEvent.unsubscribeAll(this);
         disband(!getState().equals(State.LOBBY));
