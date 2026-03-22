@@ -11,6 +11,8 @@ public class DiscordUtil {
     public static final String MEMBERS_CHANNEL_ID = "1445820750551580905";
     public static final String PLAYERS_CHANNEL_ID = "1445820750551580906";
 
+    public static final String ALERTS_CHANNEL_ID = "1445820750782009400";
+
     public static final String VOICE_CATEGORY_ID = "1445820751650361348";
     public static final String CREATE_YOUR_VOICE_CHANNEL_ID = "1445820751650361350";
     public static final String CONFIG_YOUR_VOICE_NAME = "\uD83E\uDD16┃config-ta-vocal";
@@ -21,7 +23,8 @@ public class DiscordUtil {
     public static String INFO = "<:gray_right_arrow:1443279024951394335> ";
     public static String NOTICE = "<:blue_right_arrow:1443279020040130691> ";
 
-    public static String LINKED_ROLE_ID = "1480188185685266554 ";
+    public static String LINKED_ROLE_ID = "1480188185685266554";
+    public static String ALERTS_ROLE_ID = "1485087495887650876";
 
     public static Optional<Guild> getGuild() {
         return Optional.ofNullable(DiscordAPI.getInstance().getJda().getGuildById(GUILD_ID));

@@ -1,6 +1,12 @@
 package zwuiix.colria.cmd.impl.game;
 
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.components.container.Container;
+import net.dv8tion.jda.api.components.separator.Separator;
+import net.dv8tion.jda.api.components.textdisplay.TextDisplay;
 import zwuiix.colria.cmd.ColriaPlayerSubCommand;
+import zwuiix.colria.discord.DiscordUtil;
 import zwuiix.colria.game.Game;
 import zwuiix.colria.game.GameRegistry;
 import zwuiix.colria.game.impl.lobby.Lobby;
@@ -75,5 +81,30 @@ public class GameAnnounceSubCommand extends ColriaPlayerSubCommand {
                 p.sendMessage(TranslationKeys.PLAYER_GAME_ANNOUNCE_BROADCAST, game.getName(), game.getHoster(), game.getIdentifier());
             });
         }
+
+        sendDiscordAnnouncement(game);
+    }
+
+    private void sendDiscordAnnouncement(Game game) {
+        var guild = DiscordUtil.getGuild().orElse(null);
+        if(guild == null) return;
+
+        var channel = guild.getTextChannelById(DiscordUtil.ALERTS_CHANNEL_ID);
+        if(channel == null) return;
+
+        Container container = Container.of(
+                TextDisplay.ofFormat(String.format("## Nouvelle partie de __%s__", game.getName())),
+                Separator.createDivider(Separator.Spacing.SMALL),
+                TextDisplay.ofFormat("**Hôte :** %s", game.getHoster()),
+                TextDisplay.ofFormat("**ID :** %s", game.getIdentifier()),
+                TextDisplay.ofFormat("**Type :** %s", game.isPrivate() ? "Privée" : "Publique"),
+                Separator.createDivider(Separator.Spacing.SMALL),
+                ActionRow.of(
+                        Button.secondary("join:" + game.getGameId(), "Rejoindre")
+                )
+        );
+        channel.sendMessage("<@&" + DiscordUtil.ALERTS_CHANNEL_ID + ">").queue((message) -> {
+            channel.sendMessageComponents(container).setMessageReference(message).useComponentsV2().queue();
+        });
     }
 }

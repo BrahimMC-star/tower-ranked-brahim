@@ -55,8 +55,8 @@ public class TowerMapProcessor {
         this.teamBBlocks = teamBBlocks;
         this.updatePercentage = updatePercentage;
         this.finish = finish;
-    }
 
+    }
     public void run() {
         int half = size / 2;
         int spawnAX = spawnA.getFloorX();
