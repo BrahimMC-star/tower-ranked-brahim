@@ -4,7 +4,6 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
-import zwuiix.colria.EngineInfo;
 import zwuiix.colria.Loader;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
@@ -15,8 +14,6 @@ import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-
-import static okhttp3.internal.concurrent.TaskLoggerKt.formatDuration;
 
 public class BanManager {
     @Getter
@@ -111,7 +108,7 @@ public class BanManager {
         return true;
     }
 
-    private String formatDuration(long ms) {
+    public static String formatDuration(long ms) {
         long seconds = ms / 1000 % 60;
         long minutes = ms / (1000 * 60) % 60;
         long hours = ms / (1000 * 60 * 60) % 24;

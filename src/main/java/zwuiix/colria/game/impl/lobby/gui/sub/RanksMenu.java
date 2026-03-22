@@ -11,6 +11,7 @@ import zwuiix.colria.database.dao.PlayerRankDao;
 import zwuiix.colria.game.gui.sub.SubMenu;
 import zwuiix.colria.game.impl.lobby.gui.GameShopGUI;
 import zwuiix.colria.gui.PurchaseGUI;
+import zwuiix.colria.item.enchant.DummyEnchantment;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.rank.Rank;
 import zwuiix.colria.rank.RankRegistry;
@@ -96,7 +97,7 @@ public class RanksMenu extends SubMenu {
             );
 
             if (player.getHighestRank().getId() >= rank.getId()) {
-                //item.addEnchantment(new EnchantmentDurability().setLevel(1));
+                item.addEnchantment(new DummyEnchantment().setLevel(1));
             }
 
             long finalCost = cost;

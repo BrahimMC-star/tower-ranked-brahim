@@ -11,6 +11,7 @@ import zwuiix.colria.database.dao.PlayerPetDao;
 import zwuiix.colria.game.gui.sub.SubMenu;
 import zwuiix.colria.game.impl.lobby.gui.GameShopGUI;
 import zwuiix.colria.gui.PurchaseGUI;
+import zwuiix.colria.item.enchant.DummyEnchantment;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.player.cosmetic.CosmeticRegistry;
 import zwuiix.colria.player.cosmetic.Pet;
@@ -83,7 +84,7 @@ public class PetsMenu extends SubMenu {
 
             var pet = CosmeticRegistry.getInstance().getPet(player.getPlayerDataInfo().getPet());
             if(pet != null && pet.equals(c)) {
-                //reference.addEnchantment(new EnchantmentDurability().setLevel(1));
+                reference.addEnchantment(new DummyEnchantment().setLevel(1));
                 reference.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
             }
 

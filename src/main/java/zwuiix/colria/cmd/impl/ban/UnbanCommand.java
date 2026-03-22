@@ -1,21 +1,15 @@
 package zwuiix.colria.cmd.impl.ban;
 
-import cn.nukkit.Server;
 import cn.nukkit.command.CommandSender;
 import zwuiix.colria.cmd.ColriaCommand;
-import zwuiix.colria.cmd.arguments.StringArgument;
 import zwuiix.colria.cmd.arguments.TargetArgument;
 import zwuiix.colria.permission.Permission;
-import zwuiix.colria.player.EnginePlayer;
-import zwuiix.colria.punishment.ban.BanEntry;
 import zwuiix.colria.punishment.ban.BanManager;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.translator.Translator;
 import zwuiix.colria.util.Chat;
 
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class UnbanCommand extends ColriaCommand {
 

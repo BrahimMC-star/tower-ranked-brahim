@@ -9,6 +9,7 @@ import zwuiix.colria.game.GameRegistry;
 import zwuiix.colria.game.gui.sub.SubMenu;
 import zwuiix.colria.game.impl.lobby.Lobby;
 import zwuiix.colria.game.impl.lobby.gui.GameSelectGUI;
+import zwuiix.colria.item.enchant.DummyEnchantment;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.Window;
@@ -35,7 +36,7 @@ public class LobbyMenu extends SubMenu {
             if (lobby.equals(gui.player.getGame())) {
                 item = new ItemDyeLime();
                 item.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
-                //item.addEnchantment(new EnchantmentDurability().setLevel(1));
+                item.addEnchantment(new DummyEnchantment().setLevel(1));
             }
 
             item.setCustomName(TextFormat.colorize("&r&3" + lobby.getGameId() + " &8[&7" + lobby.getSpectators().size() + "&8]"));

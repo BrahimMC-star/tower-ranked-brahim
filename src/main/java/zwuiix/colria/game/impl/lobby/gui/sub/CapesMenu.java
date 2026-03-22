@@ -11,6 +11,7 @@ import zwuiix.colria.database.dao.PlayerCosmeticDao;
 import zwuiix.colria.game.gui.sub.SubMenu;
 import zwuiix.colria.game.impl.lobby.gui.GameShopGUI;
 import zwuiix.colria.gui.PurchaseGUI;
+import zwuiix.colria.item.enchant.DummyEnchantment;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.player.cosmetic.CapeCosmetic;
 import zwuiix.colria.player.cosmetic.CosmeticRegistry;
@@ -87,7 +88,7 @@ public class CapesMenu extends SubMenu {
 
             var cape = CosmeticRegistry.getInstance().getCape(player.getPlayerDataInfo().getCape());
             if(cape != null && cape.equals(c)) {
-                //reference.addEnchantment(new EnchantmentDurability().setLevel(1));
+                reference.addEnchantment(new DummyEnchantment().setLevel(1));
                 reference.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
             }
 

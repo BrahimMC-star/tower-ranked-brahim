@@ -8,6 +8,7 @@ import zwuiix.colria.game.impl.team.Team;
 import zwuiix.colria.game.impl.team.TeamColor;
 import zwuiix.colria.game.impl.team.TeamGame;
 import zwuiix.colria.inventory.VirtualInventory;
+import zwuiix.colria.item.enchant.DummyEnchantment;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.Window;
 
@@ -76,11 +77,11 @@ public class TeamMenu extends SubMenu {
             Item item = color.reference().clone();
 
             boolean isBlocked = color.equals(current);
-            if(isBlocked) //item.addEnchantment(new EnchantmentDurability().setLevel(1));
+            if(isBlocked) item.addEnchantment(new DummyEnchantment().setLevel(1));
 
             if(color.equals(blocked)) {
                 item = Item.get("barrier");
-                //item.addEnchantment(new EnchantmentDurability().setLevel(1));
+                item.addEnchantment(new DummyEnchantment().setLevel(1));
                 isBlocked = true;
             }
 

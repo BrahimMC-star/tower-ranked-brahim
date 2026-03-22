@@ -23,6 +23,7 @@ import zwuiix.colria.game.impl.lobby.Lobby;
 import zwuiix.colria.permission.Permission;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.punishment.ban.BanManager;
+import zwuiix.colria.punishment.mute.MuteManager;
 import zwuiix.colria.task.VPNTask;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.Glyph;
@@ -246,5 +247,19 @@ public class EventListener implements Listener {
         ev.setPlayerCount(onlines);
         ev.setMaxPlayerCount(onlines + 1);
         ev.setListPlugins(true);
+    }
+
+    @EventHandler
+    public void onChat(PlayerChatEvent ev) {
+        var manager = MuteManager.getInstance();
+        EnginePlayer p = (EnginePlayer) ev.getPlayer();
+
+        if (manager.isMuted(p.getName())) {
+            var mute = manager.getMute(p.getName());
+            p.sendMessage(TranslationKeys.PLAYER_YOU_ARE_MUTED, mute.getReason(),  mute.isPermanent() ? "Permanent" : BanManager.formatDuration(mute.getRemainingTime()));
+
+            ev.setCancelled();
+            return;
+        }
     }
 }
