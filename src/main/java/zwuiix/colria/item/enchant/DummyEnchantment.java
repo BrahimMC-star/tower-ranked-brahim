@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class DummyEnchantment extends Enchantment {
     public DummyEnchantment() {
         super(
-                0,
+                100,
                 "dummy",
                 "Dummy Enchantment",
                 EnchantmentRarity.COMMON,
