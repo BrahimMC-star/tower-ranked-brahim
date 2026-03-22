@@ -22,6 +22,7 @@ import zwuiix.colria.game.GameRegistry;
 import zwuiix.colria.game.impl.lobby.Lobby;
 import zwuiix.colria.permission.Permission;
 import zwuiix.colria.player.EnginePlayer;
+import zwuiix.colria.punishment.ban.BanManager;
 import zwuiix.colria.task.VPNTask;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.Glyph;
@@ -215,6 +216,7 @@ public class EventListener implements Listener {
                         return;
                     }
 
+                    if (BanManager.getInstance().kickIfBanned(p)) return;
                     p.resync().thenAccept(v -> {
                         p.dataPacket(pk);
                         if(p.isInLobby()) p.getGame().join(p);
@@ -223,6 +225,7 @@ public class EventListener implements Listener {
                 return;
             }
 
+            if (BanManager.getInstance().kickIfBanned(p)) return;
             p.resync().thenAccept(v -> {
                 p.dataPacket(pk);
                 if(p.isInLobby()) p.getGame().join(p);

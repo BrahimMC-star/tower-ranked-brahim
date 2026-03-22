@@ -12,6 +12,11 @@ public enum Permission {
     BOOSTER_MANAGE,
     LINK_MANAGE,
 
+    STAFF_BAN,
+    STAFF_UNBAN,
+    STAFF_MUTE,
+    STAFF_UNMUTE,
+
     GAME_HOSTER,
     GAME_BYPASS_COOLDOWN,
     GAME_ADMIN,

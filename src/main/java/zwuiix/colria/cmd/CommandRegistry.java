@@ -5,6 +5,8 @@ import cn.nukkit.command.Command;
 import cn.nukkit.command.SimpleCommandMap;
 import lombok.Getter;
 import zwuiix.colria.cmd.impl.*;
+import zwuiix.colria.cmd.impl.ban.BanCommand;
+import zwuiix.colria.cmd.impl.ban.UnbanCommand;
 import zwuiix.colria.cmd.impl.booster.BoosterCommand;
 import zwuiix.colria.cmd.impl.booster.ThanksCommand;
 import zwuiix.colria.cmd.impl.capes.CapesCommand;
@@ -14,6 +16,8 @@ import zwuiix.colria.cmd.impl.game.GameCommand;
 import zwuiix.colria.cmd.impl.game.admin.GameAdminCommand;
 import zwuiix.colria.cmd.impl.link.LinkCommand;
 import zwuiix.colria.cmd.impl.link.UnLinkCommand;
+import zwuiix.colria.cmd.impl.mute.MuteCommand;
+import zwuiix.colria.cmd.impl.mute.UnmuteCommand;
 import zwuiix.colria.cmd.impl.particle.ParticlesCommand;
 import zwuiix.colria.cmd.impl.rank.RanksCommand;
 import zwuiix.colria.cmd.impl.shard.ShardCommand;
@@ -58,6 +62,11 @@ public class CommandRegistry {
 
         register(new LinkCommand());
         register(new UnLinkCommand());
+
+        register(new BanCommand());
+        register(new UnbanCommand());
+        register(new MuteCommand());
+        register(new UnmuteCommand());
     }
 
     public void register(ColriaCommand command) {

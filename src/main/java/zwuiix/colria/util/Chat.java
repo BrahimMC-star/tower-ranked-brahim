@@ -1,6 +1,10 @@
 package zwuiix.colria.util;
 
+import cn.nukkit.Server;
 import cn.nukkit.utils.TextFormat;
+import zwuiix.colria.player.EnginePlayer;
+import zwuiix.colria.translator.TranslationKeys;
+import zwuiix.colria.translator.Translator;
 
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -9,6 +13,13 @@ public class Chat {
     private static final Pattern REPEAT_CHAR_TO_ONE  = Pattern.compile("(.)\\1{2,}", Pattern.UNICODE_CHARACTER_CLASS);
     private static final Pattern REPEAT_CHAR_TO_TWO  = Pattern.compile("(.)\\1{2,}", Pattern.UNICODE_CHARACTER_CLASS);
     private static final Pattern REPEAT_PAIR_3PLUS   = Pattern.compile("((..))\\1{2,}", Pattern.UNICODE_CHARACTER_CLASS);
+
+    public static void broadcast(TranslationKeys key, Object... args) {
+        Server.getInstance().getLogger().info(Translator.getInstance().autoProcess(null, key, args));
+        for (EnginePlayer player : Server.getInstance().getOnlinePlayers().values().stream().filter(p -> p instanceof EnginePlayer).map(p -> (EnginePlayer) p).toList()) {
+            player.sendMessage(key, args);
+        }
+    }
 
     public static String clean(String message) {
         String stripped;
