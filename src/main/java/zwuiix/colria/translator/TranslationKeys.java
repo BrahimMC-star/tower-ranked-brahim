@@ -592,5 +592,7 @@ public enum TranslationKeys {
     RANK_BLIZZARD_DESCRIPTION,
     RANK_FROST_DESCRIPTION,
     RANK_ICE_DESCRIPTION,
+
+    ANTIVPN_KICK,
     ;
 }

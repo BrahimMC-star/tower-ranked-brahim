@@ -22,6 +22,7 @@ import zwuiix.colria.game.GameRegistry;
 import zwuiix.colria.game.impl.lobby.Lobby;
 import zwuiix.colria.permission.Permission;
 import zwuiix.colria.player.EnginePlayer;
+import zwuiix.colria.task.VPNTask;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.Glyph;
 import zwuiix.colria.util.KeyInput;
@@ -206,6 +207,21 @@ public class EventListener implements Listener {
 
         if (!p.logged && pk instanceof PlayStatusPacket s && s.status == PlayStatusPacket.PLAYER_SPAWN) {
             ev.setCancelled();
+
+            if (EngineInfo.ANTI_VPN) {
+                Server.getInstance().getScheduler().scheduleAsyncTask(new VPNTask(p.getAddress(), result -> {
+                    if(result) {
+                        p.close(p.processTranslation(TranslationKeys.ANTIVPN_KICK));
+                        return;
+                    }
+
+                    p.resync().thenAccept(v -> {
+                        p.dataPacket(pk);
+                        if(p.isInLobby()) p.getGame().join(p);
+                    });
+                }));
+                return;
+            }
 
             p.resync().thenAccept(v -> {
                 p.dataPacket(pk);
