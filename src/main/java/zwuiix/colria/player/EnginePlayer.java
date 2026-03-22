@@ -2,7 +2,6 @@ package zwuiix.colria.player;
 
 import cn.nukkit.AdventureSettings;
 import cn.nukkit.Player;
-import cn.nukkit.bossbar.BossBarColor;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.level.Sound;
@@ -36,7 +35,6 @@ import zwuiix.colria.rank.RankRegistry;
 import zwuiix.colria.translator.Language;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.translator.Translator;
-import zwuiix.colria.util.BossBar;
 import zwuiix.colria.util.KeyInput;
 
 import javax.annotation.Nullable;

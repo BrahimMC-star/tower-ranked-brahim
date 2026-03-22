@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
-
 import zwuiix.colria.discord.DiscordUtil;
 import zwuiix.colria.game.component.GameComponent;
 import zwuiix.colria.game.impl.team.Team;

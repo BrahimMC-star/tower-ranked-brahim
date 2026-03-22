@@ -5,7 +5,6 @@ import cn.nukkit.block.BlockCopperBarsExposed;
 import cn.nukkit.item.Item;
 import zwuiix.colria.game.Game;
 import zwuiix.colria.game.GameRegistry;
-import zwuiix.colria.game.component.types.DiscordComponent;
 import zwuiix.colria.game.gui.sub.*;
 import zwuiix.colria.game.impl.team.TeamGame;
 import zwuiix.colria.game.impl.tower.TowerGame;

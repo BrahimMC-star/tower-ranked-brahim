@@ -1,28 +1,20 @@
 package zwuiix.colria.game.gui.sub;
 
-import cn.nukkit.block.*;
-import cn.nukkit.item.*;
+import cn.nukkit.block.BlockCopperBars;
+import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBannerPattern;
+import cn.nukkit.item.ItemEchoShard;
 import cn.nukkit.level.Sound;
 import cn.nukkit.utils.TextFormat;
-import zwuiix.colria.EngineInfo;
 import zwuiix.colria.game.component.types.DiscordComponent;
 import zwuiix.colria.game.gui.GameSettingsGUI;
 import zwuiix.colria.game.impl.team.TeamGame;
-import zwuiix.colria.game.impl.team.TeamGameParameters;
-import zwuiix.colria.game.impl.tower.TowerGameParameters;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.Glyph;
 import zwuiix.colria.util.Window;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.LongStream;
-
-import static java.util.Map.entry;
 
 public class DiscordMenu extends SubMenu {
     private final GameSettingsGUI parent;
@@ -76,8 +68,15 @@ public class DiscordMenu extends SubMenu {
             return;
         }
 
-        var discord = game.tryGetComponent(DiscordComponent.class);
-        
+        Window.fill(parent.inventory, new BlockCopperBars().toItem().setCustomName("§r"));
+        var center = 31;
+        var item = new ItemBannerPattern().setCustomName(t(TranslationKeys.PLAYER_GAME_CONFIGURATIONS_GUI_DISCORD_CLICK_FOR_DISABLE));
+
+        parent.inventory.setItem(center, item).onClick(click -> {
+            game.tryGetComponent(DiscordComponent.class).onGameEnd();
+            game.removeComponent(DiscordComponent.class);
+            parent.syncContents();
+        });
     }
 
     private String t(TranslationKeys k) { return parent.player.processTranslation(k); }

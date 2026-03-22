@@ -11,8 +11,12 @@ import cn.nukkit.network.protocol.MovePlayerPacket;
 import cn.nukkit.network.protocol.ProtocolInfo;
 import cn.nukkit.utils.TextFormat;
 import lombok.Getter;
+import net.dv8tion.jda.api.components.container.Container;
+import net.dv8tion.jda.api.components.separator.Separator;
+import net.dv8tion.jda.api.components.textdisplay.TextDisplay;
 import zwuiix.colria.EngineInfo;
 import zwuiix.colria.booster.BoosterManager;
+import zwuiix.colria.discord.DiscordUtil;
 import zwuiix.colria.game.Game;
 import zwuiix.colria.game.GamePlayer;
 import zwuiix.colria.game.impl.team.*;
@@ -20,6 +24,7 @@ import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.player.PlayerDataInfo;
 import zwuiix.colria.shape.Renderer;
 import zwuiix.colria.translator.TranslationKeys;
+import zwuiix.colria.translator.Translator;
 import zwuiix.colria.util.*;
 
 import java.awt.*;
@@ -28,7 +33,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TowerGame extends TeamGame {
@@ -136,8 +140,8 @@ public class TowerGame extends TeamGame {
                     lines.add(EngineInfo.VBAR_DEFAULT + teamB);
                 }
                 case RUNNING, PAUSE -> {
-                    long seconds = getStartTick() / 20;
-                    String mmss = String.format("%02d:%02d", seconds / 60, seconds % 60);
+                    long remainingSeconds = (game.getParameters().timeLimit * 60L) - (getStartTick() / 20);
+                    String mmss = String.format("%02d:%02d", remainingSeconds / 60, remainingSeconds % 60);
 
                     lines.add(player.processTranslation(TranslationKeys.PLAYER_GAME_TOWER_SCOREBOARD_INFOS));
                     lines.add(EngineInfo.VBAR_DEFAULT + player.processTranslation(TranslationKeys.PLAYER_GAME_TOWER_SCOREBOARD_TIME, mmss));
@@ -221,6 +225,9 @@ public class TowerGame extends TeamGame {
                 });
             }
 
+            broadcast(Glyph.hbarThick(TextFormat.DARK_GRAY, 1));
+            global(player -> player.addSound(Sound.BEACON_DEACTIVATE, 1.0f, 1.0f));
+
             for (GamePlayer value : getStartedPlayers().values()) {
                 TowerPlayer player = (TowerPlayer) value;
                 DB.getPlayerDataInfo(player.getUsername()).then(info -> {
@@ -255,9 +262,7 @@ public class TowerGame extends TeamGame {
                 });
             }
 
-            broadcast(Glyph.hbarThick(TextFormat.DARK_GRAY, 1));
-
-            global(player -> player.addSound(Sound.BEACON_DEACTIVATE, 1.0f, 1.0f));
+            sendDiscordEndGame();
         }
         super.disband(force);
     }
@@ -399,5 +404,57 @@ public class TowerGame extends TeamGame {
                 }
         );
         processor.run();
+    }
+
+    private void sendDiscordEndGame() {
+        var guild = DiscordUtil.getGuild().orElse(null);
+        if(guild == null) return;
+
+        var channel = guild.getTextChannelById(DiscordUtil.GAMES_CHANNEL_ID);
+        if (channel == null) return;
+
+        boolean equality = towerPoints.first == towerPoints.second;
+        Team winner = towerPoints.first > towerPoints.second ? getTeamA() : getTeamB();
+
+        var translator = Translator.getInstance();
+
+        StringBuilder description = new StringBuilder();
+        if(equality) {
+            description.append("» Égalité");
+        } else {
+            description.append("» Victoire des __").append(translator.autoProcess(null, winner.name())).append("__ avec ").append(Math.max(towerPoints.first, towerPoints.second)).append(" points !");
+        }
+
+        description.append("\n\n");
+        description.append("» Tableau des scores :\n");
+        var sorted = getStartedPlayers().values().stream()
+                .map(gp -> (TowerPlayer) gp)
+                .sorted(Comparator.comparingDouble(TowerPlayer::getScore).reversed())
+                .toList();
+
+        for (TowerPlayer player : sorted) {
+            var p = player.getNukkitPlayer();
+            if (p != null && !p.getPlayerDataInfo().getDiscordId().isEmpty()) {
+                description.append("<@").append(p.getPlayerDataInfo().getDiscordId()).append(">");
+            } else description.append("__")
+                    .append(player.getUsername())
+                    .append("__");
+
+            description.append(String.format(" [%d | %d | %d | %d]", player.kills, player.assists, player.deaths, player.hits));
+            description.append("\n");
+        }
+
+        long seconds = getStartTick() / 20;
+        String mmss = String.format("%02d:%02d", seconds / 60, seconds % 60);
+
+        Container container = Container.of(
+                TextDisplay.ofFormat("## " + DiscordUtil.INFO + "Partie de __%s__ terminée", getName()),
+                Separator.createDivider(Separator.Spacing.LARGE),
+                TextDisplay.ofFormat("**Hôte :** %s\n**Type :** %s\n**Durée :** %s", getHoster(), isPrivate() ? "Privée" : "Publique", mmss),
+                Separator.createDivider(Separator.Spacing.LARGE),
+                TextDisplay.ofFormat(description.toString()),
+                Separator.createDivider(Separator.Spacing.SMALL)
+        );
+        channel.sendMessageComponents(container).useComponentsV2().queue();
     }
 }

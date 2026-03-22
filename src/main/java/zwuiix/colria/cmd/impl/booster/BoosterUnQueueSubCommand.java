@@ -3,12 +3,9 @@ package zwuiix.colria.cmd.impl.booster;
 import zwuiix.colria.booster.Booster;
 import zwuiix.colria.booster.BoosterManager;
 import zwuiix.colria.cmd.ColriaPlayerSubCommand;
-import zwuiix.colria.cmd.arguments.LongArgument;
-import zwuiix.colria.cmd.arguments.TargetArgument;
 import zwuiix.colria.permission.Permission;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
-import zwuiix.colria.util.DB;
 
 import java.util.Map;
 

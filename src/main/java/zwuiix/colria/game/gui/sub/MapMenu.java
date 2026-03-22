@@ -4,7 +4,6 @@ import cn.nukkit.Server;
 import cn.nukkit.block.BlockCopperBars;
 import cn.nukkit.block.BlockMoss;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.enchantment.EnchantmentDurability;
 import cn.nukkit.utils.TextFormat;
 import zwuiix.colria.game.Game;
 import zwuiix.colria.game.GameLevel;

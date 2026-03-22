@@ -14,7 +14,6 @@ import zwuiix.colria.permission.Permission;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.Window;
 
-import java.security.Permissions;
 import java.util.Comparator;
 import java.util.List;
 

@@ -25,7 +25,7 @@ public class DiscordListener extends ListenerAdapter {
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         var guild = event.getGuild();
-        if (guild == null || guild.getId().equals(DiscordUtil.GUILD_ID)) {
+        if (guild == null || !guild.getId().equals(DiscordUtil.GUILD_ID)) {
             event.reply(DiscordUtil.WARN + "Vous ne pouvez pas interagir avec ce bouton.").setEphemeral(true).queue();
             return;
         }
@@ -44,8 +44,12 @@ public class DiscordListener extends ListenerAdapter {
 
                 var username = playerData.getName();
                 var player = Server.getInstance().getPlayer(username);
+                if (player == null) {
+                    event.reply(DiscordUtil.ERROR + "Vous devez être en ligne pour rejoindre la partie.").setEphemeral(true).queue();
+                    return;
+                }
 
-                player.chat("/game join " + gameId);
+                Server.getInstance().dispatchCommand(player, "game join " + gameId);
                 event.reply(DiscordUtil.SUCCESS + "Tentative de rejoindre la partie...").setEphemeral(true).queue();
             }).onCatch(throwable -> {
                 event.reply(DiscordUtil.ERROR + "Votre compte n'est pas lié ou une erreur s'est produite.").setEphemeral(true).queue();

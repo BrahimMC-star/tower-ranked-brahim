@@ -2,7 +2,6 @@ package zwuiix.colria.booster;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
-import cn.nukkit.bossbar.BossBarColor;
 import cn.nukkit.level.Sound;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.scheduler.Task;

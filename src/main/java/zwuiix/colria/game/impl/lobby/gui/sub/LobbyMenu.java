@@ -4,7 +4,6 @@ import cn.nukkit.block.BlockCopperBars;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemDyeGray;
 import cn.nukkit.item.ItemDyeLime;
-import cn.nukkit.item.enchantment.EnchantmentDurability;
 import cn.nukkit.utils.TextFormat;
 import zwuiix.colria.game.GameRegistry;
 import zwuiix.colria.game.gui.sub.SubMenu;

@@ -11,7 +11,6 @@ import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.translator.Translator;
 import zwuiix.colria.util.Chat;
 
-import java.security.Permissions;
 import java.util.Map;
 
 public class TellCommand extends ColriaCommand {

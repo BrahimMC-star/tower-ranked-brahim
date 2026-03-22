@@ -1,10 +1,6 @@
 package zwuiix.colria.gui;
 
-import cn.nukkit.block.BlockBeacon;
 import cn.nukkit.block.BlockCopperBars;
-import cn.nukkit.block.BlockOakHangingSign;
-import cn.nukkit.item.*;
-import cn.nukkit.network.protocol.types.DisplaySlot;
 import cn.nukkit.utils.TextFormat;
 import zwuiix.colria.EngineInfo;
 import zwuiix.colria.game.GameRegistry;
@@ -14,13 +10,6 @@ import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.Glyph;
 import zwuiix.colria.util.Window;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class StatsGUI {
     private final EnginePlayer player;

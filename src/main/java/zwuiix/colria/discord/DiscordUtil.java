@@ -12,6 +12,7 @@ public class DiscordUtil {
     public static final String PLAYERS_CHANNEL_ID = "1445820750551580906";
 
     public static final String ALERTS_CHANNEL_ID = "1445820750782009400";
+    public static final String GAMES_CHANNEL_ID = "1485099512996302991";
 
     public static final String VOICE_CATEGORY_ID = "1445820751650361348";
     public static final String CREATE_YOUR_VOICE_CHANNEL_ID = "1445820751650361350";

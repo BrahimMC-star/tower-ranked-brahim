@@ -93,18 +93,16 @@ public class GameAnnounceSubCommand extends ColriaPlayerSubCommand {
         if(channel == null) return;
 
         Container container = Container.of(
-                TextDisplay.ofFormat(String.format("## Nouvelle partie de __%s__", game.getName())),
-                Separator.createDivider(Separator.Spacing.SMALL),
-                TextDisplay.ofFormat("**Hôte :** %s", game.getHoster()),
-                TextDisplay.ofFormat("**ID :** %s", game.getIdentifier()),
-                TextDisplay.ofFormat("**Type :** %s", game.isPrivate() ? "Privée" : "Publique"),
+                TextDisplay.ofFormat("## " + DiscordUtil.INFO + "Nouvelle partie de __%s__", game.getName()),
+                Separator.createDivider(Separator.Spacing.LARGE),
+                TextDisplay.ofFormat("**Hôte :** %s\n**ID :** %s\n**Type :** %s", game.getHoster(), game.getIdentifier(), game.isPrivate() ? "Privée" : "Publique"),
                 Separator.createDivider(Separator.Spacing.SMALL),
                 ActionRow.of(
                         Button.secondary("join:" + game.getGameId(), "Rejoindre")
                 )
         );
-        channel.sendMessage("<@&" + DiscordUtil.ALERTS_CHANNEL_ID + ">").queue((message) -> {
-            channel.sendMessageComponents(container).setMessageReference(message).useComponentsV2().queue();
+        channel.sendMessage("<@&" + DiscordUtil.ALERTS_ROLE_ID + ">").queue((message) -> {
+            channel.sendMessageComponents(container).useComponentsV2().queue();
         });
     }
 }

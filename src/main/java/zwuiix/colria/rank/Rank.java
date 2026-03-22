@@ -3,7 +3,6 @@ package zwuiix.colria.rank;
 import cn.nukkit.utils.TextFormat;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Rank {

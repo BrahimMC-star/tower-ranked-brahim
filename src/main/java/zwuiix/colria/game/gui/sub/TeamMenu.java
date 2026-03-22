@@ -2,7 +2,6 @@ package zwuiix.colria.game.gui.sub;
 
 import cn.nukkit.block.BlockCopperBars;
 import cn.nukkit.item.*;
-import cn.nukkit.item.enchantment.EnchantmentDurability;
 import cn.nukkit.utils.TextFormat;
 import zwuiix.colria.game.gui.GameSettingsGUI;
 import zwuiix.colria.game.impl.team.Team;

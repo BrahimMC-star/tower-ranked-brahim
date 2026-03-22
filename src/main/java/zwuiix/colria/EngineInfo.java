@@ -13,4 +13,6 @@ public class EngineInfo {
     public static String VBAR_DEFAULT = Glyph.vbar(EngineInfo.COLOR, 1) + " ";
 
     public static String VERSION = "v1.0.3";
+
+    public static boolean ANTI_VPN = true;
 }
