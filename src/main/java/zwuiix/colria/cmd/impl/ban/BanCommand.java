@@ -7,8 +7,9 @@ import zwuiix.colria.cmd.arguments.StringArgument;
 import zwuiix.colria.cmd.arguments.TargetArgument;
 import zwuiix.colria.permission.Permission;
 import zwuiix.colria.player.EnginePlayer;
-import zwuiix.colria.punishment.ban.BanEntry;
-import zwuiix.colria.punishment.ban.BanManager;
+import zwuiix.colria.punishment.PunishmentEntry;
+import zwuiix.colria.punishment.PunishmentType;
+import zwuiix.colria.punishment.PunishmentManager;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.translator.Translator;
 import zwuiix.colria.util.Chat;
@@ -30,7 +31,7 @@ public class BanCommand extends ColriaCommand {
 
     @Override
     public void run(CommandSender sender, Map<String, Object> args) {
-        var manager = BanManager.getInstance();
+        var manager = PunishmentManager.getInstance();
         String targetName = args.get("target").toString();
         String reason = args.getOrDefault("reason", "No reason provided").toString();
 
@@ -57,7 +58,7 @@ public class BanCommand extends ColriaCommand {
             }
         }
 
-        BanEntry entry = new BanEntry(targetName, reason, sender.getName(), now, expiresAt);
+        PunishmentEntry entry = new PunishmentEntry(targetName, reason, sender.getName(), now, expiresAt, PunishmentType.BAN);
         manager.ban(entry);
 
         EnginePlayer target = (EnginePlayer) Server.getInstance().getPlayerExact(targetName);

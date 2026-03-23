@@ -5,6 +5,7 @@ import cn.nukkit.block.*;
 import cn.nukkit.item.Item;
 import cn.nukkit.math.Vector3;
 import lombok.Getter;
+import org.snakeyaml.engine.v2.api.Load;
 import zwuiix.colria.Loader;
 import zwuiix.colria.game.impl.lobby.Lobby;
 import zwuiix.colria.game.impl.team.TeamGameLevel;
@@ -94,6 +95,7 @@ public class GameRegistry {
         gameModes.add(gameMode);
 
         for (GameLevel level : gameMode.levels) {
+            Server.getInstance().getLogger().info("Loading level " + level.name + " for gamemode " + gameMode.name);
             Server.getInstance().loadLevel(level.name);
         }
     }
@@ -112,11 +114,16 @@ public class GameRegistry {
         netherBricks.setLore("player.gamemode.towerbridge.description");
 
         register(new GameMode("TowerFast", bricks, TowerGame.class, List.of(
-                new TeamGameLevel("tfcastle", new BlockBricksStone().toItem(), new Vector3(0, 5, 0), new TeamSpawnPoint(new Vector3(84, 5, 0), new Vector3(-84, 5, 0), null, null)),
-                new TeamGameLevel("tfalius", new BlockAmethyst().toItem(), new Vector3(0, 2, 0), new TeamSpawnPoint(new Vector3(-84, 2, 0), new Vector3(84, 2, 0), null, null)),
-                new TeamGameLevel("tfbabylone", new BlockSandstone().toItem(), new Vector3(0, 11, 0), new TeamSpawnPoint(new Vector3(-84, 11, 0), new Vector3(84, 11, 0), null, null)),
-                new TeamGameLevel("tfclassic", new BlockSprucePlanks().toItem(), new Vector3(0, 13, 0), new TeamSpawnPoint(new Vector3(-84, 13, 0), new Vector3(84, 13, 0), null, null)),
-                new TeamGameLevel("tfcyclone", new BlockNetherBrick().toItem(), new Vector3(0, 11, 0), new TeamSpawnPoint(new Vector3(-77, 11, 31), new Vector3(77, 11, -31), null, null))
+                new TeamGameLevel("towerfast_castle", new BlockBricksStone().toItem(), new Vector3(0, 5, 0), new TeamSpawnPoint(new Vector3(84, 5, 0), new Vector3(-84, 5, 0), null, null)),
+                new TeamGameLevel("towerfast_alius", new BlockAmethyst().toItem(), new Vector3(0, 2, 0), new TeamSpawnPoint(new Vector3(-84, 2, 0), new Vector3(84, 2, 0), null, null)),
+                new TeamGameLevel("towerfast_babylone", new BlockSandstone().toItem(), new Vector3(0, 11, 0), new TeamSpawnPoint(new Vector3(-84, 11, 0), new Vector3(84, 11, 0), null, null)),
+                new TeamGameLevel("towerfast_classic", new BlockSprucePlanks().toItem(), new Vector3(0, 13, 0), new TeamSpawnPoint(new Vector3(-84, 13, 0), new Vector3(84, 13, 0), null, null)),
+                new TeamGameLevel("towerfast_cyclone", new BlockNetherBrick().toItem(), new Vector3(0, 11, 0), new TeamSpawnPoint(new Vector3(-77, 11, 31), new Vector3(77, 11, -31), null, null))/*,
+                new TeamGameLevel("towerfast_race", new BlockBlackstone().toItem(), new Vector3(4, 13, 0), new TeamSpawnPoint(new Vector3(90, 13, 0), new Vector3(-84, 13, 0), null, null)),
+                new TeamGameLevel("towerfast_japan", new BlockAcaciaPlanks().toItem(), new Vector3(1, 13, 0), new TeamSpawnPoint(new Vector3(-85, 13, 0), new Vector3(84, 13, 0), null, null)),
+                new TeamGameLevel("towerfast_manoir", new BlockDarkOakLog().toItem(), new Vector3(0, 13, -85), new TeamSpawnPoint(new Vector3(0, 13, 1), new Vector3(0, 13, -170), null, null)),
+                new TeamGameLevel("towerfast_f1", new BlockCoal().toItem(), new Vector3(0, 13, 0), new TeamSpawnPoint(new Vector3(-84, 13, 0), new Vector3(84, 13, 0), null, null)),
+                new TeamGameLevel("towerfast_nether", new BlockNetherrack().toItem(), new Vector3(11, 13, 0), new TeamSpawnPoint(new Vector3(108, 13, 0), new Vector3(-85, 13, 0), null, null))*/
         )));
 
         register(new GameMode("TowerBridge", netherBricks, TowerGame.class, List.of(

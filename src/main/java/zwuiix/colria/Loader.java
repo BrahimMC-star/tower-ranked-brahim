@@ -22,8 +22,7 @@ import zwuiix.colria.listener.WorldListener;
 import zwuiix.colria.permission.PermissionRegistry;
 import zwuiix.colria.player.cosmetic.CosmeticRegistry;
 import zwuiix.colria.player.particle.ParticleRegistry;
-import zwuiix.colria.punishment.ban.BanManager;
-import zwuiix.colria.punishment.mute.MuteManager;
+import zwuiix.colria.punishment.PunishmentManager;
 import zwuiix.colria.rank.RankRegistry;
 import zwuiix.colria.task.BroadcastTask;
 import zwuiix.colria.translator.LanguageRegistry;
@@ -78,8 +77,7 @@ public class Loader extends PluginBase {
         dataBase.write(PlayerPetDao.class, PlayerPetDao::init);
         dataBase.write(PlayerCooldownDao.class, PlayerCooldownDao::init);
 
-        new BanManager(this);
-        new MuteManager(this);
+        new PunishmentManager(this);
 
         getLogger().info(TextFormat.colorize("&bDatabase initialized."));
 
@@ -135,8 +133,7 @@ public class Loader extends PluginBase {
         BoosterManager boosterManager = BoosterManager.getInstance();
         if (boosterManager != null) boosterManager.close();
 
-        BanManager.getInstance().save();
-        MuteManager.getInstance().save();
+        PunishmentManager.getInstance().save();
 
         for (Game game : GameRegistry.getInstance().getLobbies().values()) game.stop();
         for (Game game : GameRegistry.getInstance().getGames().values()) game.stop();

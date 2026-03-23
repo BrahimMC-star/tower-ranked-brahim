@@ -68,7 +68,7 @@ public class TowerMapProcessor {
 
         List<BlockChange> changes = new ArrayList<>();
         int totalBlocks = size * size * (MAX_Y - MIN_Y + 1) * 2;
-        int scanTicks = 50;
+        int scanTicks = 20 * 30;
         int blocksPerTick = Math.max(1000, totalBlocks / scanTicks);
         AtomicInteger scanned = new AtomicInteger();
         Plugin plugin = InventoryHooker.getInstance().getPlugin();

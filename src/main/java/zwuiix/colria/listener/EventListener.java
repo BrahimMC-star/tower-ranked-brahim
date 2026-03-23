@@ -22,8 +22,7 @@ import zwuiix.colria.game.GameRegistry;
 import zwuiix.colria.game.impl.lobby.Lobby;
 import zwuiix.colria.permission.Permission;
 import zwuiix.colria.player.EnginePlayer;
-import zwuiix.colria.punishment.ban.BanManager;
-import zwuiix.colria.punishment.mute.MuteManager;
+import zwuiix.colria.punishment.PunishmentManager;
 import zwuiix.colria.task.VPNTask;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.Glyph;
@@ -217,7 +216,7 @@ public class EventListener implements Listener {
                         return;
                     }
 
-                    if (BanManager.getInstance().kickIfBanned(p)) return;
+                    if (PunishmentManager.getInstance().kickIfBanned(p)) return;
                     p.resync().thenAccept(v -> {
                         p.dataPacket(pk);
                         if(p.isInLobby()) p.getGame().join(p);
@@ -226,7 +225,7 @@ public class EventListener implements Listener {
                 return;
             }
 
-            if (BanManager.getInstance().kickIfBanned(p)) return;
+            if (PunishmentManager.getInstance().kickIfBanned(p)) return;
             p.resync().thenAccept(v -> {
                 p.dataPacket(pk);
                 if(p.isInLobby()) p.getGame().join(p);
@@ -251,12 +250,12 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onChat(PlayerChatEvent ev) {
-        var manager = MuteManager.getInstance();
+        var manager = PunishmentManager.getInstance();
         EnginePlayer p = (EnginePlayer) ev.getPlayer();
 
         if (manager.isMuted(p.getName())) {
             var mute = manager.getMute(p.getName());
-            p.sendMessage(TranslationKeys.PLAYER_YOU_ARE_MUTED, mute.getReason(),  mute.isPermanent() ? "Permanent" : BanManager.formatDuration(mute.getRemainingTime()));
+            p.sendMessage(TranslationKeys.PLAYER_YOU_ARE_MUTED, mute.getReason(),  mute.isPermanent() ? "Permanent" : PunishmentManager.formatDuration(mute.getRemainingTime()));
 
             ev.setCancelled();
             return;

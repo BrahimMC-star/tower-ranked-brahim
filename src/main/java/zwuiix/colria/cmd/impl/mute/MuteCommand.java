@@ -5,8 +5,9 @@ import zwuiix.colria.cmd.ColriaCommand;
 import zwuiix.colria.cmd.arguments.StringArgument;
 import zwuiix.colria.cmd.arguments.TargetArgument;
 import zwuiix.colria.permission.Permission;
-import zwuiix.colria.punishment.mute.MuteEntry;
-import zwuiix.colria.punishment.mute.MuteManager;
+import zwuiix.colria.punishment.PunishmentEntry;
+import zwuiix.colria.punishment.PunishmentManager;
+import zwuiix.colria.punishment.PunishmentType;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.translator.Translator;
 import zwuiix.colria.util.Chat;
@@ -28,7 +29,7 @@ public class MuteCommand extends ColriaCommand {
 
     @Override
     public void run(CommandSender sender, Map<String, Object> args) {
-        var manager = MuteManager.getInstance();
+        var manager = PunishmentManager.getInstance();
         String targetName = args.get("target").toString();
         String reason = args.getOrDefault("reason", "No reason provided").toString();
 
@@ -55,7 +56,7 @@ public class MuteCommand extends ColriaCommand {
             }
         }
 
-        MuteEntry entry = new MuteEntry(targetName, reason, sender.getName(), now, expiresAt);
+        PunishmentEntry entry = new PunishmentEntry(targetName, reason, sender.getName(), now, expiresAt, PunishmentType.MUTE);
         manager.mute(entry);
 
         sender.sendMessage(Translator.getInstance().autoProcess(sender, TranslationKeys.PLAYER_COMMAND_MUTE_SUCCESS, targetName, reason));

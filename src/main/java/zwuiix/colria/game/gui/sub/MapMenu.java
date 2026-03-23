@@ -34,9 +34,9 @@ public class MapMenu extends SubMenu {
         if(gameMode != null) {
             for (GameLevel level : gameMode.levels()) {
                 String name = level.name;
-                String fixedName = (name == null) ? null
-                        : (name.length() <= 2) ? ""
-                        : name.substring(2, 3).toUpperCase(java.util.Locale.ROOT) + name.substring(3);
+                String[] parts = name.split("_");
+                String fixedName = parts[1];
+                fixedName = fixedName.substring(0, 1).toUpperCase() + fixedName.substring(1);
 
                 Item item = level.reference.clone().setCustomName(TextFormat.RESET + fixedName);
                 if(g.getGameLevel().getFolderName().equalsIgnoreCase(name)) item.addEnchantment(new DummyEnchantment().setLevel(1));
