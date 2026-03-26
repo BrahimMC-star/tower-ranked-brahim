@@ -11,6 +11,7 @@ import zwuiix.colria.game.impl.lobby.Lobby;
 import zwuiix.colria.game.impl.team.TeamGameLevel;
 import zwuiix.colria.game.impl.team.TeamSpawnPoint;
 import zwuiix.colria.game.impl.tower.TowerGame;
+import zwuiix.colria.game.impl.towerbridge.TowerBridgeGame;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -126,7 +127,9 @@ public class GameRegistry {
                 new TeamGameLevel("towerfast_nether", new BlockNetherrack().toItem(), new Vector3(11, 13, 0), new TeamSpawnPoint(new Vector3(108, 13, 0), new Vector3(-85, 13, 0), null, null))*/
         )));
 
-        register(new GameMode("TowerBridge", netherBricks, TowerGame.class, List.of(
+        register(new GameMode("TowerBridge", netherBricks, TowerBridgeGame.class, List.of(
+                new TeamGameLevel("towerbridge_mario", new BlockTerracotta(13).toItem(), new Vector3(0, 13, 0), new TeamSpawnPoint(new Vector3(34, 18, 0), new Vector3(-34, 18, 0), null, null)),
+                new TeamGameLevel("towerbridge_sakai", new BlockDarkPrismarine().toItem(), new Vector3(0, 13, 0), new TeamSpawnPoint(new Vector3(-35, 17, 0), new Vector3(35, 17, 0), null, null))
         )));
     }
 

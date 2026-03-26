@@ -7,6 +7,8 @@ import zwuiix.colria.game.GameRegistry;
 import zwuiix.colria.game.impl.lobby.Lobby;
 import zwuiix.colria.game.impl.tower.TowerGame;
 import zwuiix.colria.game.impl.tower.TowerGameParameters;
+import zwuiix.colria.game.impl.towerbridge.TowerBridgeGame;
+import zwuiix.colria.game.impl.towerbridge.TowerBridgeGameParameters;
 import zwuiix.colria.permission.Permission;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
@@ -65,9 +67,11 @@ public class GameCreateSubCommand extends ColriaPlayerSubCommand {
         Class<? extends Game> gameClass = mode.gameClass();
 
         Game game = null;
-        if(gameClass.equals(TowerGame.class)) {
+        if (gameClass.equals(TowerBridgeGame.class))
+            game = new TowerBridgeGame(mode.name(), player.getName(), new TowerBridgeGameParameters());
+        else if(gameClass.equals(TowerGame.class))
             game = new TowerGame(mode.name(), player.getName(), new TowerGameParameters());
-        }
+
 
         if(game == null) {
             player.sendMessage(TranslationKeys.PLAYER_GAME_CREATE_ERROR);

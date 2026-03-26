@@ -7,6 +7,7 @@ import zwuiix.colria.EngineInfo;
 import zwuiix.colria.game.gui.GameSettingsGUI;
 import zwuiix.colria.game.impl.team.TeamGameParameters;
 import zwuiix.colria.game.impl.tower.TowerGameParameters;
+import zwuiix.colria.game.impl.towerbridge.TowerBridgeGameParameters;
 import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.util.Glyph;
 import zwuiix.colria.util.Window;
@@ -131,8 +132,13 @@ public class ComponentsMenu extends SubMenu {
 
         var p = parent.game.getParameters();
         if (p instanceof TeamGameParameters teamParams) {
-            final List<Integer> minimumPlayersChoice = List.of(1, 2, 3);
-            final List<Integer> maximumPlayersChoice = List.of(5, 6, 7, 8, 9, 10);
+            List<Integer> minimumPlayersChoice = List.of(1, 2, 3);
+            List<Integer> maximumPlayersChoice = List.of(5, 6, 7, 8, 9, 10);
+
+            if (p instanceof TowerBridgeGameParameters) {
+                minimumPlayersChoice = List.of(1, 2, 3);
+                maximumPlayersChoice = List.of(1, 2, 3, 4);
+            }
 
             ItemRedstone allyDamage = (ItemRedstone) new ItemRedstone()
                     .setCustomName(t(TranslationKeys.PLAYER_GAME_CONFIGURATIONS_GUI_ALLYDAMAGE_NAME))
