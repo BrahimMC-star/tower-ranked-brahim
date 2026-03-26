@@ -16,6 +16,7 @@ import cn.nukkit.utils.TextFormat;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import zwuiix.colria.EngineInfo;
 import zwuiix.colria.database.DataBase;
 import zwuiix.colria.database.dao.*;
@@ -37,7 +38,6 @@ import zwuiix.colria.translator.TranslationKeys;
 import zwuiix.colria.translator.Translator;
 import zwuiix.colria.util.KeyInput;
 
-import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;

@@ -5,7 +5,6 @@ import cn.nukkit.block.*;
 import cn.nukkit.item.Item;
 import cn.nukkit.math.Vector3;
 import lombok.Getter;
-import org.snakeyaml.engine.v2.api.Load;
 import zwuiix.colria.Loader;
 import zwuiix.colria.game.impl.lobby.Lobby;
 import zwuiix.colria.game.impl.team.TeamGameLevel;

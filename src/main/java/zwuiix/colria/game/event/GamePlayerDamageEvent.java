@@ -4,7 +4,7 @@ import cn.nukkit.event.Cancellable;
 import cn.nukkit.event.Event;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import lombok.Getter;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import zwuiix.colria.game.GamePlayer;
 
 public class GamePlayerDamageEvent extends Event implements Cancellable {

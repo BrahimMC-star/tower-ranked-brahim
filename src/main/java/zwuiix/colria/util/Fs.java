@@ -1,6 +1,6 @@
 package zwuiix.colria.util;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.nio.file.*;

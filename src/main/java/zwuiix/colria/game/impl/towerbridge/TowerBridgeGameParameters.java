@@ -1,6 +1,5 @@
 package zwuiix.colria.game.impl.towerbridge;
 
-import zwuiix.colria.game.impl.team.TeamGameParameters;
 import zwuiix.colria.game.impl.tower.TowerGameParameters;
 
 public class TowerBridgeGameParameters extends TowerGameParameters
@@ -11,5 +10,6 @@ public class TowerBridgeGameParameters extends TowerGameParameters
         maxPoints = 5;
         maxPlayers = 4;
         minPlayers = 1;
+        timeLimit = 6L;
     }
 }

@@ -30,6 +30,7 @@ import zwuiix.colria.game.event.GamePlayerItemDropDeathEvent;
 import zwuiix.colria.game.event.GamePlayerPickupEvent;
 import zwuiix.colria.game.impl.team.Team;
 import zwuiix.colria.game.impl.team.TeamSpawnPoint;
+import zwuiix.colria.game.impl.towerbridge.TowerBridgeGame;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.TranslationKeys;
 
@@ -158,12 +159,12 @@ public record TowerListener(TowerGame game) {
             double dA = sA.distanceSquared(pos), dB = sB.distanceSquared(pos);
             int refY = (dA <= dB ? sA.getFloorY() : sB.getFloorY());
 
-            if (y >= refY + 13) {
+            if (y >= refY + (game instanceof TowerBridgeGame ? 0 : 13)) {
                 p.sendMessage(TranslationKeys.PLAYER_GAME_TOWER_MAXHEIGHT);
                 ev.setCancelled(true);
                 return;
             }
-            if (y <= refY - 5) {
+            if (y < refY - 7) {
                 p.sendMessage(TranslationKeys.PLAYER_GAME_TOWER_MINHEIGHT);
                 ev.setCancelled(true);
                 return;

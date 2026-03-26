@@ -5,6 +5,7 @@ import cn.nukkit.block.BlockCopperBarsExposed;
 import cn.nukkit.item.Item;
 import zwuiix.colria.game.gui.sub.SubMenu;
 import zwuiix.colria.game.impl.lobby.gui.sub.LobbyMenu;
+import zwuiix.colria.game.impl.lobby.gui.sub.TowerBridgeMenu;
 import zwuiix.colria.game.impl.lobby.gui.sub.TowerFastMenu;
 import zwuiix.colria.inventory.VirtualInventory;
 import zwuiix.colria.inventory.impl.EntityInventory;
@@ -28,6 +29,7 @@ public class GameSelectGUI {
 
         subMenus.add(new LobbyMenu(this, player));
         subMenus.add(new TowerFastMenu(this));
+        subMenus.add(new TowerBridgeMenu(this));
 
         syncContents();
     }
