@@ -90,7 +90,7 @@ public class GameTask extends Task {
                 p.setGamemode(3);
                 p.setImmobile(true);
 
-                p.sendActionBar(TranslationKeys.PLAYER_GAME_RUNNING_SPAWN, gamePlayer.respawnTicks / 20.0);
+                p.sendActionBar(TranslationKeys.PLAYER_GAME_RUNNING_SPAWN, String.format(Locale.US, "%.2f", gamePlayer.respawnTicks / 20.0));
             }
         }
     }

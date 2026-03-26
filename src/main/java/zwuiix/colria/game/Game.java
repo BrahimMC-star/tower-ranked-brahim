@@ -223,7 +223,7 @@ abstract public class Game {
         setState(State.RUNNING);
 
         broadcast(TranslationKeys.PLAYER_GAME_START_BROADCAST);
-        this.global((player) -> player.addSound("game.start", 1.0f, 1.0f));
+        this.global((player) -> player.addSound("game.start", 0.25f, 1.0f));
 
         if (hasComponent(DiscordComponent.class)) {
             tryGetComponent(DiscordComponent.class).onGameStart();

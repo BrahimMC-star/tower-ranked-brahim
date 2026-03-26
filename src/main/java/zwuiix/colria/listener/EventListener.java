@@ -11,6 +11,7 @@ import cn.nukkit.event.server.DataPacketReceiveEvent;
 import cn.nukkit.event.server.DataPacketSendEvent;
 import cn.nukkit.event.server.QueryRegenerateEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemMace;
 import cn.nukkit.level.Sound;
 import cn.nukkit.network.protocol.*;
 import cn.nukkit.network.protocol.types.AuthInputAction;
@@ -191,6 +192,11 @@ public class EventListener implements Listener {
                 return;
             }
             if (inputData.contains(AuthInputAction.MISSED_SWING)) {
+                var itemInHand = p.getInventory().getItemInHand();
+                if (itemInHand.getId() != 0 && !(itemInHand instanceof ItemMace)) {
+                    itemInHand.onAttack(p, p);
+                }
+
                 p.addClick();
                 p.needDisplayTitleInfo();
                 return;

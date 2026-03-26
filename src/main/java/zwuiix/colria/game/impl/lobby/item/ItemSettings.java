@@ -1,6 +1,7 @@
 package zwuiix.colria.game.impl.lobby.item;
 
 import cn.nukkit.Player;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.item.StringItemBase;
 import cn.nukkit.math.Vector3;
 import zwuiix.colria.gui.SettingsGUI;
@@ -24,5 +25,11 @@ public class ItemSettings extends StringItemBase {
             gui.send();
         }
         return true;
+    }
+
+    @Override
+    public boolean onAttack(Player player, Entity entity) {
+        onClickAir(player, null);
+        return false;
     }
 }

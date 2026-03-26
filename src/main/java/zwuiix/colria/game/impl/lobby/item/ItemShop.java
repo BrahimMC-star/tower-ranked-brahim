@@ -1,6 +1,7 @@
 package zwuiix.colria.game.impl.lobby.item;
 
 import cn.nukkit.Player;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemID;
 import cn.nukkit.math.Vector3;
@@ -25,5 +26,11 @@ public class ItemShop extends Item {
             gui.send();
         }
         return true;
+    }
+
+    @Override
+    public boolean onAttack(Player player, Entity entity) {
+        onClickAir(player, null);
+        return false;
     }
 }

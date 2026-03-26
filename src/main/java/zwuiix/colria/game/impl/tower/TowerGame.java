@@ -20,6 +20,7 @@ import zwuiix.colria.discord.DiscordUtil;
 import zwuiix.colria.game.Game;
 import zwuiix.colria.game.GamePlayer;
 import zwuiix.colria.game.impl.team.*;
+import zwuiix.colria.game.impl.towerbridge.TowerBridgeGame;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.player.PlayerDataInfo;
 import zwuiix.colria.shape.Renderer;
@@ -363,11 +364,13 @@ public class TowerGame extends TeamGame {
         var metaA = teamA.reference().getBlock().getDamage();
         var metaB = teamB.reference().getBlock().getDamage();
 
+        var blueMeta = this instanceof TowerBridgeGame ? 11 : 3;
+
         Map<TowerMapProcessor.BlockKey, Block> teamABlocks = new HashMap<>();
-        teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockConcrete(3)), new BlockConcrete(metaA));
-        teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockGlassStained(3)), new BlockGlassStained(metaA));
-        teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockWool(3)), new BlockWool(metaA));
-        teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockTerracotta(3)), new BlockTerracotta(metaA));
+        teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockConcrete(blueMeta)), new BlockConcrete(metaA));
+        teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockGlassStained(blueMeta)), new BlockGlassStained(metaA));
+        teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockWool(blueMeta)), new BlockWool(metaA));
+        teamABlocks.put(TowerMapProcessor.BlockKey.of(new BlockTerracotta(blueMeta)), new BlockTerracotta(metaA));
 
         Map<TowerMapProcessor.BlockKey, Block> teamBBlocks = new HashMap<>();
         teamBBlocks.put(TowerMapProcessor.BlockKey.of(new BlockConcrete(14)), new BlockConcrete(metaB));
@@ -389,7 +392,7 @@ public class TowerGame extends TeamGame {
         }
 
         var processor = new TowerMapProcessor(
-                256, getGameLevel(), spawnA, spawnB,
+                128, getGameLevel(), spawnA, spawnB,
                 teamABlocks, teamBBlocks,
                 percent -> {
                     boolean valid = percent > perc.get();

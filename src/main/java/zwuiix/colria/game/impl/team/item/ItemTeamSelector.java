@@ -1,6 +1,7 @@
 package zwuiix.colria.game.impl.team.item;
 
 import cn.nukkit.Player;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemID;
 import cn.nukkit.math.Vector3;
@@ -21,5 +22,11 @@ public class ItemTeamSelector extends Item {
 
         teamGame.getTeamSelector().send(p);
         return true;
+    }
+
+    @Override
+    public boolean onAttack(Player player, Entity entity) {
+        onClickAir(player, null);
+        return false;
     }
 }
