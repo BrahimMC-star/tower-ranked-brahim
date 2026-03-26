@@ -97,7 +97,7 @@ public class TowerGame extends TeamGame {
             }
 
             if(towerPoints.first >= parameters.maxPoints || towerPoints.second >= parameters.maxPoints) {
-                setState(State.FINISHED);
+                stop();
                 return;
             }
 
