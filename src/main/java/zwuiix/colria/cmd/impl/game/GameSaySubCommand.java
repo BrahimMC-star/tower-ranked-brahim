@@ -46,6 +46,6 @@ public class GameSaySubCommand extends ColriaPlayerSubCommand {
         }
 
         String message = args.get("message").toString();
-        game.broadcast(TranslationKeys.PLAYER_GAME_COHOSTER_SAY, player.getName(), Chat.clean(message));
+        game.broadcast(TranslationKeys.PLAYER_GAME_HOSTER_SAY, player.getName(), Chat.clean(message));
     }
 }

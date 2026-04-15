@@ -338,6 +338,7 @@ public class EnginePlayer extends Player {
         }
 
         recalculatePermissions();
+        sendCommandData();
     }
 
     public void updateCape(String cape) {

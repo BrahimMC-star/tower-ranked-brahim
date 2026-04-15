@@ -105,6 +105,8 @@ public record TowerListener(TowerGame game) {
             PlayerInventory inv2 = p2.getInventory();
             inv2.addItem(apple);
 
+            p2.addSound("random.orb", 0.5f, 1.0f);
+
             List<TowerPlayer> assists = victim.resolveAssists(attacker);
             if (assists.isEmpty()) {
                 game.broadcast(TranslationKeys.PLAYER_GAME_TOWER_DEATH_BY_ATTACKER, victim.getTeam().color() + victim.getUsername(), attacker.getTeam().color() + attacker.getUsername());
@@ -371,8 +373,8 @@ public record TowerListener(TowerGame game) {
         if (gamePlayer == null)
             return;
 
-        ev.setStrengthXZ(0.4D);
-        ev.setStrengthY(0.4D);
+        ev.setStrengthXZ(0.43D);
+        ev.setStrengthY(0.42D);
     }
 
     private void onItemDropDeath(GamePlayerItemDropDeathEvent ev) {

@@ -32,11 +32,12 @@ public class GameStartSubCommand extends ColriaPlayerSubCommand {
             return;
         }
 
-        if(!game.getState().equals(Game.State.LOBBY)) {
+        if(!game.getState().equals(Game.State.LOBBY) || game.isPreparing()) {
             player.sendMessage(TranslationKeys.PLAYER_GAME_START_ALREADY);
             return;
         }
 
+        game.setPreparing(true);
         game.prepare();
         player.sendMessage(TranslationKeys.PLAYER_GAME_START_SUCCESS);
     }

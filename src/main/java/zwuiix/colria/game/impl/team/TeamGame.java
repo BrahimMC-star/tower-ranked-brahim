@@ -2,6 +2,7 @@ package zwuiix.colria.game.impl.team;
 
 import cn.nukkit.Server;
 import cn.nukkit.utils.TextFormat;
+import lombok.Getter;
 import lombok.Setter;
 import zwuiix.colria.game.*;
 import zwuiix.colria.game.impl.team.gui.TeamSelectorGUI;

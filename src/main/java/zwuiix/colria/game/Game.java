@@ -78,6 +78,9 @@ abstract public class Game {
     @Getter
     @Setter
     private boolean announced = false;
+    @Getter
+    @Setter
+    private boolean preparing = false;
 
     @Getter
     private final HashMap<String, GamePlayer> startedPlayers = new HashMap<>();

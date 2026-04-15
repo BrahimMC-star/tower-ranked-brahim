@@ -1,29 +1,22 @@
 package zwuiix.colria.game.component.types;
 
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.channel.concrete.Category;
-import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.concrete.*;
 import zwuiix.colria.discord.DiscordUtil;
 import zwuiix.colria.game.component.GameComponent;
-import zwuiix.colria.game.impl.team.Team;
-import zwuiix.colria.game.impl.team.TeamGame;
+import zwuiix.colria.game.impl.team.*;
 import zwuiix.colria.player.EnginePlayer;
 import zwuiix.colria.translator.Translator;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class DiscordComponent extends GameComponent {
 
     private final Guild guild;
 
     public Category category;
-
-    public VoiceChannel lobbyChannel;
-    public VoiceChannel spectatorChannel;
-
+    public VoiceChannel lobbyChannel, spectatorChannel;
     public Map<Team, VoiceChannel> teamChannels = new HashMap<>();
 
     public boolean spectatorsCanTalk = false;
@@ -31,251 +24,194 @@ public class DiscordComponent extends GameComponent {
 
     public DiscordComponent(TeamGame game) {
         super(game);
-
         this.guild = DiscordUtil.getGuild().orElseThrow();
 
-        guild.createCategory("→ " + game.getGameId()).queue(createdCategory -> {
-            this.category = createdCategory;
+        guild.createCategory("→ " + game.getGameId()).queue(cat -> {
+            category = cat;
 
-            createdCategory.upsertPermissionOverride(guild.getPublicRole())
+            cat.upsertPermissionOverride(guild.getPublicRole())
                     .deny(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
                     .queue();
 
-            createdCategory.getManager()
-                    .setPosition(guild.getCategories().size() - 1)
-                    .queue(success -> createLobbyChannel());
+            cat.getManager().setPosition(guild.getCategories().size() - 1)
+                    .queue(v -> createLobbyChannel());
         });
     }
 
     private void createLobbyChannel() {
-        category.createVoiceChannel("→ Attente").queue(channel -> {
-            this.lobbyChannel = channel;
-            channel.upsertPermissionOverride(guild.getPublicRole())
+        category.createVoiceChannel("→ Attente").queue(vc -> {
+            lobbyChannel = vc;
+
+            vc.upsertPermissionOverride(guild.getPublicRole())
                     .deny(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
                     .queue();
 
-            channel.getManager()
-                    .setUserLimit(99)
-                    .queue();
+            vc.getManager().setUserLimit(99).queue();
 
-            game.getSpectators().forEach((id, spectator) -> onPlayerJoin(spectator.getPlayerDataInfo().getDiscordId()));
+            ((TeamGame) game).getSpectators().values()
+                    .forEach(p -> onPlayerJoin(p.getPlayerDataInfo().getDiscordId()));
         });
     }
 
-    public void onPlayerJoin(String userId) {
-        if (category == null) return;
+    private void clear(Member m) {
+        category.getChannels().forEach(c -> {
+            var o = c.getPermissionContainer().getPermissionOverride(m);
+            if (o != null) o.delete().queue();
+        });
+    }
 
-        Member member = guild.getMemberById(userId);
-        if (member == null) return;
-
-        category.upsertPermissionOverride(member)
+    private void allow(VoiceChannel c, Member m, boolean speak) {
+        c.upsertPermissionOverride(m)
                 .grant(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
-                .queue();
+                .queue(
+                        s -> {},
+                        Throwable::printStackTrace
+                );
 
-        if (!playersCanTalk) {
-            category.upsertPermissionOverride(member)
+        if (!speak) {
+            c.upsertPermissionOverride(m)
                     .deny(Permission.VOICE_SPEAK)
-                    .queue();
-        }
-
-        if (lobbyChannel != null && member.getVoiceState() != null && member.getVoiceState().inAudioChannel()) {
-            guild.moveVoiceMember(member, lobbyChannel).queue();
+                    .queue(null, Throwable::printStackTrace);
         }
     }
 
-    public void onPlayerQuit(String userId) {
+    private void move(Member m, VoiceChannel c) {
+        if (m.getVoiceState() != null && m.getVoiceState().inAudioChannel()) {
+            guild.moveVoiceMember(m, c).queue(null, Throwable::printStackTrace);
+        }
+    }
+
+    private void withMember(String id, java.util.function.Consumer<Member> consumer) {
+        guild.retrieveMemberById(id).queue(
+                consumer,
+                err -> System.out.println("Failed to fetch member: " + id)
+        );
+    }
+
+    public void onPlayerJoin(String id) {
         if (category == null) return;
 
-        Member member = guild.getMemberById(userId);
-        if (member == null) return;
+        withMember(id, m -> {
+            clear(m);
 
-        var override = category.getPermissionOverride(member);
-        if (override != null) {
-            override.delete().queue();
-        }
+            if (lobbyChannel != null) {
+                allow(lobbyChannel, m, playersCanTalk);
+                move(m, lobbyChannel);
+            }
+        });
+    }
+
+    public void onPlayerQuit(String id) {
+        if (category == null) return;
+
+        withMember(id, this::clear);
     }
 
     public void onGameStart() {
-        TeamGame game = (TeamGame) this.game;
-        if (lobbyChannel == null || category == null) return;
+        TeamGame g = (TeamGame) game;
+        if (category == null || lobbyChannel == null) return;
 
         lobbyChannel.getManager()
                 .setName("\uD83C\uDF10┃Spectateurs")
-                .queue(success -> spectatorChannel = lobbyChannel);
+                .queue(v -> spectatorChannel = lobbyChannel);
 
-        Team teamA = game.getTeamA();
-        Team teamB = game.getTeamB();
+        clearAll();
 
-        var emojiA = switch (teamA.dyeColor()) {
-            case RED -> "🔴";
-            case BLUE -> "🔵";
-            case CYAN -> "\uD83E\uDE75";
-            case LIGHT_BLUE -> "\uD83D\uDC99";
-            case GREEN -> "🟢";
-            case LIME -> "\uD83D\uDC9A";
-            case YELLOW -> "🟡";
-            case PURPLE -> "🟣";
-            case MAGENTA -> "\uD83D\uDC9C";
-            case PINK -> "\uD83E\uDE77";
-            case ORANGE -> "🟠";
-            case BLACK -> "⚫";
-            case LIGHT_GRAY -> "\uD83E\uDE76";
-            case GRAY -> "\uD83D\uDDA4";
-            case BROWN -> "\uD83E\uDD0E";
-            default -> "⚪";
-        };
+        createTeam(g.getTeamA());
+        createTeam(g.getTeamB());
 
-        var emojiB = switch (teamB.dyeColor()) {
-            case RED -> "🔴";
-            case BLUE -> "🔵";
-            case CYAN -> "\uD83E\uDE75";
-            case LIGHT_BLUE -> "\uD83D\uDC99";
-            case GREEN -> "🟢";
-            case LIME -> "\uD83D\uDC9A";
-            case YELLOW -> "🟡";
-            case PURPLE -> "🟣";
-            case MAGENTA -> "\uD83D\uDC9C";
-            case PINK -> "\uD83E\uDE77";
-            case ORANGE -> "🟠";
-            case BLACK -> "⚫";
-            case LIGHT_GRAY -> "\uD83E\uDE76";
-            case GRAY -> "\uD83D\uDDA4";
-            case BROWN -> "\uD83E\uDD0E";
-            default -> "⚪";
-        };
-
-        category.createVoiceChannel(emojiA + "┃" + Translator.getInstance().autoProcess(null, teamA.name()))
-                .queue(channel -> {
-                    channel.upsertPermissionOverride(guild.getPublicRole())
-                            .deny(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
-                            .queue();
-
-                    teamChannels.put(teamA, channel);
-
-                    channel.getManager()
-                            .setUserLimit(99)
-                            .queue();
-
-                    applyTeamPermissions(channel, teamA);
-                    moveTeamPlayers(teamA, channel);
-                });
-
-        category.createVoiceChannel(emojiB + "┃" + Translator.getInstance().autoProcess(null, teamB.name()))
-                .queue(channel -> {
-                    channel.upsertPermissionOverride(guild.getPublicRole())
-                            .deny(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
-                            .queue();
-
-                    teamChannels.put(teamB, channel);
-
-                    channel.getManager()
-                            .setUserLimit(99)
-                            .queue();
-
-                    applyTeamPermissions(channel, teamB);
-                    moveTeamPlayers(teamB, channel);
-
-                });
-
-        applySpectatorPermissions();
+        applySpectators();
     }
 
-    private void applyTeamPermissions(VoiceChannel channel, Team team) {
-        TeamGame game = (TeamGame) this.game;
+    private void clearAll() {
+        TeamGame g = (TeamGame) game;
 
-        game.getTeams().forEach((nukkitPlayer, playerTeam) -> {
+        g.getTeams().forEach((p, t) -> {
+            String id = p.getPlayerDataInfo().getDiscordId();
+            if (!id.isEmpty()) withMember(id, this::clear);
+        });
 
-            var info = nukkitPlayer.getPlayerDataInfo();
-            String discordId = info.getDiscordId();
-
-            if (discordId.isEmpty()) return;
-
-            Member member = guild.getMemberById(discordId);
-            if (member == null) return;
-
-            if (playerTeam == team) {
-
-                channel.upsertPermissionOverride(member)
-                        .grant(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
-                        .queue();
-
-                if (!playersCanTalk) {
-                    channel.upsertPermissionOverride(member)
-                            .deny(Permission.VOICE_SPEAK)
-                            .queue();
-                }
-
-            } else {
-
-                channel.upsertPermissionOverride(member)
-                        .deny(Permission.VOICE_CONNECT)
-                        .queue();
-
-            }
-
+        g.getSpectators().values().forEach(sp -> {
+            String id = sp.getPlayerDataInfo().getDiscordId();
+            if (!id.isEmpty()) withMember(id, this::clear);
         });
     }
 
-    private void moveTeamPlayers(Team team, VoiceChannel channel) {
+    private void createTeam(Team team) {
+        category.createVoiceChannel(getEmoji(team) + "┃" +
+                        Translator.getInstance().autoProcess(null, team.name()))
+                .queue(vc -> {
 
-        TeamGame game = (TeamGame) this.game;
+                    vc.upsertPermissionOverride(guild.getPublicRole())
+                            .deny(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
+                            .queue();
 
-        game.getTeams().forEach((nukkitPlayer, playerTeam) -> {
+                    vc.getManager().setUserLimit(99).queue();
+                    teamChannels.put(team, vc);
 
-            if (playerTeam != team) return;
+                    applyTeam(team, vc);
+                });
+    }
 
-            var info = nukkitPlayer.getPlayerDataInfo();
-            String discordId = info.getDiscordId();
+    private void applyTeam(Team team, VoiceChannel vc) {
+        TeamGame g = (TeamGame) game;
 
-            if (discordId.isEmpty()) return;
+        g.getTeams().forEach((p, t) -> {
+            if (t != team) return;
 
-            Member member = guild.getMemberById(discordId);
-            if (member == null) return;
+            String id = p.getPlayerDataInfo().getDiscordId();
+            if (id.isEmpty()) return;
 
-            if (member.getVoiceState() != null && member.getVoiceState().inAudioChannel()) {
-                guild.moveVoiceMember(member, channel).queue();
-            }
-
+            withMember(id, m -> {
+                allow(vc, m, playersCanTalk);
+                move(m, vc);
+            });
         });
     }
 
-    private void applySpectatorPermissions() {
+    private void applySpectators() {
         if (spectatorChannel == null) return;
 
-        TeamGame game = (TeamGame) this.game;
+        TeamGame g = (TeamGame) game;
 
-        for (EnginePlayer spectator : game.getSpectators().values()) {
-            String discordId = spectator.getPlayerDataInfo().getDiscordId();
-            if (discordId.isEmpty()) continue;
+        for (EnginePlayer sp : g.getSpectators().values()) {
+            String id = sp.getPlayerDataInfo().getDiscordId();
+            if (id.isEmpty()) continue;
 
-            Member member = guild.getMemberById(discordId);
-            if (member == null) continue;
-
-            spectatorChannel.upsertPermissionOverride(member)
-                    .grant(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
-                    .queue();
-
-            if (!spectatorsCanTalk) {
-                spectatorChannel.upsertPermissionOverride(member)
-                        .deny(Permission.VOICE_SPEAK)
-                        .queue();
-            }
+            withMember(id, m -> {
+                allow(spectatorChannel, m, spectatorsCanTalk);
+                move(m, spectatorChannel);
+            });
         }
     }
 
     public void onGameEnd() {
         if (category == null) return;
 
-        category.getChannels().forEach(channel ->
-                channel.delete().queue(
-                        success -> {},
-                        error -> {}
-                )
+        category.getChannels().forEach(c ->
+                c.delete().queue(null, Throwable::printStackTrace)
         );
 
-        category.delete().queue(
-                success -> {},
-                error -> {}
-        );
+        category.delete().queue(null, Throwable::printStackTrace);
+    }
+
+    private String getEmoji(Team t) {
+        return switch (t.dyeColor()) {
+            case RED -> "🔴";
+            case BLUE -> "🔵";
+            case CYAN -> "🔷";
+            case LIGHT_BLUE -> "💎";
+            case GREEN -> "🟢";
+            case LIME -> "🍏";
+            case YELLOW -> "🟡";
+            case PURPLE -> "🟣";
+            case MAGENTA -> "💜";
+            case PINK -> "🌸";
+            case ORANGE -> "🟠";
+            case BLACK -> "⚫";
+            case GRAY -> "⬜";
+            case BROWN -> "🟤";
+            default -> "⚪";
+        };
     }
 }
