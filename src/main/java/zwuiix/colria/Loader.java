@@ -118,8 +118,12 @@ public class Loader extends PluginBase {
 
         getServer().getScheduler().scheduleRepeatingTask(new BroadcastTask(), 20 * 60);
 
-        DiscordAPI discordAPI = new DiscordAPI(DiscordToken.TOKEN);
-        discordAPI.connect();
+        if (DiscordToken.TOKEN != null && !DiscordToken.TOKEN.isBlank()) {
+            DiscordAPI discordAPI = new DiscordAPI(DiscordToken.TOKEN);
+            discordAPI.connect();
+        } else {
+            getLogger().warning("No DISCORD_TOKEN environment variable set — Discord integration disabled.");
+        }
     }
 
     @Override

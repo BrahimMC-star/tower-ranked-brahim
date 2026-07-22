@@ -4,6 +4,7 @@ import cn.nukkit.Server;
 import cn.nukkit.block.BlockCopperBars;
 import cn.nukkit.block.BlockMoss;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Level;
 import cn.nukkit.utils.TextFormat;
 import zwuiix.colria.game.Game;
 import zwuiix.colria.game.GameLevel;
@@ -32,6 +33,7 @@ public class MapMenu extends SubMenu {
 
         GameRegistry.GameMode gameMode = GameRegistry.getInstance().getGameMode(g.getName());
         if(gameMode != null) {
+            Level currentLevel = g.getGameLevel();
             for (GameLevel level : gameMode.levels()) {
                 String name = level.name;
                 String[] parts = name.split("_");
@@ -39,7 +41,7 @@ public class MapMenu extends SubMenu {
                 fixedName = fixedName.substring(0, 1).toUpperCase() + fixedName.substring(1);
 
                 Item item = level.reference.clone().setCustomName(TextFormat.RESET + fixedName);
-                if(g.getGameLevel().getFolderName().equalsIgnoreCase(name)) item.addEnchantment(new DummyEnchantment().setLevel(1));
+                if(currentLevel != null && currentLevel.getFolderName().equalsIgnoreCase(name)) item.addEnchantment(new DummyEnchantment().setLevel(1));
 
                 parent.inventory.setItem(Window.nextSlot(parent.inventory), item)
                         .onClick((click) -> {
