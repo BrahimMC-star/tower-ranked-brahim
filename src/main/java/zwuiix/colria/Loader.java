@@ -131,9 +131,6 @@ public class Loader extends PluginBase {
         DiscordAPI discordAPI = DiscordAPI.getInstance();
         if (discordAPI != null) discordAPI.disconnect();
 
-        DataBase db = DataBase.getInstance();
-        if (db != null) db.close();
-
         BoosterManager boosterManager = BoosterManager.getInstance();
         if (boosterManager != null) boosterManager.close();
 
@@ -141,5 +138,8 @@ public class Loader extends PluginBase {
 
         for (Game game : GameRegistry.getInstance().getLobbies().values()) game.stop();
         for (Game game : GameRegistry.getInstance().getGames().values()) game.stop();
+
+        DataBase db = DataBase.getInstance();
+        if (db != null) db.close();
     }
 }

@@ -6,6 +6,7 @@ import cn.nukkit.item.ItemBannerPattern;
 import cn.nukkit.item.ItemEchoShard;
 import cn.nukkit.level.Sound;
 import cn.nukkit.utils.TextFormat;
+import zwuiix.colria.discord.DiscordUtil;
 import zwuiix.colria.game.component.types.DiscordComponent;
 import zwuiix.colria.game.gui.GameSettingsGUI;
 import zwuiix.colria.game.impl.team.TeamGame;
@@ -43,6 +44,13 @@ public class DiscordMenu extends SubMenu {
             var item = new ItemBannerPattern().setCustomName(t(TranslationKeys.PLAYER_GAME_CONFIGURATIONS_GUI_DISCORD_CLICK_FOR_ENABLE));
 
             parent.inventory.setItem(center, item).onClick(click -> {
+                if (DiscordUtil.getGuild().isEmpty()) {
+                    click.inventory().close(player);
+                    player.sendMessage("§cLe bot Discord n'est pas disponible pour le moment.");
+                    player.addSound(Sound.MOB_VILLAGER_NO,0.5f, 1f);
+                    return;
+                }
+
                 var info = player.getPlayerDataInfo();
                 var discordId = info.getDiscordId();
                 if (discordId.isEmpty()) {

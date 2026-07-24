@@ -2,6 +2,7 @@ package zwuiix.colria.game.gui.sub;
 
 import cn.nukkit.block.BlockCopperBars;
 import cn.nukkit.item.*;
+import cn.nukkit.item.enchantment.bow.EnchantmentBowInfinity;
 import cn.nukkit.utils.TextFormat;
 import zwuiix.colria.game.gui.GameSettingsGUI;
 import zwuiix.colria.game.impl.team.Team;
@@ -77,11 +78,11 @@ public class TeamMenu extends SubMenu {
             Item item = color.reference().clone();
 
             boolean isBlocked = color.equals(current);
-            if(isBlocked) item.addEnchantment(new DummyEnchantment().setLevel(1));
+            if(isBlocked) item.addEnchantment(new EnchantmentBowInfinity().setLevel(1));
 
             if(color.equals(blocked)) {
                 item = Item.get("barrier");
-                item.addEnchantment(new DummyEnchantment().setLevel(1));
+                item.addEnchantment(new EnchantmentBowInfinity().setLevel(1));
                 isBlocked = true;
             }
 

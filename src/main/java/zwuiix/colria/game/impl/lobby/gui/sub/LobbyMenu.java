@@ -4,6 +4,7 @@ import cn.nukkit.block.BlockCopperBars;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemDyeGray;
 import cn.nukkit.item.ItemDyeLime;
+import cn.nukkit.item.enchantment.bow.EnchantmentBowInfinity;
 import cn.nukkit.utils.TextFormat;
 import zwuiix.colria.game.GameRegistry;
 import zwuiix.colria.game.gui.sub.SubMenu;
@@ -36,7 +37,7 @@ public class LobbyMenu extends SubMenu {
             if (lobby.equals(gui.player.getGame())) {
                 item = new ItemDyeLime();
                 item.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
-                item.addEnchantment(new DummyEnchantment().setLevel(1));
+                item.addEnchantment(new EnchantmentBowInfinity().setLevel(1));
             }
 
             item.setCustomName(TextFormat.colorize("&r&3" + lobby.getGameId() + " &8[&7" + lobby.getSpectators().size() + "&8]"));

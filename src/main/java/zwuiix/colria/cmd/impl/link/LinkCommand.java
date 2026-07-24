@@ -22,6 +22,11 @@ public class LinkCommand extends ColriaPlayerCommand {
 
     @Override
     public void execute(EnginePlayer player, Map<String, Object> args) {
+        if (!DiscordAPI.isAvailable()) {
+            player.sendMessage("§cLe bot Discord n'est pas disponible pour le moment, la liaison de compte est désactivée.");
+            return;
+        }
+
         var code = args.get("code").toString();
         var manager = LinkManager.getInstance();
 
@@ -46,7 +51,10 @@ public class LinkCommand extends ColriaPlayerCommand {
             manager.remove(code);
 
             var guild = DiscordUtil.getGuild().orElse(null);
-            guild.addRoleToMember(user, guild.getRoleById(DiscordUtil.LINKED_ROLE_ID)).queue();
+            if (guild != null) {
+                var role = guild.getRoleById(DiscordUtil.LINKED_ROLE_ID);
+                if (role != null) guild.addRoleToMember(user, role).queue();
+            }
 
             info.hook().editOriginal("Votre compte a été lié avec succès au compte minecraft : " + player.getUsername()).queue();
             user.openPrivateChannel().queue(channel -> channel.sendMessage("Votre compte a été lié avec succès au compte xbox : **__" + player.getUsername() + "__**").queue());

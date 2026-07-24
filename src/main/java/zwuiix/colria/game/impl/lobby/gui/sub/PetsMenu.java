@@ -4,6 +4,7 @@ import cn.nukkit.Server;
 import cn.nukkit.block.BlockCopperBars;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemDoorDarkOak;
+import cn.nukkit.item.enchantment.bow.EnchantmentBowInfinity;
 import cn.nukkit.level.Sound;
 import zwuiix.colria.EngineInfo;
 import zwuiix.colria.database.DataBase;
@@ -84,7 +85,7 @@ public class PetsMenu extends SubMenu {
 
             var pet = CosmeticRegistry.getInstance().getPet(player.getPlayerDataInfo().getPet());
             if(pet != null && pet.equals(c)) {
-                reference.addEnchantment(new DummyEnchantment().setLevel(1));
+                reference.addEnchantment(new EnchantmentBowInfinity().setLevel(1));
                 reference.setItemLockMode(Item.ItemLockMode.LOCK_IN_SLOT);
             }
 

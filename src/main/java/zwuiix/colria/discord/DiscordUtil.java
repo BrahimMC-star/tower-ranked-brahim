@@ -28,6 +28,7 @@ public class DiscordUtil {
     public static String ALERTS_ROLE_ID = "1485087495887650876";
 
     public static Optional<Guild> getGuild() {
+        if (!DiscordAPI.isAvailable()) return Optional.empty();
         return Optional.ofNullable(DiscordAPI.getInstance().getJda().getGuildById(GUILD_ID));
     }
 }

@@ -4,6 +4,7 @@ import cn.nukkit.Server;
 import cn.nukkit.block.BlockCopperBars;
 import cn.nukkit.block.BlockSnow;
 import cn.nukkit.item.*;
+import cn.nukkit.item.enchantment.bow.EnchantmentBowInfinity;
 import cn.nukkit.level.Sound;
 import zwuiix.colria.EngineInfo;
 import zwuiix.colria.database.DataBase;
@@ -97,7 +98,7 @@ public class RanksMenu extends SubMenu {
             );
 
             if (player.getHighestRank().getId() >= rank.getId()) {
-                item.addEnchantment(new DummyEnchantment().setLevel(1));
+                item.addEnchantment(new EnchantmentBowInfinity().setLevel(1));
             }
 
             long finalCost = cost;

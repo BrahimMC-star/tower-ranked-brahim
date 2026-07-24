@@ -19,6 +19,10 @@ public class DiscordAPI {
     @Getter
     private final JDA jda;
 
+    public static boolean isAvailable() {
+        return instance != null && instance.jda != null;
+    }
+
     public DiscordAPI(String token) {
         instance = this;
         this.jda = JDABuilder.createDefault(token)
